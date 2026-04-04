@@ -58,6 +58,7 @@ Saat ini resource yang sudah tersedia:
 - `medication`
 - `medicationRequest`
 - `serviceRequest`
+- `specimen`
 - `patient`
 - `organization`
 - `location`
@@ -103,6 +104,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Medication](D:/project/satusehat/docs/resources/medication.md)
 - [MedicationRequest](D:/project/satusehat/docs/resources/medication-request.md)
 - [ServiceRequest](D:/project/satusehat/docs/resources/service-request.md)
+- [Specimen](D:/project/satusehat/docs/resources/specimen.md)
 - [Organization](D:/project/satusehat/docs/resources/organization.md)
 - [Location](D:/project/satusehat/docs/resources/location.md)
 - [Practitioner](D:/project/satusehat/docs/resources/practitioner.md)

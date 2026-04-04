@@ -32,6 +32,7 @@ export type {
   PractitionerRoleClient,
   ProcedureClient,
   QueryParams,
+  SpecimenClient,
   ServiceRequestClient,
   SatuSehatClient,
   SatuSehatClientConfig,
@@ -140,6 +141,24 @@ export type {
   ServiceRequestSearchResponse,
   ServiceRequestStatus,
 } from "./schemas/service-request";
+export type {
+  Specimen,
+  SpecimenCoding,
+  SpecimenCollection,
+  SpecimenContactDetail,
+  SpecimenContainer,
+  SpecimenCreateInput,
+  SpecimenExtension,
+  SpecimenIdentifier,
+  SpecimenNote,
+  SpecimenPatchInput,
+  SpecimenPatchOperation,
+  SpecimenProcessing,
+  SpecimenQuantity,
+  SpecimenSearchParams,
+  SpecimenSearchResponse,
+  SpecimenStatus,
+} from "./schemas/specimen";
 export type {
   Encounter,
   EncounterClass,

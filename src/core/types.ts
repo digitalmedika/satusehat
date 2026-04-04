@@ -241,6 +241,34 @@ export interface ServiceRequestClient {
   ): Promise<import("../schemas/service-request").ServiceRequest>;
 }
 
+export interface SpecimenClient {
+  create(
+    input: import("../schemas/specimen").SpecimenCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/specimen").Specimen>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/specimen").Specimen>;
+  search(
+    input: import("../schemas/specimen").SpecimenSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/specimen").SpecimenSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/specimen").SpecimenPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/specimen").Specimen>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/specimen").SpecimenCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/specimen").Specimen>;
+}
+
 export interface EncounterClient {
   create(
     input: import("../schemas/encounter").EncounterCreateInput,
@@ -369,4 +397,5 @@ export interface SatuSehatClient {
   practitionerRole: PractitionerRoleClient;
   procedure: ProcedureClient;
   serviceRequest: ServiceRequestClient;
+  specimen: SpecimenClient;
 }
