@@ -13,6 +13,9 @@ export {
 } from "./client/token-store";
 export { OrganizationBuilder, createOrganizationBuilder } from "./builders/organization-builder";
 export {
+  createChestXRayStudyBuilder,
+} from "./builders/chest-xray-study-builder";
+export {
   createCompleteBloodCountPanelBuilder,
 } from "./builders/cbc-panel-builder";
 export {
@@ -23,6 +26,10 @@ export {
   ServiceRequestSpecimenObservationBuilder,
   createServiceRequestSpecimenObservationBuilder,
 } from "./builders/service-request-specimen-observation-builder";
+export {
+  ServiceRequestImagingStudyDiagnosticReportBuilder,
+  createServiceRequestImagingStudyDiagnosticReportBuilder,
+} from "./builders/service-request-imaging-study-diagnostic-report-builder";
 export {
   SatuSehatApiError,
   SatuSehatConfigError,
@@ -121,11 +128,20 @@ export type {
   QuestionnaireResponseSearchResponse,
 } from "./schemas/questionnaire-response";
 export type {
+  ChestXRayStudyBuilderInput,
+} from "./builders/chest-xray-study-builder";
+export type {
   DiagnosticReportBuildLinks,
   ObservationBuildLinks,
   ServiceRequestBuildLinks,
   ServiceRequestSpecimenObservationBuilderInput,
 } from "./builders/service-request-specimen-observation-builder";
+export type {
+  RadiologyDiagnosticReportBuildLinks,
+  RadiologyImagingStudyBuildLinks,
+  RadiologyServiceRequestBuildLinks,
+  ServiceRequestImagingStudyDiagnosticReportBuilderInput,
+} from "./builders/service-request-imaging-study-diagnostic-report-builder";
 export type {
   CompleteBloodCountObservationKey,
   CompleteBloodCountPanelBuilderInput,
