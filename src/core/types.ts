@@ -191,6 +191,34 @@ export interface QuestionnaireResponseClient {
   ): Promise<import("../schemas/questionnaire-response").QuestionnaireResponse>;
 }
 
+export interface RiskAssessmentClient {
+  create(
+    input: import("../schemas/risk-assessment").RiskAssessmentCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/risk-assessment").RiskAssessment>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/risk-assessment").RiskAssessment>;
+  search(
+    input: import("../schemas/risk-assessment").RiskAssessmentSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/risk-assessment").RiskAssessmentSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/risk-assessment").RiskAssessmentPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/risk-assessment").RiskAssessment>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/risk-assessment").RiskAssessmentCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/risk-assessment").RiskAssessment>;
+}
+
 export interface ConditionClient {
   create(
     input: import("../schemas/condition").ConditionCreateInput,
@@ -635,6 +663,7 @@ export interface SatuSehatClient {
   practitionerRole: PractitionerRoleClient;
   procedure: ProcedureClient;
   questionnaireResponse: QuestionnaireResponseClient;
+  riskAssessment: RiskAssessmentClient;
   serviceRequest: ServiceRequestClient;
   specimen: SpecimenClient;
 }

@@ -85,6 +85,7 @@ Saat ini resource yang sudah tersedia:
 - `practitioner`
 - `practitionerRole`
 - `questionnaireResponse`
+- `riskAssessment`
 
 ## Token Handling
 
@@ -123,6 +124,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Condition](./docs/resources/condition.md)
 - [DICOM Router](./docs/resources/dicom-router.md)
 - [QuestionnaireResponse](./docs/resources/questionnaire-response.md)
+- [RiskAssessment](./docs/resources/risk-assessment.md)
 - [DiagnosticReport](./docs/resources/diagnostic-report.md)
 - [ImagingStudy](./docs/resources/imaging-study.md)
 - [Patient](./docs/resources/patient.md)

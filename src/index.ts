@@ -60,6 +60,7 @@ export type {
   ProcedureClient,
   QuestionnaireResponseClient,
   QueryParams,
+  RiskAssessmentClient,
   SpecimenClient,
   ServiceRequestClient,
   SatuSehatClient,
@@ -127,6 +128,20 @@ export type {
   QuestionnaireResponseSearchParams,
   QuestionnaireResponseSearchResponse,
 } from "./schemas/questionnaire-response";
+export type {
+  RiskAssessment,
+  RiskAssessmentCoding,
+  RiskAssessmentCreateInput,
+  RiskAssessmentNote,
+  RiskAssessmentPatchInput,
+  RiskAssessmentPatchOperation,
+  RiskAssessmentPrediction,
+  RiskAssessmentQuantity,
+  RiskAssessmentRange,
+  RiskAssessmentSearchParams,
+  RiskAssessmentSearchResponse,
+  RiskAssessmentStatus,
+} from "./schemas/risk-assessment";
 export type {
   ChestXRayStudyBuilderInput,
 } from "./builders/chest-xray-study-builder";
