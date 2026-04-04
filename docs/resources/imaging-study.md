@@ -7,6 +7,7 @@ Resource `imagingStudy` saat ini mendukung:
 - `getById`
 - `search`
 - `create`
+- `patch`
 - `update`
 
 Dokumentasi resmi SATUSEHAT yang menjadi acuan:
@@ -119,6 +120,23 @@ const imagingStudy = await client.imagingStudy.create({
 ## Update
 
 Method `update` menggunakan `PUT`, jadi body yang dikirim adalah representasi resource `ImagingStudy` utuh sesuai schema SDK saat ini.
+
+## Patch
+
+Method `patch` menggunakan operasi JSON patch yang saat ini divalidasi sebagai array berisi operasi `replace`.
+
+```ts
+const updated = await client.imagingStudy.patch({
+  id: "8031179c-cd31-475e-8f94-feeb4c618c6b",
+  body: [
+    {
+      op: "replace",
+      path: "/description",
+      value: "Deskripsi radiologi diperbarui.",
+    },
+  ],
+});
+```
 
 ## Catatan
 

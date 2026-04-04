@@ -171,6 +171,8 @@ export type {
   ImagingStudyCreateInput,
   ImagingStudyIdentifier,
   ImagingStudyNote,
+  ImagingStudyPatchInput,
+  ImagingStudyPatchOperation,
   ImagingStudySearchParams,
   ImagingStudySearchResponse,
   ImagingStudySeries,

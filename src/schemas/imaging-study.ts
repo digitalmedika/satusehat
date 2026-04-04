@@ -87,6 +87,14 @@ export const ImagingStudySearchParamsSchema = z.object({
     ),
 });
 
+export const ImagingStudyPatchOperationSchema = z.object({
+  op: z.literal("replace"),
+  path: z.string().min(1),
+  value: z.unknown(),
+});
+
+export const ImagingStudyPatchSchema = z.array(ImagingStudyPatchOperationSchema).min(1);
+
 export const ImagingStudyBaseSchema = z.object({
   resourceType: z.literal("ImagingStudy"),
   identifier: z.array(ImagingStudyIdentifierSchema).min(1),
@@ -137,6 +145,8 @@ export type ImagingStudyNote = z.infer<typeof ImagingStudyNoteSchema>;
 export type ImagingStudySeriesPerformer = z.infer<typeof ImagingStudySeriesPerformerSchema>;
 export type ImagingStudySeriesInstance = z.infer<typeof ImagingStudySeriesInstanceSchema>;
 export type ImagingStudySeries = z.infer<typeof ImagingStudySeriesSchema>;
+export type ImagingStudyPatchOperation = z.infer<typeof ImagingStudyPatchOperationSchema>;
+export type ImagingStudyPatchInput = z.infer<typeof ImagingStudyPatchSchema>;
 export type ImagingStudy = z.infer<typeof ImagingStudySchema>;
 export type ImagingStudyCreateInput = z.infer<typeof ImagingStudyCreateSchema>;
 export type ImagingStudySearchParams = z.infer<typeof ImagingStudySearchParamsSchema>;

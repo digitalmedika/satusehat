@@ -4,11 +4,16 @@ import { type Transport } from "../client/transport";
 import {
   ImagingStudyBundleSchema,
   ImagingStudyCreateSchema,
+  ImagingStudyPatchSchema,
   ImagingStudySchema,
   ImagingStudySearchParamsSchema,
   ImagingStudyUpdateParamsSchema,
 } from "../schemas/imaging-study";
-import type { ImagingStudyCreateInput, ImagingStudySearchParams } from "../schemas/imaging-study";
+import type {
+  ImagingStudyCreateInput,
+  ImagingStudyPatchInput,
+  ImagingStudySearchParams,
+} from "../schemas/imaging-study";
 
 const ImagingStudyIdParamsSchema = z.object({
   id: z.string().min(1),
@@ -46,6 +51,19 @@ export function createImagingStudyClient(transport: Transport) {
         querySchema: ImagingStudySearchParamsSchema,
         responseSchema: ImagingStudyBundleSchema,
         ...(signal ? { signal } : {}),
+      });
+    },
+
+    patch(input: { id: string; body: ImagingStudyPatchInput; signal?: AbortSignal }) {
+      const params = ImagingStudyUpdateParamsSchema.parse({ id: input.id });
+
+      return transport.request({
+        method: "PATCH",
+        path: `/ImagingStudy/${params.id}`,
+        body: input.body,
+        bodySchema: ImagingStudyPatchSchema,
+        responseSchema: ImagingStudySchema,
+        ...(input.signal ? { signal: input.signal } : {}),
       });
     },
 

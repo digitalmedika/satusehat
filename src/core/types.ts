@@ -263,6 +263,13 @@ export interface ImagingStudyClient {
     input: import("../schemas/imaging-study").ImagingStudySearchParams,
     signal?: AbortSignal,
   ): Promise<import("../schemas/imaging-study").ImagingStudySearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/imaging-study").ImagingStudyPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/imaging-study").ImagingStudy>;
   update(
     input: {
       id: string;

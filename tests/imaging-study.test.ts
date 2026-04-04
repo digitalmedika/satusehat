@@ -217,4 +217,50 @@ describe("imagingStudy endpoint", () => {
     expect(capturedMethod).toBe("PUT");
     expect(updated.description).toBe("Pemeriksaan radiografi thorax AP/PA dengan catatan tambahan.");
   });
+
+  test("patches imaging study with replace operations", async () => {
+    let capturedMethod: string | undefined;
+    let capturedBody: unknown;
+
+    const client = createSatuSehatClient({
+      accessToken: "test-token",
+      fetch: async (_input, init) => {
+        capturedMethod = init?.method;
+        capturedBody = init?.body ? JSON.parse(String(init.body)) : undefined;
+
+        return new Response(
+          JSON.stringify({
+            id: "8031179c-cd31-475e-8f94-feeb4c618c6b",
+            ...imagingStudyPayload,
+            description: "Deskripsi radiologi diperbarui.",
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          },
+        );
+      },
+    });
+
+    const updated = await client.imagingStudy.patch({
+      id: "8031179c-cd31-475e-8f94-feeb4c618c6b",
+      body: [
+        {
+          op: "replace",
+          path: "/description",
+          value: "Deskripsi radiologi diperbarui.",
+        },
+      ],
+    });
+
+    expect(capturedMethod).toBe("PATCH");
+    expect(capturedBody).toEqual([
+      {
+        op: "replace",
+        path: "/description",
+        value: "Deskripsi radiologi diperbarui.",
+      },
+    ]);
+    expect(updated.description).toBe("Deskripsi radiologi diperbarui.");
+  });
 });
