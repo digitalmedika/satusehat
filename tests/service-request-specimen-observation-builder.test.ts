@@ -49,6 +49,18 @@ describe("serviceRequest -> specimen -> observation builder", () => {
           ],
         },
       },
+      diagnosticReport: {
+        status: "final",
+        code: {
+          coding: [
+            {
+              system: "http://loinc.org",
+              code: "58410-2",
+              display: "Complete blood count panel",
+            },
+          ],
+        },
+      },
     })
       .mergeServiceRequest({
         authoredOn: "2024-04-01T02:45:00+00:00",
@@ -81,6 +93,11 @@ describe("serviceRequest -> specimen -> observation builder", () => {
       serviceRequestId: "srv-1",
       specimenId: "spm-1",
     });
+    const diagnosticReport = builder.buildDiagnosticReport({
+      serviceRequestId: "srv-1",
+      specimenId: "spm-1",
+      resultId: "obs-1",
+    });
 
     expect(serviceRequest.subject.reference).toBe("Patient/100000030009");
     expect(serviceRequest.encounter?.reference).toBe(
@@ -101,6 +118,14 @@ describe("serviceRequest -> specimen -> observation builder", () => {
     expect(observation.specimen?.reference).toBe("Specimen/spm-1");
     expect(observation.valueQuantity?.value).toBe(13.5);
     expect(observation.note?.[0]?.text).toBe("Hasil dalam batas normal.");
+
+    expect(diagnosticReport.subject.reference).toBe("Patient/100000030009");
+    expect(diagnosticReport.encounter.reference).toBe(
+      "Encounter/6694e8c8-052a-4ea6-8072-157b6d47ca08",
+    );
+    expect(diagnosticReport.basedOn?.[0]?.reference).toBe("ServiceRequest/srv-1");
+    expect(diagnosticReport.specimen?.[0]?.reference).toBe("Specimen/spm-1");
+    expect(diagnosticReport.result?.[0]?.reference).toBe("Observation/obs-1");
   });
 
   test("keeps explicit references and shared updates in sync", () => {
@@ -159,6 +184,22 @@ describe("serviceRequest -> specimen -> observation builder", () => {
       .setSubject({
         reference: "Patient/new",
       })
+      .setDiagnosticReport({
+        status: "final",
+        code: {
+          coding: [
+            {
+              system: "http://loinc.org",
+              code: "11502-2",
+            },
+          ],
+        },
+        basedOn: [
+          {
+            reference: "ServiceRequest/existing",
+          },
+        ],
+      })
       .setEncounter({
         reference: "Encounter/new",
       });
@@ -173,6 +214,29 @@ describe("serviceRequest -> specimen -> observation builder", () => {
         display: "Serum tube",
       },
     });
+    const diagnosticReport = builder
+      .mergeDiagnosticReport({
+        specimen: [
+          {
+            reference: "Specimen/already-known",
+          },
+        ],
+        result: [
+          {
+            reference: "Observation/existing-result",
+          },
+        ],
+      })
+      .buildDiagnosticReport({
+        serviceRequestId: "existing",
+        specimenReference: {
+          reference: "Specimen/already-known",
+          display: "Serum tube",
+        },
+        resultReference: {
+          reference: "Observation/existing-result",
+        },
+      });
 
     expect(specimen.subject.reference).toBe("Patient/new");
     expect(specimen.request).toHaveLength(1);
@@ -184,5 +248,14 @@ describe("serviceRequest -> specimen -> observation builder", () => {
     expect(observation.basedOn?.[0]?.reference).toBe("ServiceRequest/existing");
     expect(observation.specimen?.reference).toBe("Specimen/already-known");
     expect(observation.specimen?.display).toBe("Serum tube");
+
+    expect(diagnosticReport.subject.reference).toBe("Patient/new");
+    expect(diagnosticReport.encounter.reference).toBe("Encounter/new");
+    expect(diagnosticReport.basedOn).toHaveLength(1);
+    expect(diagnosticReport.basedOn?.[0]?.reference).toBe("ServiceRequest/existing");
+    expect(diagnosticReport.specimen).toHaveLength(1);
+    expect(diagnosticReport.specimen?.[0]?.reference).toBe("Specimen/already-known");
+    expect(diagnosticReport.result).toHaveLength(1);
+    expect(diagnosticReport.result?.[0]?.reference).toBe("Observation/existing-result");
   });
 });

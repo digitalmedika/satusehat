@@ -48,6 +48,7 @@ export type {
   TokenStore,
 } from "./core/types";
 export type {
+  DiagnosticReportBuildLinks,
   ObservationBuildLinks,
   ServiceRequestBuildLinks,
   ServiceRequestSpecimenObservationBuilderInput,

@@ -120,3 +120,12 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Practitioner](D:/project/satusehat/docs/resources/practitioner.md)
 - [PractitionerRole](D:/project/satusehat/docs/resources/practitioner-role.md)
 - [Planning](D:/project/satusehat/docs/planning.md)
+
+## Premium Support
+
+Untuk premium support dan implementasi, hubungi:
+
+- Email: [info@digitalmedika.co.id](mailto:info@digitalmedika.co.id)
+- WhatsApp: [Digital Medika](https://wa.me/qr/F37IBV5GECN7K1)
+
+![QR WhatsApp Digital Medika](docs/assets/premium-support-whatsapp-qr.jpeg)

@@ -7,6 +7,7 @@ Helper `createServiceRequestSpecimenObservationBuilder` membantu menyusun payloa
 - `ServiceRequest`
 - `Specimen`
 - `Observation`
+- `DiagnosticReport`
 
 Builder ini cocok saat resource dibuat bertahap. `ServiceRequest` biasanya dibuat lebih dulu, lalu ID hasil create dipakai untuk mengisi relasi pada `Specimen` dan `Observation`.
 
@@ -60,6 +61,18 @@ const builder = createServiceRequestSpecimenObservationBuilder({
       ],
     },
   },
+  diagnosticReport: {
+    status: "final",
+    code: {
+      coding: [
+        {
+          system: "http://loinc.org",
+          code: "58410-2",
+          display: "Complete blood count panel",
+        },
+      ],
+    },
+  },
 })
   .mergeServiceRequest({
     authoredOn: "2024-04-01T02:45:00+00:00",
@@ -89,7 +102,14 @@ const observationBody = builder.buildObservation({
   serviceRequestId: createdServiceRequest.id,
   specimenId: createdSpecimen.id,
 });
-const observation = await client.observation.create(observationBody);
+const createdObservation = await client.observation.create(observationBody);
+
+const diagnosticReportBody = builder.buildDiagnosticReport({
+  serviceRequestId: createdServiceRequest.id,
+  specimenId: createdSpecimen.id,
+  resultId: createdObservation.id,
+});
+const diagnosticReport = await client.diagnosticReport.create(diagnosticReportBody);
 ```
 
 ## Auto-Link yang Dibantu
@@ -97,8 +117,12 @@ const observation = await client.observation.create(observationBody);
 - `buildServiceRequest()` mengembalikan payload `ServiceRequest` dengan `subject` dan `encounter` bersama.
 - `buildSpecimen({ serviceRequestId })` otomatis menambahkan `Specimen.request = [{ reference: "ServiceRequest/{id}" }]`.
 - `buildObservation({ serviceRequestId, specimenId })` otomatis menambahkan:
-  - `Observation.basedOn = [{ reference: "ServiceRequest/{id}" }]`
-  - `Observation.specimen = { reference: "Specimen/{id}" }`
+`Observation.basedOn = [{ reference: "ServiceRequest/{id}" }]`
+`Observation.specimen = { reference: "Specimen/{id}" }`
+- `buildDiagnosticReport({ serviceRequestId, specimenId, resultId })` otomatis menambahkan:
+`DiagnosticReport.basedOn = [{ reference: "ServiceRequest/{id}" }]`
+`DiagnosticReport.specimen = [{ reference: "Specimen/{id}" }]`
+`DiagnosticReport.result = [{ reference: "Observation/{id}" }]`
 
 Kalau Anda sudah punya object reference lengkap, bisa pakai `serviceRequestReference` atau `specimenReference` sebagai pengganti ID.
 
@@ -109,6 +133,8 @@ Kalau Anda sudah punya object reference lengkap, bisa pakai `serviceRequestRefer
 - `mergeServiceRequest`
 - `mergeSpecimen`
 - `mergeObservation`
+- `setDiagnosticReport`
+- `mergeDiagnosticReport`
 - `addServiceRequestNote`
 - `addSpecimenNote`
 - `addObservationNote`
@@ -118,6 +144,7 @@ Kalau Anda sudah punya object reference lengkap, bisa pakai `serviceRequestRefer
 - `buildServiceRequest`
 - `buildSpecimen`
 - `buildObservation`
+- `buildDiagnosticReport`
 
 ## Catatan
 
