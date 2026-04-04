@@ -12,6 +12,9 @@ export {
 } from "./client/token-store";
 export { OrganizationBuilder, createOrganizationBuilder } from "./builders/organization-builder";
 export {
+  createCompleteBloodCountPanelBuilder,
+} from "./builders/cbc-panel-builder";
+export {
   LaboratoryPanelBuilder,
   createLaboratoryPanelBuilder,
 } from "./builders/laboratory-panel-builder";
@@ -57,6 +60,10 @@ export type {
   ServiceRequestBuildLinks,
   ServiceRequestSpecimenObservationBuilderInput,
 } from "./builders/service-request-specimen-observation-builder";
+export type {
+  CompleteBloodCountObservationKey,
+  CompleteBloodCountPanelBuilderInput,
+} from "./builders/cbc-panel-builder";
 export type {
   LaboratoryPanelBuilderInput,
   LaboratoryPanelDiagnosticReportLinks,

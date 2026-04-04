@@ -14,6 +14,7 @@ SDK ini dirancang untuk:
 
 Helper builder yang saat ini tersedia:
 
+- `createCompleteBloodCountPanelBuilder`
 - `createLaboratoryPanelBuilder`
 - `createOrganizationBuilder`
 - `createServiceRequestSpecimenObservationBuilder`
@@ -117,6 +118,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Specimen](./docs/resources/specimen.md)
 - [ServiceRequest -> Specimen -> Observation Builder](./docs/helpers/service-request-specimen-observation-builder.md)
 - [Laboratory Panel Builder](./docs/helpers/laboratory-panel-builder.md)
+- [CBC Panel Builder](./docs/helpers/cbc-panel-builder.md)
 - [Organization](./docs/resources/organization.md)
 - [Location](./docs/resources/location.md)
 - [Practitioner](./docs/resources/practitioner.md)
