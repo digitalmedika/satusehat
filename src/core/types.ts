@@ -16,6 +16,25 @@ export type QueryParams = Record<
 
 export type AccessTokenProvider = string | (() => MaybePromise<string>);
 
+export interface StoredAccessToken {
+  accessToken: string;
+  tokenType: string;
+  expiresAt: number;
+  expiresIn: number;
+  issuedAt: number;
+}
+
+export interface TokenStore {
+  getToken(): MaybePromise<StoredAccessToken | undefined>;
+  setToken(token: StoredAccessToken): MaybePromise<void>;
+  clearToken?(): MaybePromise<void>;
+}
+
+export interface TokenExpiryCheckOptions {
+  now?: number;
+  safetyWindowMs?: number;
+}
+
 export interface OAuthClientCredentials {
   clientId: string;
   clientSecret: string;
@@ -27,6 +46,8 @@ export interface SatuSehatClientConfig {
   environment?: SatuSehatEnvironment;
   accessToken?: AccessTokenProvider;
   credentials?: OAuthClientCredentials;
+  tokenStore?: TokenStore;
+  tokenExpiryWindowMs?: number;
   defaultHeaders?: HeadersInit;
   fetch?: FetchLike;
   validateResponse?: boolean;
@@ -38,6 +59,7 @@ export interface SatuSehatEnvSource {
   SATUSEHAT_AUTH_BASE_URL?: string;
   SATUSEHAT_CLIENT_ID?: string;
   SATUSEHAT_CLIENT_SECRET?: string;
+  SATUSEHAT_TOKEN_CACHE_FILE?: string;
   [key: string]: string | undefined;
 }
 

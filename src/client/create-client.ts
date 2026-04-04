@@ -1,4 +1,5 @@
 import { createClientCredentialsTokenProvider } from "./auth";
+import { createFileTokenStore } from "./token-store";
 import { createTransport } from "./transport";
 import { createPatientClient } from "../endpoints/patient";
 import { SatuSehatConfigError } from "../core/errors";
@@ -57,6 +58,13 @@ export function createSatuSehatClientFromEnv(
           },
         }
       : {}),
+    ...(env.SATUSEHAT_TOKEN_CACHE_FILE
+      ? {
+          tokenStore: createFileTokenStore({
+            filePath: env.SATUSEHAT_TOKEN_CACHE_FILE,
+          }),
+        }
+      : {}),
   });
 }
 
@@ -88,6 +96,10 @@ function resolveClientAccessToken(
     authBaseUrl,
     clientId: config.credentials.clientId,
     clientSecret: config.credentials.clientSecret,
+    ...(config.tokenStore ? { tokenStore: config.tokenStore } : {}),
+    ...(config.tokenExpiryWindowMs !== undefined
+      ? { tokenExpiryWindowMs: config.tokenExpiryWindowMs }
+      : {}),
     ...(config.fetch ? { fetch: config.fetch } : {}),
   });
 }

@@ -6,6 +6,11 @@ export {
 } from "./client/create-client";
 export { createClientCredentialsTokenProvider } from "./client/auth";
 export {
+  createFileTokenStore,
+  createMemoryTokenStore,
+  isAccessTokenExpired,
+} from "./client/token-store";
+export {
   SatuSehatApiError,
   SatuSehatConfigError,
   SatuSehatError,
@@ -20,6 +25,9 @@ export type {
   SatuSehatClientConfig,
   SatuSehatEnvironment,
   SatuSehatEnvSource,
+  StoredAccessToken,
+  TokenExpiryCheckOptions,
+  TokenStore,
 } from "./core/types";
 export type {
   Patient,

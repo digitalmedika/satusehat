@@ -29,6 +29,7 @@ Fondasi package library npm sudah disiapkan:
 - struktur `src/`
 - typed transport
 - OAuth2 client credentials helper
+- token cache in-memory dan file-based store opsional
 - endpoint awal `patient.search()` dan `patient.getById()`
 - schema validation dengan Zod
 

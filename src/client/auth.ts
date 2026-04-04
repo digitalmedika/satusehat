@@ -1,11 +1,19 @@
 import { z } from "zod";
 
+import { createMemoryTokenStore, isAccessTokenExpired } from "./token-store";
 import { SatuSehatApiError, SatuSehatConfigError, SatuSehatValidationError } from "../core/errors";
-import { type FetchLike, type MaybePromise, type OAuthClientCredentials } from "../core/types";
+import {
+  type FetchLike,
+  type MaybePromise,
+  type OAuthClientCredentials,
+  type StoredAccessToken,
+  type TokenStore,
+} from "../core/types";
 
 const AccessTokenSchema = z.object({
   access_token: z.string().min(1),
   expires_in: z.coerce.number().positive(),
+  issued_at: z.coerce.number().positive().optional(),
   token_type: z.string().min(1),
 });
 
@@ -13,24 +21,31 @@ export interface ClientCredentialsTokenProviderOptions extends OAuthClientCreden
   authBaseUrl: string;
   fetch?: FetchLike;
   headers?: HeadersInit;
-}
-
-interface TokenCache {
-  accessToken: string;
-  expiresAt: number;
+  tokenStore?: TokenStore;
+  tokenExpiryWindowMs?: number;
+  now?: () => number;
 }
 
 export function createClientCredentialsTokenProvider(
   options: ClientCredentialsTokenProviderOptions,
 ): () => Promise<string> {
   const httpClient = options.fetch ?? fetch;
-  let cache: TokenCache | undefined;
+  const tokenStore = options.tokenStore ?? createMemoryTokenStore();
 
   return async () => {
-    const now = Date.now();
+    const now = options.now?.() ?? Date.now();
+    const cachedToken = await tokenStore.getToken();
 
-    if (cache && cache.expiresAt > now) {
-      return cache.accessToken;
+    if (
+      cachedToken &&
+      !isAccessTokenExpired(cachedToken, {
+        now,
+        ...(options.tokenExpiryWindowMs !== undefined
+          ? { safetyWindowMs: options.tokenExpiryWindowMs }
+          : {}),
+      })
+    ) {
+      return cachedToken.accessToken;
     }
 
     const authBaseUrl = options.authBaseUrl.replace(/\/$/, "");
@@ -67,12 +82,12 @@ export function createClientCredentialsTokenProvider(
       );
     }
 
-    cache = {
-      accessToken: parsed.data.access_token,
-      expiresAt: now + Math.max(parsed.data.expires_in - 30, 1) * 1_000,
-    };
+    const issuedAt = parsed.data.issued_at ?? now;
+    const token = toStoredAccessToken(parsed.data.access_token, parsed.data.token_type, parsed.data.expires_in, issuedAt);
 
-    return cache.accessToken;
+    await tokenStore.setToken(token);
+
+    return token.accessToken;
   };
 }
 
@@ -108,4 +123,19 @@ async function safeParseJson(response: Response): Promise<unknown> {
   } catch (cause) {
     throw new SatuSehatConfigError("Unable to parse SATUSEHAT auth response as JSON", { cause });
   }
+}
+
+function toStoredAccessToken(
+  accessToken: string,
+  tokenType: string,
+  expiresIn: number,
+  issuedAt: number,
+): StoredAccessToken {
+  return {
+    accessToken,
+    tokenType,
+    expiresIn,
+    issuedAt,
+    expiresAt: issuedAt + expiresIn * 1_000,
+  };
 }
