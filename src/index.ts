@@ -3,6 +3,7 @@ export {
   createSatuSehatClientFromEnv,
   resolveSatuSehatBaseUrl,
   resolveSatuSehatAuthBaseUrl,
+  resolveSatuSehatDicomBaseUrl,
 } from "./client/create-client";
 export { createClientCredentialsTokenProvider } from "./client/auth";
 export {
@@ -31,6 +32,7 @@ export {
 export type {
   AccessTokenProvider,
   ConditionClient,
+  DicomRouterClient,
   DiagnosticReportClient,
   EncounterClient,
   LocationClient,

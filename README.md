@@ -52,6 +52,7 @@ Variable utama:
 - `SATUSEHAT_ENV`
 - `SATUSEHAT_BASE_URL`
 - `SATUSEHAT_AUTH_BASE_URL`
+- `SATUSEHAT_DICOM_BASE_URL`
 - `SATUSEHAT_CLIENT_ID`
 - `SATUSEHAT_CLIENT_SECRET`
 - `SATUSEHAT_TOKEN_CACHE_FILE`
@@ -61,6 +62,7 @@ Variable utama:
 Saat ini resource yang sudah tersedia:
 
 - `condition`
+- `dicomRouter`
 - `diagnosticReport`
 - `encounter`
 - `observation`
@@ -107,6 +109,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Authentication](./docs/authentication.md)
 - [Errors](./docs/errors.md)
 - [Condition](./docs/resources/condition.md)
+- [DICOM Router](./docs/resources/dicom-router.md)
 - [DiagnosticReport](./docs/resources/diagnostic-report.md)
 - [Patient](./docs/resources/patient.md)
 - [Encounter](./docs/resources/encounter.md)
@@ -124,6 +127,25 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Practitioner](./docs/resources/practitioner.md)
 - [PractitionerRole](./docs/resources/practitioner-role.md)
 - [Planning](./docs/planning.md)
+
+## DICOM Router
+
+SDK ini juga mendukung download file `docker-compose.yml` untuk DICOM Router SATUSEHAT:
+
+```ts
+const dockerCompose = await client.dicomRouter.downloadConfig();
+```
+
+Secara default SDK akan memakai endpoint berikut:
+
+- sandbox: `https://api-satusehat-stg.dto.kemkes.go.id/dicom-router`
+- production: `https://api-satusehat.kemkes.go.id/dicom-router`
+
+## Buy Us a Coffee
+
+Kalau project ini membantu, kamu bisa dukung Digital Medika lewat Saweria:
+
+- [Buy us a coffee on Saweria](https://saweria.co/digitalmedika)
 
 ## Premium Support
 

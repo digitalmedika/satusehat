@@ -43,6 +43,7 @@ export interface OAuthClientCredentials {
 export interface SatuSehatClientConfig {
   baseUrl?: string;
   authBaseUrl?: string;
+  dicomBaseUrl?: string;
   environment?: SatuSehatEnvironment;
   accessToken?: AccessTokenProvider;
   credentials?: OAuthClientCredentials;
@@ -58,6 +59,7 @@ export interface SatuSehatEnvSource {
   SATUSEHAT_ENV?: string;
   SATUSEHAT_BASE_URL?: string;
   SATUSEHAT_AUTH_BASE_URL?: string;
+  SATUSEHAT_DICOM_BASE_URL?: string;
   SATUSEHAT_CLIENT_ID?: string;
   SATUSEHAT_CLIENT_SECRET?: string;
   SATUSEHAT_TOKEN_CACHE_FILE?: string;
@@ -103,6 +105,10 @@ export interface ConditionClient {
       signal?: AbortSignal;
     },
   ): Promise<import("../schemas/condition").Condition>;
+}
+
+export interface DicomRouterClient {
+  downloadConfig(input?: { signal?: AbortSignal }): Promise<string>;
 }
 
 export interface DiagnosticReportClient {
@@ -414,6 +420,7 @@ export interface LocationClient {
 
 export interface SatuSehatClient {
   condition: ConditionClient;
+  dicomRouter: DicomRouterClient;
   diagnosticReport: DiagnosticReportClient;
   encounter: EncounterClient;
   location: LocationClient;

@@ -22,6 +22,7 @@ Salin `.env.example` menjadi `.env`.
 SATUSEHAT_ENV=sandbox
 SATUSEHAT_BASE_URL=https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1
 SATUSEHAT_AUTH_BASE_URL=https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1
+SATUSEHAT_DICOM_BASE_URL=https://api-satusehat-stg.dto.kemkes.go.id
 SATUSEHAT_CLIENT_ID=your-client-id
 SATUSEHAT_CLIENT_SECRET=your-client-secret
 SATUSEHAT_TOKEN_CACHE_FILE=.satusehat/token.json
@@ -61,6 +62,14 @@ const result = await client.patient.search({
 console.log(result.total);
 ```
 
+## Download DICOM Router Config
+
+```ts
+const dockerCompose = await client.dicomRouter.downloadConfig();
+
+console.log(dockerCompose);
+```
+
 ## Resource yang Sudah Tersedia
 
 - `patient`
@@ -68,6 +77,7 @@ console.log(result.total);
 - `location`
 - `practitioner`
 - `practitionerRole`
+- `dicomRouter`
 
 ## Verifikasi Lokal
 

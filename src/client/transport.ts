@@ -30,6 +30,15 @@ export interface RequestOptions<
   responseSchema: TResponseSchema;
 }
 
+export interface TextRequestOptions<TQuerySchema extends ZodTypeAny | undefined> {
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  path: string;
+  query?: unknown;
+  querySchema?: TQuerySchema;
+  headers?: HeadersInit;
+  signal?: AbortSignal;
+}
+
 export interface Transport {
   request<
     TQuerySchema extends ZodTypeAny | undefined,
@@ -38,6 +47,9 @@ export interface Transport {
   >(
     options: RequestOptions<TQuerySchema, TBodySchema, TResponseSchema>,
   ): Promise<InferSchema<TResponseSchema>>;
+  requestText<TQuerySchema extends ZodTypeAny | undefined>(
+    options: TextRequestOptions<TQuerySchema>,
+  ): Promise<string>;
 }
 
 type InferSchema<TSchema extends ZodTypeAny> = TSchema["_output"];
@@ -114,6 +126,52 @@ export function createTransport(options: TransportOptions): Transport {
       }
 
       return parsed.data;
+    },
+
+    async requestText<TQuerySchema extends ZodTypeAny | undefined>(
+      requestOptions: TextRequestOptions<TQuerySchema>,
+    ): Promise<string> {
+      const query = validateQuery(requestOptions.querySchema, requestOptions.query);
+      const url = new URL(`${baseUrl}${requestOptions.path}`);
+
+      appendQuery(url, query);
+
+      const execute = async (): Promise<Response> => {
+        const token = await resolveAccessToken(options.accessToken);
+
+        return httpClient(url, {
+          method: requestOptions.method,
+          headers: {
+            ...(token ? { authorization: `Bearer ${token}` } : {}),
+            ...options.defaultHeaders,
+            ...requestOptions.headers,
+          },
+          ...(requestOptions.signal ? { signal: requestOptions.signal } : {}),
+        });
+      };
+
+      let response = await execute();
+
+      if (
+        response.status === 401 &&
+        retryOnUnauthorized &&
+        options.invalidateAccessToken
+      ) {
+        await options.invalidateAccessToken();
+        response = await execute();
+      }
+
+      if (!response.ok) {
+        const payload = await readResponsePayload(response);
+
+        throw new SatuSehatApiError(
+          `SATUSEHAT request failed with status ${response.status}`,
+          response.status,
+          payload,
+        );
+      }
+
+      return response.text();
     },
   };
 }

@@ -13,6 +13,9 @@
   "bugs": {
     "url": "https://github.com/digitalmedika/satusehat/issues"
   },
+  "funding": {
+    "url": "https://saweria.co/digitalmedika"
+  },
   "homepage": "https://github.com/digitalmedika/satusehat#readme",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

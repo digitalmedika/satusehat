@@ -2,6 +2,7 @@ import { createClientCredentialsTokenProvider } from "./auth";
 import { createFileTokenStore, createMemoryTokenStore } from "./token-store";
 import { createTransport } from "./transport";
 import { createConditionClient } from "../endpoints/condition";
+import { createDicomRouterClient } from "../endpoints/dicom-router";
 import { createDiagnosticReportClient } from "../endpoints/diagnostic-report";
 import { createEncounterClient } from "../endpoints/encounter";
 import { createLocationClient } from "../endpoints/location";
@@ -34,10 +35,16 @@ const DEFAULT_AUTH_BASE_URLS: Record<SatuSehatEnvironment, string> = {
   production: "https://api-satusehat.kemkes.go.id/oauth2/v1",
 };
 
+const DEFAULT_DICOM_BASE_URLS: Record<SatuSehatEnvironment, string> = {
+  sandbox: "https://api-satusehat-stg.dto.kemkes.go.id",
+  production: "https://api-satusehat.kemkes.go.id",
+};
+
 export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuSehatClient {
   const environment = config.environment ?? "sandbox";
   const baseUrl = config.baseUrl ?? resolveSatuSehatBaseUrl(environment);
   const authBaseUrl = config.authBaseUrl ?? resolveSatuSehatAuthBaseUrl(environment);
+  const dicomBaseUrl = config.dicomBaseUrl ?? resolveSatuSehatDicomBaseUrl(environment);
   const authStrategy = resolveClientAccessToken(config, authBaseUrl);
   const transport = createTransport({
     baseUrl,
@@ -54,9 +61,25 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
       ? { validateResponse: config.validateResponse }
       : {}),
   });
+  const dicomTransport = createTransport({
+    baseUrl: dicomBaseUrl,
+    ...(authStrategy?.accessToken ? { accessToken: authStrategy.accessToken } : {}),
+    ...(authStrategy?.invalidateAccessToken
+      ? { invalidateAccessToken: authStrategy.invalidateAccessToken }
+      : {}),
+    ...(config.retryOnUnauthorized !== undefined
+      ? { retryOnUnauthorized: config.retryOnUnauthorized }
+      : {}),
+    ...(config.defaultHeaders ? { defaultHeaders: config.defaultHeaders } : {}),
+    ...(config.fetch ? { fetch: config.fetch } : {}),
+    ...(config.validateResponse !== undefined
+      ? { validateResponse: config.validateResponse }
+      : {}),
+  });
 
   return {
     condition: createConditionClient(transport),
+    dicomRouter: createDicomRouterClient(dicomTransport),
     diagnosticReport: createDiagnosticReportClient(transport),
     encounter: createEncounterClient(transport),
     location: createLocationClient(transport),
@@ -83,6 +106,7 @@ export function createSatuSehatClientFromEnv(
     ...(environment ? { environment } : {}),
     ...(env.SATUSEHAT_BASE_URL ? { baseUrl: env.SATUSEHAT_BASE_URL } : {}),
     ...(env.SATUSEHAT_AUTH_BASE_URL ? { authBaseUrl: env.SATUSEHAT_AUTH_BASE_URL } : {}),
+    ...(env.SATUSEHAT_DICOM_BASE_URL ? { dicomBaseUrl: env.SATUSEHAT_DICOM_BASE_URL } : {}),
     ...(env.SATUSEHAT_CLIENT_ID && env.SATUSEHAT_CLIENT_SECRET
       ? {
           credentials: {
@@ -108,6 +132,10 @@ export function resolveSatuSehatBaseUrl(environment: SatuSehatEnvironment): stri
 
 export function resolveSatuSehatAuthBaseUrl(environment: SatuSehatEnvironment): string {
   return DEFAULT_AUTH_BASE_URLS[environment];
+}
+
+export function resolveSatuSehatDicomBaseUrl(environment: SatuSehatEnvironment): string {
+  return DEFAULT_DICOM_BASE_URLS[environment];
 }
 
 function resolveClientAccessToken(
