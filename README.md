@@ -54,6 +54,8 @@ Saat ini resource yang sudah tersedia:
 - `condition`
 - `encounter`
 - `observation`
+- `procedure`
+- `medicationRequest`
 - `patient`
 - `organization`
 - `location`
@@ -94,7 +96,9 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Condition](D:/project/satusehat/docs/resources/condition.md)
 - [Patient](D:/project/satusehat/docs/resources/patient.md)
 - [Encounter](D:/project/satusehat/docs/resources/encounter.md)
+- [Procedure](D:/project/satusehat/docs/resources/procedure.md)
 - [Observation](D:/project/satusehat/docs/resources/observation.md)
+- [MedicationRequest](D:/project/satusehat/docs/resources/medication-request.md)
 - [Organization](D:/project/satusehat/docs/resources/organization.md)
 - [Location](D:/project/satusehat/docs/resources/location.md)
 - [Practitioner](D:/project/satusehat/docs/resources/practitioner.md)

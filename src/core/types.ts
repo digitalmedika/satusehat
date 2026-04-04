@@ -133,6 +133,62 @@ export interface ObservationClient {
   ): Promise<import("../schemas/observation").Observation>;
 }
 
+export interface ProcedureClient {
+  create(
+    input: import("../schemas/procedure").ProcedureCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/procedure").Procedure>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/procedure").Procedure>;
+  search(
+    input: import("../schemas/procedure").ProcedureSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/procedure").ProcedureSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/procedure").ProcedurePatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/procedure").Procedure>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/procedure").ProcedureCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/procedure").Procedure>;
+}
+
+export interface MedicationRequestClient {
+  create(
+    input: import("../schemas/medication-request").MedicationRequestCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/medication-request").MedicationRequest>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/medication-request").MedicationRequest>;
+  search(
+    input: import("../schemas/medication-request").MedicationRequestSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/medication-request").MedicationRequestSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/medication-request").MedicationRequestPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/medication-request").MedicationRequest>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/medication-request").MedicationRequestCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/medication-request").MedicationRequest>;
+}
+
 export interface EncounterClient {
   create(
     input: import("../schemas/encounter").EncounterCreateInput,
@@ -252,9 +308,11 @@ export interface SatuSehatClient {
   condition: ConditionClient;
   encounter: EncounterClient;
   location: LocationClient;
+  medicationRequest: MedicationRequestClient;
   observation: ObservationClient;
   organization: OrganizationClient;
   patient: PatientClient;
   practitioner: PractitionerClient;
   practitionerRole: PractitionerRoleClient;
+  procedure: ProcedureClient;
 }

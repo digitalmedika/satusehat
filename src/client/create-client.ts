@@ -4,11 +4,13 @@ import { createTransport } from "./transport";
 import { createConditionClient } from "../endpoints/condition";
 import { createEncounterClient } from "../endpoints/encounter";
 import { createLocationClient } from "../endpoints/location";
+import { createMedicationRequestClient } from "../endpoints/medication-request";
 import { createObservationClient } from "../endpoints/observation";
 import { createOrganizationClient } from "../endpoints/organization";
 import { createPatientClient } from "../endpoints/patient";
 import { createPractitionerClient } from "../endpoints/practitioner";
 import { createPractitionerRoleClient } from "../endpoints/practitioner-role";
+import { createProcedureClient } from "../endpoints/procedure";
 import { SatuSehatConfigError } from "../core/errors";
 import {
   type AccessTokenProvider,
@@ -53,11 +55,13 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
     condition: createConditionClient(transport),
     encounter: createEncounterClient(transport),
     location: createLocationClient(transport),
+    medicationRequest: createMedicationRequestClient(transport),
     observation: createObservationClient(transport),
     organization: createOrganizationClient(transport),
     patient: createPatientClient(transport),
     practitioner: createPractitionerClient(transport),
     practitionerRole: createPractitionerRoleClient(transport),
+    procedure: createProcedureClient(transport),
   };
 }
 
