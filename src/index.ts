@@ -10,6 +10,7 @@ export {
   createMemoryTokenStore,
   isAccessTokenExpired,
 } from "./client/token-store";
+export { OrganizationBuilder, createOrganizationBuilder } from "./builders/organization-builder";
 export {
   SatuSehatApiError,
   SatuSehatConfigError,
@@ -19,6 +20,7 @@ export {
 export type {
   AccessTokenProvider,
   MaybePromise,
+  OrganizationClient,
   PatientClient,
   QueryParams,
   SatuSehatClient,
@@ -35,3 +37,15 @@ export type {
   PatientSearchParams,
   PatientSearchResponse,
 } from "./schemas/patient";
+export type {
+  Organization,
+  OrganizationAddress,
+  OrganizationContact,
+  OrganizationCreateInput,
+  OrganizationIdentifier,
+  OrganizationReference,
+  OrganizationSearchParams,
+  OrganizationSearchResponse,
+  OrganizationTelecom,
+  OrganizationType,
+} from "./schemas/organization";

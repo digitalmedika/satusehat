@@ -14,19 +14,29 @@ export interface TransportOptions {
   validateResponse?: boolean;
 }
 
-export interface RequestOptions<TQuerySchema extends ZodTypeAny | undefined, TResponseSchema extends ZodTypeAny> {
+export interface RequestOptions<
+  TQuerySchema extends ZodTypeAny | undefined,
+  TBodySchema extends ZodTypeAny | undefined,
+  TResponseSchema extends ZodTypeAny,
+> {
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   path: string;
   query?: unknown;
   querySchema?: TQuerySchema;
+  body?: unknown;
+  bodySchema?: TBodySchema;
   headers?: HeadersInit;
   signal?: AbortSignal;
   responseSchema: TResponseSchema;
 }
 
 export interface Transport {
-  request<TQuerySchema extends ZodTypeAny | undefined, TResponseSchema extends ZodTypeAny>(
-    options: RequestOptions<TQuerySchema, TResponseSchema>,
+  request<
+    TQuerySchema extends ZodTypeAny | undefined,
+    TBodySchema extends ZodTypeAny | undefined,
+    TResponseSchema extends ZodTypeAny,
+  >(
+    options: RequestOptions<TQuerySchema, TBodySchema, TResponseSchema>,
   ): Promise<InferSchema<TResponseSchema>>;
 }
 
@@ -39,10 +49,15 @@ export function createTransport(options: TransportOptions): Transport {
   const retryOnUnauthorized = options.retryOnUnauthorized ?? true;
 
   return {
-    async request<TQuerySchema extends ZodTypeAny | undefined, TResponseSchema extends ZodTypeAny>(
-      requestOptions: RequestOptions<TQuerySchema, TResponseSchema>,
+    async request<
+      TQuerySchema extends ZodTypeAny | undefined,
+      TBodySchema extends ZodTypeAny | undefined,
+      TResponseSchema extends ZodTypeAny,
+    >(
+      requestOptions: RequestOptions<TQuerySchema, TBodySchema, TResponseSchema>,
     ): Promise<InferSchema<TResponseSchema>> {
       const query = validateQuery(requestOptions.querySchema, requestOptions.query);
+      const body = validateBody(requestOptions.bodySchema, requestOptions.body);
       const url = new URL(`${baseUrl}${requestOptions.path}`);
 
       appendQuery(url, query);
@@ -54,10 +69,12 @@ export function createTransport(options: TransportOptions): Transport {
           method: requestOptions.method,
           headers: {
             accept: "application/json",
+            ...(body !== undefined ? { "content-type": "application/json" } : {}),
             ...(token ? { authorization: `Bearer ${token}` } : {}),
             ...options.defaultHeaders,
             ...requestOptions.headers,
           },
+          ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
           ...(requestOptions.signal ? { signal: requestOptions.signal } : {}),
         });
       };
@@ -119,6 +136,26 @@ function validateQuery<TQuerySchema extends ZodTypeAny | undefined>(
   }
 
   return parsed.data as QueryParams;
+}
+
+function validateBody<TBodySchema extends ZodTypeAny | undefined>(
+  schema: TBodySchema,
+  input: unknown,
+): unknown {
+  if (!schema || input == null) {
+    return input;
+  }
+
+  const parsed = schema.safeParse(input);
+
+  if (!parsed.success) {
+    throw new SatuSehatValidationError(
+      "SATUSEHAT request body validation failed",
+      parsed.error.issues,
+    );
+  }
+
+  return parsed.data;
 }
 
 function appendQuery(url: URL, query?: QueryParams): void {

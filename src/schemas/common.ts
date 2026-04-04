@@ -6,6 +6,17 @@ export const MetaSchema = z.object({
   versionId: z.string().optional(),
 });
 
+export const CodingSchema = z.object({
+  system: z.string().optional(),
+  code: z.string().optional(),
+  display: z.string().optional(),
+});
+
+export const CodeableConceptSchema = z.object({
+  coding: z.array(CodingSchema).optional(),
+  text: z.string().optional(),
+});
+
 export const IdentifierSchema = z.object({
   system: z.string().optional(),
   use: z.string().optional(),
@@ -21,13 +32,50 @@ export const HumanNameSchema = z.object({
   suffix: z.array(z.string()).optional(),
 });
 
+export const ContactPointSchema = z.object({
+  system: z.enum(["phone", "fax", "email", "pager", "url", "sms", "other"]).optional(),
+  value: z.string().optional(),
+  use: z.enum(["home", "work", "temp", "old", "mobile"]).optional(),
+});
+
+export const ExtensionValueCodeSchema = z.object({
+  url: z.string().min(1),
+  valueCode: z.string().min(1),
+});
+
+export const ExtensionSchema = z.object({
+  url: z.string().min(1),
+  extension: z.array(ExtensionValueCodeSchema).optional(),
+});
+
+export const AddressSchema = z.object({
+  use: z.enum(["home", "work", "temp", "old", "billing"]).optional(),
+  type: z.enum(["postal", "physical", "both"]).optional(),
+  line: z.array(z.string().min(1)).optional(),
+  city: z.string().optional(),
+  postalCode: z.string().optional(),
+  country: z.string().optional(),
+  extension: z.array(ExtensionSchema).optional(),
+});
+
+export const ReferenceSchema = z.object({
+  reference: z.string().min(1),
+  display: z.string().optional(),
+  type: z.string().optional(),
+});
+
 export const BundleLinkSchema = z.object({
   relation: z.string().optional(),
   url: z.string().optional(),
+});
+
+export const BundleSearchSchema = z.object({
+  mode: z.string().optional(),
 });
 
 export const BundleEntrySchema = <TResource extends z.ZodTypeAny>(resourceSchema: TResource) =>
   z.object({
     fullUrl: z.string().optional(),
     resource: resourceSchema,
+    search: BundleSearchSchema.optional(),
   });

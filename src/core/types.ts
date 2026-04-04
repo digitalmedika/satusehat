@@ -77,6 +77,28 @@ export interface PatientClient {
   ): Promise<import("../schemas/patient").PatientSearchResponse>;
 }
 
+export interface OrganizationClient {
+  create(
+    input: import("../schemas/organization").OrganizationCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/organization").Organization>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/organization").Organization>;
+  search(
+    input: import("../schemas/organization").OrganizationSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/organization").OrganizationSearchResponse>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/organization").OrganizationCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/organization").Organization>;
+}
+
 export interface SatuSehatClient {
+  organization: OrganizationClient;
   patient: PatientClient;
 }
