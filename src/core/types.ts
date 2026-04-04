@@ -77,6 +77,34 @@ export interface PatientClient {
   ): Promise<import("../schemas/patient").PatientSearchResponse>;
 }
 
+export interface ConditionClient {
+  create(
+    input: import("../schemas/condition").ConditionCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/condition").Condition>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/condition").Condition>;
+  search(
+    input: import("../schemas/condition").ConditionSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/condition").ConditionSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/condition").ConditionPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/condition").Condition>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/condition").ConditionCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/condition").Condition>;
+}
+
 export interface EncounterClient {
   create(
     input: import("../schemas/encounter").EncounterCreateInput,
@@ -193,6 +221,7 @@ export interface LocationClient {
 }
 
 export interface SatuSehatClient {
+  condition: ConditionClient;
   encounter: EncounterClient;
   location: LocationClient;
   organization: OrganizationClient;

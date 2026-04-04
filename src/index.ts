@@ -19,6 +19,7 @@ export {
 } from "./core/errors";
 export type {
   AccessTokenProvider,
+  ConditionClient,
   EncounterClient,
   LocationClient,
   MaybePromise,
@@ -35,6 +36,21 @@ export type {
   TokenExpiryCheckOptions,
   TokenStore,
 } from "./core/types";
+export type {
+  Condition,
+  ConditionAge,
+  ConditionCoding,
+  ConditionCreateInput,
+  ConditionEvidence,
+  ConditionIdentifier,
+  ConditionNote,
+  ConditionPatchInput,
+  ConditionPatchOperation,
+  ConditionRange,
+  ConditionSearchParams,
+  ConditionSearchResponse,
+  ConditionStage,
+} from "./schemas/condition";
 export type {
   Encounter,
   EncounterClass,

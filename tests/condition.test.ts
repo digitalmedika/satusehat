@@ -1,0 +1,201 @@
+import { describe, expect, test } from "bun:test";
+
+import { createSatuSehatClient, SatuSehatValidationError } from "../src";
+
+const conditionPayload = {
+  resourceType: "Condition" as const,
+  identifier: [
+    {
+      system: "http://sys-ids.kemkes.go.id/condition/10000004",
+      use: "official",
+      value: "5234342",
+    },
+  ],
+  clinicalStatus: {
+    coding: [
+      {
+        system: "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        code: "active",
+        display: "Active",
+      },
+    ],
+  },
+  verificationStatus: {
+    coding: [
+      {
+        system: "https://www.hl7.org/fhir/Codesystem-condition-ver-status",
+        code: "provisional",
+        display: "Provisional",
+      },
+    ],
+  },
+  category: [
+    {
+      coding: [
+        {
+          system: "http://terminology.hl7.org/CodeSystem/condition-category",
+          code: "encounter-diagnosis",
+          display: "Encounter Diagnosis",
+        },
+      ],
+    },
+  ],
+  code: {
+    coding: [
+      {
+        system: "http://hl7.org/fhir/sid/icd-10",
+        code: "C47.0",
+        display: "Malignant neoplasm, peripheral nerves of head, face and neck",
+      },
+    ],
+  },
+  subject: {
+    reference: "Patient/100000030009",
+    display: "Budi Santoso",
+  },
+  encounter: {
+    reference: "Encounter/2b2d0a3e-082a-4fe9-ae13-da9c3b5e422f",
+  },
+  onsetDateTime: "2024-04-01T01:15:00+00:00",
+  recordedDate: "2024-04-01T01:20:00+00:00",
+  recorder: {
+    reference: "Practitioner/N10000001",
+    display: "Dokter Bronsig",
+  },
+  note: [
+    {
+      text: "Diagnosis awal saat kunjungan.",
+    },
+  ],
+};
+
+describe("condition endpoint", () => {
+  test("validates that search requires subject or encounter", async () => {
+    const client = createSatuSehatClient({
+      accessToken: "test-token",
+      fetch: async () =>
+        new Response(JSON.stringify({ resourceType: "Bundle", entry: [] }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+    });
+
+    await expect(client.condition.search({} as never)).rejects.toBeInstanceOf(
+      SatuSehatValidationError,
+    );
+  });
+
+  test("searches condition by subject and encounter", async () => {
+    const client = createSatuSehatClient({
+      accessToken: "test-token",
+      fetch: async (input) => {
+        const url = String(input);
+        expect(url).toContain("subject=100000030009");
+        expect(url).toContain("encounter=2b2d0a3e-082a-4fe9-ae13-da9c3b5e422f");
+
+        return new Response(
+          JSON.stringify({
+            resourceType: "Bundle",
+            total: 1,
+            entry: [
+              {
+                resource: {
+                  id: "2a4e1a13-ee52-4c8b-a2ef-f41c79de698d",
+                  ...conditionPayload,
+                },
+              },
+            ],
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          },
+        );
+      },
+    });
+
+    const result = await client.condition.search({
+      subject: "100000030009",
+      encounter: "2b2d0a3e-082a-4fe9-ae13-da9c3b5e422f",
+    });
+
+    expect(result.total).toBe(1);
+    expect(result.entry?.[0]?.resource.id).toBe("2a4e1a13-ee52-4c8b-a2ef-f41c79de698d");
+    expect(result.entry?.[0]?.resource.code.coding[0]?.code).toBe("C47.0");
+  });
+
+  test("posts a validated condition resource", async () => {
+    let capturedBody: unknown;
+
+    const client = createSatuSehatClient({
+      accessToken: "test-token",
+      fetch: async (_input, init) => {
+        const requestBody = init?.body ? JSON.parse(String(init.body)) : undefined;
+        capturedBody = requestBody;
+
+        return new Response(
+          JSON.stringify({
+            id: "2a4e1a13-ee52-4c8b-a2ef-f41c79de698d",
+            ...(requestBody && typeof requestBody === "object" ? requestBody : {}),
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          },
+        );
+      },
+    });
+
+    const condition = await client.condition.create(conditionPayload);
+
+    expect((capturedBody as { resourceType: string }).resourceType).toBe("Condition");
+    expect(condition.id).toBe("2a4e1a13-ee52-4c8b-a2ef-f41c79de698d");
+    expect(condition.subject.reference).toBe("Patient/100000030009");
+  });
+
+  test("patches condition with replace operations", async () => {
+    let capturedMethod: string | undefined;
+    let capturedBody: unknown;
+
+    const client = createSatuSehatClient({
+      accessToken: "test-token",
+      fetch: async (_input, init) => {
+        capturedMethod = init?.method;
+        capturedBody = init?.body ? JSON.parse(String(init.body)) : undefined;
+
+        return new Response(
+          JSON.stringify({
+            id: "2a4e1a13-ee52-4c8b-a2ef-f41c79de698d",
+            ...conditionPayload,
+            recordedDate: "2024-04-01T02:00:00+00:00",
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          },
+        );
+      },
+    });
+
+    const updated = await client.condition.patch({
+      id: "2a4e1a13-ee52-4c8b-a2ef-f41c79de698d",
+      body: [
+        {
+          op: "replace",
+          path: "/recordedDate",
+          value: "2024-04-01T02:00:00+00:00",
+        },
+      ],
+    });
+
+    expect(capturedMethod).toBe("PATCH");
+    expect(capturedBody).toEqual([
+      {
+        op: "replace",
+        path: "/recordedDate",
+        value: "2024-04-01T02:00:00+00:00",
+      },
+    ]);
+    expect(updated.recordedDate).toBe("2024-04-01T02:00:00+00:00");
+  });
+});

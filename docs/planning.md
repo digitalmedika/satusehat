@@ -145,3 +145,14 @@ type GetPatientParams = z.infer<typeof GetPatientParamsSchema>;
 2. Tambahkan dependency schema validation.
 3. Buat core client dan satu endpoint vertikal penuh sebagai reference implementation.
 4. Setelah pola stabil, lanjutkan ekspansi resource lain.
+
+## TODO Backlog
+
+### Encounter
+
+- Tambahkan perluasan schema dan helper untuk use case rawat inap, termasuk `hospitalization`, `admitSource`, `destination`, dan `dischargeDisposition` yang lebih ketat.
+- Tambahkan dukungan use case IGD/triage dengan pola status dan class history yang lebih spesifik per alur layanan.
+- Tambahkan field dan contoh untuk use case poli/rawat jalan yang lebih lengkap, termasuk `serviceType`, `priority`, dan participant yang lebih terstruktur.
+- Tambahkan dukungan extension `serviceClass` pada `Encounter.location` untuk kelas perawatan.
+- Tambahkan contoh integrasi `Encounter` yang terhubung dengan resource klinis lanjutan seperti `Condition`, `Observation`, `Procedure`, dan `Medication`.
+- Tambahkan test fixture dan contoh payload per use case agar validasi schema tidak hanya generik, tapi juga representatif terhadap skenario SATUSEHAT nyata.

@@ -51,6 +51,7 @@ Variable utama:
 
 Saat ini resource yang sudah tersedia:
 
+- `condition`
 - `encounter`
 - `patient`
 - `organization`
@@ -89,6 +90,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Getting Started](D:/project/satusehat/docs/getting-started.md)
 - [Authentication](D:/project/satusehat/docs/authentication.md)
 - [Errors](D:/project/satusehat/docs/errors.md)
+- [Condition](D:/project/satusehat/docs/resources/condition.md)
 - [Patient](D:/project/satusehat/docs/resources/patient.md)
 - [Encounter](D:/project/satusehat/docs/resources/encounter.md)
 - [Organization](D:/project/satusehat/docs/resources/organization.md)
