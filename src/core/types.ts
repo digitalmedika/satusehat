@@ -303,6 +303,34 @@ export interface MedicationClient {
   ): Promise<import("../schemas/medication").Medication>;
 }
 
+export interface MedicationAdministrationClient {
+  create(
+    input: import("../schemas/medication-administration").MedicationAdministrationCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/medication-administration").MedicationAdministration>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/medication-administration").MedicationAdministration>;
+  search(
+    input: import("../schemas/medication-administration").MedicationAdministrationSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/medication-administration").MedicationAdministrationSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/medication-administration").MedicationAdministrationPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/medication-administration").MedicationAdministration>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/medication-administration").MedicationAdministrationCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/medication-administration").MedicationAdministration>;
+}
+
 export interface MedicationRequestClient {
   create(
     input: import("../schemas/medication-request").MedicationRequestCreateInput,
@@ -510,6 +538,7 @@ export interface SatuSehatClient {
   diagnosticReport: DiagnosticReportClient;
   encounter: EncounterClient;
   location: LocationClient;
+  medicationAdministration: MedicationAdministrationClient;
   medication: MedicationClient;
   medicationRequest: MedicationRequestClient;
   observation: ObservationClient;

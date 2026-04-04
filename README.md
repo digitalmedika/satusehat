@@ -67,6 +67,7 @@ Saat ini resource yang sudah tersedia:
 - `dicomRouter`
 - `diagnosticReport`
 - `encounter`
+- `medicationAdministration`
 - `observation`
 - `procedure`
 - `medication`
@@ -121,6 +122,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Encounter](./docs/resources/encounter.md)
 - [Procedure](./docs/resources/procedure.md)
 - [Observation](./docs/resources/observation.md)
+- [MedicationAdministration](./docs/resources/medication-administration.md)
 - [Medication](./docs/resources/medication.md)
 - [MedicationRequest](./docs/resources/medication-request.md)
 - [ServiceRequest](./docs/resources/service-request.md)

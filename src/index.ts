@@ -38,6 +38,7 @@ export type {
   DiagnosticReportClient,
   EncounterClient,
   LocationClient,
+  MedicationAdministrationClient,
   MedicationClient,
   MedicationRequestClient,
   MaybePromise,
@@ -171,6 +172,21 @@ export type {
   ProcedureSearchResponse,
   ProcedureStatus,
 } from "./schemas/procedure";
+export type {
+  MedicationAdministration,
+  MedicationAdministrationCreateInput,
+  MedicationAdministrationDosage,
+  MedicationAdministrationIdentifier,
+  MedicationAdministrationNote,
+  MedicationAdministrationPatchInput,
+  MedicationAdministrationPatchOperation,
+  MedicationAdministrationPerformer,
+  MedicationAdministrationQuantity,
+  MedicationAdministrationRatio,
+  MedicationAdministrationSearchParams,
+  MedicationAdministrationSearchResponse,
+  MedicationAdministrationStatus,
+} from "./schemas/medication-administration";
 export type {
   Medication,
   MedicationBatch,

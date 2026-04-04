@@ -8,6 +8,7 @@ import { createDicomRouterClient } from "../endpoints/dicom-router";
 import { createDiagnosticReportClient } from "../endpoints/diagnostic-report";
 import { createEncounterClient } from "../endpoints/encounter";
 import { createLocationClient } from "../endpoints/location";
+import { createMedicationAdministrationClient } from "../endpoints/medication-administration";
 import { createMedicationClient } from "../endpoints/medication";
 import { createMedicationRequestClient } from "../endpoints/medication-request";
 import { createObservationClient } from "../endpoints/observation";
@@ -88,6 +89,7 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
     diagnosticReport: createDiagnosticReportClient(transport),
     encounter: createEncounterClient(transport),
     location: createLocationClient(transport),
+    medicationAdministration: createMedicationAdministrationClient(transport),
     medication: createMedicationClient(transport),
     medicationRequest: createMedicationRequestClient(transport),
     observation: createObservationClient(transport),
