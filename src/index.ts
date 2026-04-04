@@ -32,6 +32,7 @@ export {
 export type {
   AccessTokenProvider,
   AllergyIntoleranceClient,
+  ClinicalImpressionClient,
   ConditionClient,
   DicomRouterClient,
   DiagnosticReportClient,
@@ -71,6 +72,18 @@ export type {
   AllergyIntoleranceSearchParams,
   AllergyIntoleranceSearchResponse,
 } from "./schemas/allergy-intolerance";
+export type {
+  ClinicalImpression,
+  ClinicalImpressionCoding,
+  ClinicalImpressionCreateInput,
+  ClinicalImpressionFinding,
+  ClinicalImpressionIdentifier,
+  ClinicalImpressionNote,
+  ClinicalImpressionPatchInput,
+  ClinicalImpressionPatchOperation,
+  ClinicalImpressionSearchParams,
+  ClinicalImpressionSearchResponse,
+} from "./schemas/clinical-impression";
 export type {
   DiagnosticReportBuildLinks,
   ObservationBuildLinks,

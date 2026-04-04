@@ -107,6 +107,34 @@ export interface AllergyIntoleranceClient {
   ): Promise<import("../schemas/allergy-intolerance").AllergyIntolerance>;
 }
 
+export interface ClinicalImpressionClient {
+  create(
+    input: import("../schemas/clinical-impression").ClinicalImpressionCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/clinical-impression").ClinicalImpression>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/clinical-impression").ClinicalImpression>;
+  search(
+    input: import("../schemas/clinical-impression").ClinicalImpressionSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/clinical-impression").ClinicalImpressionSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/clinical-impression").ClinicalImpressionPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/clinical-impression").ClinicalImpression>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/clinical-impression").ClinicalImpressionCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/clinical-impression").ClinicalImpression>;
+}
+
 export interface ConditionClient {
   create(
     input: import("../schemas/condition").ConditionCreateInput,
@@ -448,6 +476,7 @@ export interface LocationClient {
 
 export interface SatuSehatClient {
   allergyIntolerance: AllergyIntoleranceClient;
+  clinicalImpression: ClinicalImpressionClient;
   condition: ConditionClient;
   dicomRouter: DicomRouterClient;
   diagnosticReport: DiagnosticReportClient;
