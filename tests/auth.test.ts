@@ -5,10 +5,12 @@ import { join } from "node:path";
 
 import {
   createClientCredentialsTokenProvider,
+  createSatuSehatClient,
   createFileTokenStore,
   createMemoryTokenStore,
   isAccessTokenExpired,
 } from "../src";
+import { SatuSehatApiError } from "../src/core/errors";
 
 const tempPaths: string[] = [];
 
@@ -140,5 +142,148 @@ describe("isAccessTokenExpired", () => {
         },
       ),
     ).toBe(true);
+  });
+});
+
+describe("401 retry flow", () => {
+  test("clears cached token and retries once with a fresh token", async () => {
+    const farFuture = Date.now() + 60 * 60 * 1_000;
+    const tokenStore = createMemoryTokenStore({
+      accessToken: "stale-token",
+      tokenType: "BearerToken",
+      issuedAt: 1_000,
+      expiresIn: 3600,
+      expiresAt: farFuture,
+    });
+
+    let authCallCount = 0;
+    let resourceCallCount = 0;
+
+    const client = createSatuSehatClient({
+      baseUrl: "https://example.com/fhir-r4/v1",
+      authBaseUrl: "https://example.com/oauth2/v1",
+      credentials: {
+        clientId: "client-id",
+        clientSecret: "client-secret",
+      },
+      tokenStore,
+      fetch: mock(async (input, init) => {
+        const url = String(input);
+
+        if (url.includes("/accesstoken")) {
+          authCallCount += 1;
+
+          return new Response(
+            JSON.stringify({
+              access_token: "fresh-token",
+              expires_in: 3600,
+              token_type: "BearerToken",
+              issued_at: "1000",
+            }),
+            {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            },
+          );
+        }
+
+        resourceCallCount += 1;
+
+        if (resourceCallCount === 1) {
+          expect(init?.headers).toMatchObject({
+            authorization: "Bearer stale-token",
+          });
+
+          return new Response(JSON.stringify({ issue: [{ code: "login" }] }), {
+            status: 401,
+            headers: { "content-type": "application/json" },
+          });
+        }
+
+        expect(init?.headers).toMatchObject({
+          authorization: "Bearer fresh-token",
+        });
+
+        return new Response(
+          JSON.stringify({
+            resourceType: "Bundle",
+            entry: [],
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          },
+        );
+      }),
+    });
+
+    const result = await client.patient.search({
+      identifier: "https://fhir.kemkes.go.id/id/nik|1234567890123456",
+    });
+
+    expect(result.resourceType).toBe("Bundle");
+    expect(resourceCallCount).toBe(2);
+    expect(authCallCount).toBe(1);
+    expect((await tokenStore.getToken())?.accessToken).toBe("fresh-token");
+  });
+
+  test("stops after one retry and surfaces the 401 error", async () => {
+    const farFuture = Date.now() + 60 * 60 * 1_000;
+    const tokenStore = createMemoryTokenStore({
+      accessToken: "cached-token",
+      tokenType: "BearerToken",
+      issuedAt: 1_000,
+      expiresIn: 3600,
+      expiresAt: farFuture,
+    });
+
+    let authCallCount = 0;
+    let resourceCallCount = 0;
+
+    const client = createSatuSehatClient({
+      baseUrl: "https://example.com/fhir-r4/v1",
+      authBaseUrl: "https://example.com/oauth2/v1",
+      credentials: {
+        clientId: "client-id",
+        clientSecret: "client-secret",
+      },
+      tokenStore,
+      fetch: mock(async (input) => {
+        const url = String(input);
+
+        if (url.includes("/accesstoken")) {
+          authCallCount += 1;
+
+          return new Response(
+            JSON.stringify({
+              access_token: "still-bad-token",
+              expires_in: 3600,
+              token_type: "BearerToken",
+              issued_at: "1000",
+            }),
+            {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            },
+          );
+        }
+
+        resourceCallCount += 1;
+
+        return new Response(JSON.stringify({ issue: [{ code: "login" }] }), {
+          status: 401,
+          headers: { "content-type": "application/json" },
+        });
+      }),
+    });
+
+    await expect(
+      client.patient.search({
+        identifier: "https://fhir.kemkes.go.id/id/nik|1234567890123456",
+      }),
+    ).rejects.toBeInstanceOf(SatuSehatApiError);
+
+    expect(resourceCallCount).toBe(2);
+    expect(authCallCount).toBe(1);
   });
 });

@@ -23,14 +23,33 @@ export const PatientSchema = z.object({
 
 export const PatientSearchParamsSchema = z
   .object({
-    identifier: z.string().optional(),
-    name: z.string().optional(),
-    birthdate: z.string().optional(),
-    gender: z.enum(["male", "female", "other", "unknown"]).optional(),
+    identifier: z
+      .string()
+      .regex(/^https:\/\/fhir\.kemkes\.go\.id\/id\/(nik|nik-ibu)\|.+$/, "Invalid SATUSEHAT identifier format")
+      .optional(),
+    name: z.string().min(3).optional(),
+    birthdate: z
+      .string()
+      .regex(/^\d{4}(-\d{2}){0,2}$/, "birthdate must use YYYY, YYYY-MM, or YYYY-MM-DD format")
+      .optional(),
+    gender: z.enum(["male", "female"]).optional(),
+    nik: z.string().regex(/^\d{16}$/, "nik must contain 16 digits").optional(),
   })
-  .refine((value) => Boolean(value.identifier || value.name), {
-    message: "At least one SATUSEHAT patient search parameter is required",
-    path: ["identifier"],
+  .superRefine((value, ctx) => {
+    const hasIdentifier = Boolean(value.identifier);
+    const hasNameBirthdateNik = Boolean(value.name && value.birthdate && value.nik);
+    const hasNameBirthdateGender = Boolean(value.name && value.birthdate && value.gender);
+
+    if (hasIdentifier || hasNameBirthdateNik || hasNameBirthdateGender) {
+      return;
+    }
+
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message:
+        "Use one SATUSEHAT patient search mode: identifier, name+birthdate+nik, or name+birthdate+gender",
+      path: ["identifier"],
+    });
   });
 
 export const PatientBundleSchema = z.object({

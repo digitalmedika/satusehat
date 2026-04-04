@@ -22,6 +22,14 @@ Build library:
 bun run build
 ```
 
+Smoke test ke SATUSEHAT live:
+
+```bash
+bun run smoke:live
+```
+
+Untuk environment `sandbox`, script smoke test akan memakai dummy patient resmi SATUSEHAT bila parameter test belum diisi.
+
 ## Status
 
 Fondasi package library npm sudah disiapkan:

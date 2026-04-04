@@ -7,6 +7,8 @@ import { type AccessTokenProvider, type FetchLike, type QueryParams } from "../c
 export interface TransportOptions {
   baseUrl: string;
   accessToken?: AccessTokenProvider;
+  invalidateAccessToken?: () => Promise<void>;
+  retryOnUnauthorized?: boolean;
   defaultHeaders?: HeadersInit;
   fetch?: FetchLike;
   validateResponse?: boolean;
@@ -34,29 +36,44 @@ export function createTransport(options: TransportOptions): Transport {
   const httpClient = options.fetch ?? fetch;
   const baseUrl = options.baseUrl.replace(/\/$/, "");
   const validateResponse = options.validateResponse ?? true;
+  const retryOnUnauthorized = options.retryOnUnauthorized ?? true;
 
   return {
     async request<TQuerySchema extends ZodTypeAny | undefined, TResponseSchema extends ZodTypeAny>(
       requestOptions: RequestOptions<TQuerySchema, TResponseSchema>,
     ): Promise<InferSchema<TResponseSchema>> {
-      const token = await resolveAccessToken(options.accessToken);
       const query = validateQuery(requestOptions.querySchema, requestOptions.query);
       const url = new URL(`${baseUrl}${requestOptions.path}`);
 
       appendQuery(url, query);
 
-      const response = await httpClient(url, {
-        method: requestOptions.method,
-        headers: {
-          accept: "application/json",
-          ...(token ? { authorization: `Bearer ${token}` } : {}),
-          ...options.defaultHeaders,
-          ...requestOptions.headers,
-        },
-        ...(requestOptions.signal ? { signal: requestOptions.signal } : {}),
-      });
+      const execute = async (): Promise<Response> => {
+        const token = await resolveAccessToken(options.accessToken);
 
-      const payload = await readResponsePayload(response);
+        return httpClient(url, {
+          method: requestOptions.method,
+          headers: {
+            accept: "application/json",
+            ...(token ? { authorization: `Bearer ${token}` } : {}),
+            ...options.defaultHeaders,
+            ...requestOptions.headers,
+          },
+          ...(requestOptions.signal ? { signal: requestOptions.signal } : {}),
+        });
+      };
+
+      let response = await execute();
+      let payload = await readResponsePayload(response);
+
+      if (
+        response.status === 401 &&
+        retryOnUnauthorized &&
+        options.invalidateAccessToken
+      ) {
+        await options.invalidateAccessToken();
+        response = await execute();
+        payload = await readResponsePayload(response);
+      }
 
       if (!response.ok) {
         throw new SatuSehatApiError(

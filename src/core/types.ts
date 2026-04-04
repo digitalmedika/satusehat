@@ -48,6 +48,7 @@ export interface SatuSehatClientConfig {
   credentials?: OAuthClientCredentials;
   tokenStore?: TokenStore;
   tokenExpiryWindowMs?: number;
+  retryOnUnauthorized?: boolean;
   defaultHeaders?: HeadersInit;
   fetch?: FetchLike;
   validateResponse?: boolean;
@@ -60,6 +61,11 @@ export interface SatuSehatEnvSource {
   SATUSEHAT_CLIENT_ID?: string;
   SATUSEHAT_CLIENT_SECRET?: string;
   SATUSEHAT_TOKEN_CACHE_FILE?: string;
+  SATUSEHAT_TEST_PATIENT_BIRTHDATE?: string;
+  SATUSEHAT_TEST_PATIENT_GENDER?: string;
+  SATUSEHAT_TEST_PATIENT_IDENTIFIER?: string;
+  SATUSEHAT_TEST_PATIENT_NIK?: string;
+  SATUSEHAT_TEST_PATIENT_NAME?: string;
   [key: string]: string | undefined;
 }
 

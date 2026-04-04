@@ -1,5 +1,5 @@
 import { createClientCredentialsTokenProvider } from "./auth";
-import { createFileTokenStore } from "./token-store";
+import { createFileTokenStore, createMemoryTokenStore } from "./token-store";
 import { createTransport } from "./transport";
 import { createPatientClient } from "../endpoints/patient";
 import { SatuSehatConfigError } from "../core/errors";
@@ -25,10 +25,16 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
   const environment = config.environment ?? "sandbox";
   const baseUrl = config.baseUrl ?? resolveSatuSehatBaseUrl(environment);
   const authBaseUrl = config.authBaseUrl ?? resolveSatuSehatAuthBaseUrl(environment);
-  const accessToken = resolveClientAccessToken(config, authBaseUrl);
+  const authStrategy = resolveClientAccessToken(config, authBaseUrl);
   const transport = createTransport({
     baseUrl,
-    ...(accessToken ? { accessToken } : {}),
+    ...(authStrategy?.accessToken ? { accessToken: authStrategy.accessToken } : {}),
+    ...(authStrategy?.invalidateAccessToken
+      ? { invalidateAccessToken: authStrategy.invalidateAccessToken }
+      : {}),
+    ...(config.retryOnUnauthorized !== undefined
+      ? { retryOnUnauthorized: config.retryOnUnauthorized }
+      : {}),
     ...(config.defaultHeaders ? { defaultHeaders: config.defaultHeaders } : {}),
     ...(config.fetch ? { fetch: config.fetch } : {}),
     ...(config.validateResponse !== undefined
@@ -43,6 +49,7 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
 
 export function createSatuSehatClientFromEnv(
   env: SatuSehatEnvSource = process.env as SatuSehatEnvSource,
+  overrides: Omit<SatuSehatClientConfig, "environment" | "baseUrl" | "authBaseUrl" | "credentials"> = {},
 ): SatuSehatClient {
   const environment = parseEnvironment(env.SATUSEHAT_ENV);
 
@@ -65,6 +72,7 @@ export function createSatuSehatClientFromEnv(
           }),
         }
       : {}),
+    ...overrides,
   });
 }
 
@@ -79,9 +87,14 @@ export function resolveSatuSehatAuthBaseUrl(environment: SatuSehatEnvironment): 
 function resolveClientAccessToken(
   config: SatuSehatClientConfig,
   authBaseUrl: string,
-): AccessTokenProvider | undefined {
+): {
+  accessToken?: AccessTokenProvider;
+  invalidateAccessToken?: () => Promise<void>;
+} | undefined {
   if (config.accessToken) {
-    return config.accessToken;
+    return {
+      accessToken: config.accessToken,
+    };
   }
 
   if (!config.credentials) {
@@ -92,16 +105,28 @@ function resolveClientAccessToken(
     throw new SatuSehatConfigError("SATUSEHAT credentials must include clientId and clientSecret");
   }
 
-  return createClientCredentialsTokenProvider({
+  const tokenStore = config.tokenStore ?? createMemoryTokenStore();
+  const accessToken = createClientCredentialsTokenProvider({
     authBaseUrl,
     clientId: config.credentials.clientId,
     clientSecret: config.credentials.clientSecret,
-    ...(config.tokenStore ? { tokenStore: config.tokenStore } : {}),
+    tokenStore,
     ...(config.tokenExpiryWindowMs !== undefined
       ? { tokenExpiryWindowMs: config.tokenExpiryWindowMs }
       : {}),
     ...(config.fetch ? { fetch: config.fetch } : {}),
   });
+
+  return {
+    accessToken,
+    ...(tokenStore.clearToken
+      ? {
+          invalidateAccessToken: async () => {
+            await tokenStore.clearToken?.();
+          },
+        }
+      : {}),
+  };
 }
 
 function parseEnvironment(input?: string): SatuSehatEnvironment | undefined {
