@@ -14,15 +14,69 @@ Helper ini cocok untuk use case seperti hematologi lengkap, kimia klinik, atau p
 ## Contoh Dasar
 
 ```ts
-import { createLaboratoryPanelBuilder } from "satusehat";
+import {
+  createEncounterBuilder,
+  createLaboratoryPanelBuilder,
+} from "@digitalmedika/satusehat";
 
-const builder = createLaboratoryPanelBuilder({
+const encounterDraft = createEncounterBuilder({
+  preset: "outpatient",
+  identifier: {
+    system: "http://sys-ids.kemkes.go.id/encounter/10000004",
+    use: "official",
+    value: "LAB-20240001",
+  },
+  status: "arrived",
   subject: {
     reference: "Patient/100000030009",
     display: "Budi Santoso",
   },
+  period: {
+    start: "2024-04-01T01:00:00+00:00",
+    end: "2024-04-01T02:00:00+00:00",
+  },
+  reasonCode: {
+    coding: [
+      {
+        system: "http://terminology.hl7.org/CodeSystem/encounter-reason",
+        code: "185349003",
+        display: "Encounter for check up",
+      },
+    ],
+  },
+  diagnosis: {
+    condition: {
+      reference: "Condition/4bbbe654-14f5-4ab3-a36e-a1e307f67bb8",
+    },
+    use: {
+      coding: [
+        {
+          system: "https://www.hl7.org/fhir/Codesystem-diagnosis-role",
+          code: "AD",
+          display: "Admission diagnosis",
+        },
+      ],
+    },
+    rank: 1,
+  },
+  location: {
+    location: {
+      reference: "Location/poli-lab",
+      display: "Poliklinik Rawat Jalan",
+    },
+    status: "active",
+  },
+  serviceProvider: {
+    reference: "Organization/10000004",
+  },
+}).build();
+
+const createdEncounter = await client.encounter.create(encounterDraft);
+
+const builder = createLaboratoryPanelBuilder({
+  subject: encounterDraft.subject,
   encounter: {
-    reference: "Encounter/4f735a03-128b-464d-bf91-e6eacdf1c38f",
+    reference: `Encounter/${createdEncounter.id}`,
   },
   serviceRequest: {
     status: "active",
@@ -142,6 +196,15 @@ const diagnosticReport = await client.diagnosticReport.create(
   }),
 );
 ```
+
+## Integrasi dengan Encounter Builder
+
+Karena `createLaboratoryPanelBuilder(...)` butuh `subject` dan `encounter`, helper ini cocok dipasangkan dengan `createEncounterBuilder(...)` saat alur kunjungan dan order laboratorium dibuat dalam proses yang sama.
+
+Data yang biasanya diteruskan:
+
+- `subject` dari draft encounter
+- reference `Encounter/{createdEncounter.id}` setelah encounter berhasil dibuat
 
 ## Helper yang Tersedia
 

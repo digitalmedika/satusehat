@@ -13,15 +13,69 @@ Builder ini cocok saat order radiologi dibuat lebih dulu, lalu hasil citra `Imag
 ## Contoh Dasar
 
 ```ts
-import { createServiceRequestImagingStudyDiagnosticReportBuilder } from "satusehat";
+import {
+  createEncounterBuilder,
+  createServiceRequestImagingStudyDiagnosticReportBuilder,
+} from "@digitalmedika/satusehat";
 
-const builder = createServiceRequestImagingStudyDiagnosticReportBuilder({
+const encounterDraft = createEncounterBuilder({
+  preset: "emergency",
+  identifier: {
+    system: "http://sys-ids.kemkes.go.id/encounter/10000004",
+    use: "official",
+    value: "RAD-20240001",
+  },
+  status: "triaged",
   subject: {
     reference: "Patient/100000030009",
     display: "Budi Santoso",
   },
+  period: {
+    start: "2024-04-01T01:00:00+00:00",
+    end: "2024-04-01T03:00:00+00:00",
+  },
+  reasonCode: {
+    coding: [
+      {
+        system: "http://terminology.hl7.org/CodeSystem/encounter-reason",
+        code: "308335008",
+        display: "Patient encounter procedure",
+      },
+    ],
+  },
+  diagnosis: {
+    condition: {
+      reference: "Condition/4bbbe654-14f5-4ab3-a36e-a1e307f67bb8",
+    },
+    use: {
+      coding: [
+        {
+          system: "https://www.hl7.org/fhir/Codesystem-diagnosis-role",
+          code: "AD",
+          display: "Admission diagnosis",
+        },
+      ],
+    },
+    rank: 1,
+  },
+  location: {
+    location: {
+      reference: "Location/radiology",
+      display: "Radiologi",
+    },
+    status: "active",
+  },
+  serviceProvider: {
+    reference: "Organization/10000004",
+  },
+}).build();
+
+const createdEncounter = await client.encounter.create(encounterDraft);
+
+const builder = createServiceRequestImagingStudyDiagnosticReportBuilder({
+  subject: encounterDraft.subject,
   encounter: {
-    reference: "Encounter/6694e8c8-052a-4ea6-8072-157b6d47ca08",
+    reference: `Encounter/${createdEncounter.id}`,
   },
   serviceRequest: {
     status: "active",
@@ -97,6 +151,10 @@ const diagnosticReport = await client.diagnosticReport.create(
   }),
 );
 ```
+
+## Integrasi dengan Encounter Builder
+
+Untuk workflow radiologi yang dimulai dari kunjungan IGD atau rawat jalan, `createEncounterBuilder(...)` bisa dipakai untuk menjaga `subject` dan reference encounter tetap konsisten sebelum order radiologi dibuat.
 
 ## Auto-Link yang Dibantu
 

@@ -15,14 +15,68 @@ Preset ini sudah menyiapkan:
 ## Contoh Dasar
 
 ```ts
-import { createChestXRayStudyBuilder } from "satusehat";
+import {
+  createChestXRayStudyBuilder,
+  createEncounterBuilder,
+} from "@digitalmedika/satusehat";
 
-const builder = createChestXRayStudyBuilder({
+const encounterDraft = createEncounterBuilder({
+  preset: "emergency",
+  identifier: {
+    system: "http://sys-ids.kemkes.go.id/encounter/10000004",
+    use: "official",
+    value: "IGD-20240001",
+  },
+  status: "triaged",
   subject: {
     reference: "Patient/100000030009",
   },
+  period: {
+    start: "2024-04-01T01:00:00+00:00",
+    end: "2024-04-01T03:00:00+00:00",
+  },
+  reasonCode: {
+    coding: [
+      {
+        system: "http://terminology.hl7.org/CodeSystem/encounter-reason",
+        code: "308335008",
+        display: "Patient encounter procedure",
+      },
+    ],
+  },
+  diagnosis: {
+    condition: {
+      reference: "Condition/4bbbe654-14f5-4ab3-a36e-a1e307f67bb8",
+    },
+    use: {
+      coding: [
+        {
+          system: "https://www.hl7.org/fhir/Codesystem-diagnosis-role",
+          code: "AD",
+          display: "Admission diagnosis",
+        },
+      ],
+    },
+    rank: 1,
+  },
+  location: {
+    location: {
+      reference: "Location/igd-01",
+      display: "Instalasi Gawat Darurat",
+    },
+    status: "active",
+  },
+  serviceProvider: {
+    reference: "Organization/10000004",
+  },
+}).build();
+
+const createdEncounter = await client.encounter.create(encounterDraft);
+
+const builder = createChestXRayStudyBuilder({
+  subject: encounterDraft.subject,
   encounter: {
-    reference: "Encounter/4f735a03-128b-464d-bf91-e6eacdf1c38f",
+    reference: `Encounter/${createdEncounter.id}`,
   },
   organizationId: "10000004",
   accessionNumber: "XR.240401.001",
@@ -59,11 +113,9 @@ Anda tetap bisa override draft default jika perlu:
 
 ```ts
 const builder = createChestXRayStudyBuilder({
-  subject: {
-    reference: "Patient/100000030009",
-  },
+  subject: encounterDraft.subject,
   encounter: {
-    reference: "Encounter/4f735a03-128b-464d-bf91-e6eacdf1c38f",
+    reference: `Encounter/${createdEncounter.id}`,
   },
   organizationId: "10000004",
   accessionNumber: "XR.240401.002",

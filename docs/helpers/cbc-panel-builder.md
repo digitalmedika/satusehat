@@ -38,14 +38,68 @@ Observation opsional ikut dibuat jika:
 ## Contoh Dasar
 
 ```ts
-import { createCompleteBloodCountPanelBuilder } from "satusehat";
+import {
+  createCompleteBloodCountPanelBuilder,
+  createEncounterBuilder,
+} from "@digitalmedika/satusehat";
 
-const builder = createCompleteBloodCountPanelBuilder({
+const encounterDraft = createEncounterBuilder({
+  preset: "outpatient",
+  identifier: {
+    system: "http://sys-ids.kemkes.go.id/encounter/10000004",
+    use: "official",
+    value: "CBC-20240001",
+  },
+  status: "arrived",
   subject: {
     reference: "Patient/100000030009",
   },
+  period: {
+    start: "2024-04-01T01:00:00+00:00",
+    end: "2024-04-01T02:00:00+00:00",
+  },
+  reasonCode: {
+    coding: [
+      {
+        system: "http://terminology.hl7.org/CodeSystem/encounter-reason",
+        code: "185349003",
+        display: "Encounter for check up",
+      },
+    ],
+  },
+  diagnosis: {
+    condition: {
+      reference: "Condition/4bbbe654-14f5-4ab3-a36e-a1e307f67bb8",
+    },
+    use: {
+      coding: [
+        {
+          system: "https://www.hl7.org/fhir/Codesystem-diagnosis-role",
+          code: "AD",
+          display: "Admission diagnosis",
+        },
+      ],
+    },
+    rank: 1,
+  },
+  location: {
+    location: {
+      reference: "Location/poli-lab",
+      display: "Poliklinik Rawat Jalan",
+    },
+    status: "active",
+  },
+  serviceProvider: {
+    reference: "Organization/10000004",
+  },
+}).build();
+
+const createdEncounter = await client.encounter.create(encounterDraft);
+
+const builder = createCompleteBloodCountPanelBuilder({
+  subject: encounterDraft.subject,
   encounter: {
-    reference: "Encounter/4f735a03-128b-464d-bf91-e6eacdf1c38f",
+    reference: `Encounter/${createdEncounter.id}`,
   },
   results: {
     wbc: 7.2,
