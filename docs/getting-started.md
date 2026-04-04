@@ -66,6 +66,7 @@ console.log(result.total);
 - `patient`
 - `organization`
 - `location`
+- `practitioner`
 
 ## Verifikasi Lokal
 

@@ -23,6 +23,7 @@ export type {
   MaybePromise,
   OrganizationClient,
   PatientClient,
+  PractitionerClient,
   QueryParams,
   SatuSehatClient,
   SatuSehatClientConfig,
@@ -53,6 +54,13 @@ export type {
   PatientSearchParams,
   PatientSearchResponse,
 } from "./schemas/patient";
+export type {
+  Practitioner,
+  PractitionerIdentifier,
+  PractitionerQualification,
+  PractitionerSearchParams,
+  PractitionerSearchResponse,
+} from "./schemas/practitioner";
 export type {
   Organization,
   OrganizationAddress,

@@ -60,6 +60,8 @@ Properti yang tersedia:
 - `status`
 - `response`
 
+Perlu diperhatikan bahwa payload `response` tidak selalu JSON. Pada beberapa dokumentasi resmi SATUSEHAT, respons `5xx` untuk endpoint lookup seperti `Practitioner` dapat dikembalikan sebagai `text/plain` seperti `Gateway Timeout`. SDK akan mempertahankan payload mentah tersebut di properti `response`.
+
 ```ts
 import { SatuSehatApiError } from "satusehat";
 

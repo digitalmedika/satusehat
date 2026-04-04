@@ -6,6 +6,11 @@ export const MetaSchema = z.object({
   versionId: z.string().optional(),
 });
 
+export const PeriodSchema = z.object({
+  start: z.string().optional(),
+  end: z.string().optional(),
+});
+
 export const CodingSchema = z.object({
   system: z.string().optional(),
   code: z.string().optional(),
@@ -51,11 +56,26 @@ export const ExtensionSchema = z.object({
 export const AddressSchema = z.object({
   use: z.enum(["home", "work", "temp", "old", "billing"]).optional(),
   type: z.enum(["postal", "physical", "both"]).optional(),
+  text: z.string().optional(),
   line: z.array(z.string().min(1)).optional(),
   city: z.string().optional(),
+  district: z.string().optional(),
+  state: z.string().optional(),
   postalCode: z.string().optional(),
   country: z.string().optional(),
+  period: PeriodSchema.optional(),
   extension: z.array(ExtensionSchema).optional(),
+});
+
+export const AttachmentSchema = z.object({
+  contentType: z.string().optional(),
+  language: z.string().optional(),
+  data: z.string().optional(),
+  url: z.string().optional(),
+  size: z.number().optional(),
+  hash: z.string().optional(),
+  title: z.string().optional(),
+  creation: z.string().optional(),
 });
 
 export const ReferenceSchema = z.object({

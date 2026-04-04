@@ -77,6 +77,16 @@ export interface PatientClient {
   ): Promise<import("../schemas/patient").PatientSearchResponse>;
 }
 
+export interface PractitionerClient {
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/practitioner").Practitioner>;
+  search(
+    input: import("../schemas/practitioner").PractitionerSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/practitioner").PractitionerSearchResponse>;
+}
+
 export interface OrganizationClient {
   create(
     input: import("../schemas/organization").OrganizationCreateInput,
@@ -130,4 +140,5 @@ export interface SatuSehatClient {
   location: LocationClient;
   organization: OrganizationClient;
   patient: PatientClient;
+  practitioner: PractitionerClient;
 }
