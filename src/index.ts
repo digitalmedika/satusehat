@@ -32,6 +32,7 @@ export type {
   PractitionerRoleClient,
   ProcedureClient,
   QueryParams,
+  ServiceRequestClient,
   SatuSehatClient,
   SatuSehatClientConfig,
   SatuSehatEnvironment,
@@ -122,6 +123,23 @@ export type {
   MedicationRequestTiming,
   MedicationRequestTimingRepeat,
 } from "./schemas/medication-request";
+export type {
+  ServiceRequest,
+  ServiceRequestCoding,
+  ServiceRequestCreateInput,
+  ServiceRequestIdentifier,
+  ServiceRequestIntent,
+  ServiceRequestNote,
+  ServiceRequestPatchInput,
+  ServiceRequestPatchOperation,
+  ServiceRequestPriority,
+  ServiceRequestQuantity,
+  ServiceRequestRange,
+  ServiceRequestRatio,
+  ServiceRequestSearchParams,
+  ServiceRequestSearchResponse,
+  ServiceRequestStatus,
+} from "./schemas/service-request";
 export type {
   Encounter,
   EncounterClass,

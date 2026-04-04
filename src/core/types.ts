@@ -213,6 +213,34 @@ export interface MedicationRequestClient {
   ): Promise<import("../schemas/medication-request").MedicationRequest>;
 }
 
+export interface ServiceRequestClient {
+  create(
+    input: import("../schemas/service-request").ServiceRequestCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/service-request").ServiceRequest>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/service-request").ServiceRequest>;
+  search(
+    input: import("../schemas/service-request").ServiceRequestSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/service-request").ServiceRequestSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/service-request").ServiceRequestPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/service-request").ServiceRequest>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/service-request").ServiceRequestCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/service-request").ServiceRequest>;
+}
+
 export interface EncounterClient {
   create(
     input: import("../schemas/encounter").EncounterCreateInput,
@@ -340,4 +368,5 @@ export interface SatuSehatClient {
   practitioner: PractitionerClient;
   practitionerRole: PractitionerRoleClient;
   procedure: ProcedureClient;
+  serviceRequest: ServiceRequestClient;
 }
