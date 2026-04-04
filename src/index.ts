@@ -12,6 +12,10 @@ export {
 } from "./client/token-store";
 export { OrganizationBuilder, createOrganizationBuilder } from "./builders/organization-builder";
 export {
+  LaboratoryPanelBuilder,
+  createLaboratoryPanelBuilder,
+} from "./builders/laboratory-panel-builder";
+export {
   ServiceRequestSpecimenObservationBuilder,
   createServiceRequestSpecimenObservationBuilder,
 } from "./builders/service-request-specimen-observation-builder";
@@ -53,6 +57,14 @@ export type {
   ServiceRequestBuildLinks,
   ServiceRequestSpecimenObservationBuilderInput,
 } from "./builders/service-request-specimen-observation-builder";
+export type {
+  LaboratoryPanelBuilderInput,
+  LaboratoryPanelDiagnosticReportLinks,
+  LaboratoryPanelObservationEntry,
+  LaboratoryPanelObservationInput,
+  LaboratoryPanelObservationLinks,
+  LaboratoryPanelServiceRequestLinks,
+} from "./builders/laboratory-panel-builder";
 export type {
   Condition,
   ConditionAge,

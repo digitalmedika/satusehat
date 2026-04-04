@@ -14,6 +14,7 @@ SDK ini dirancang untuk:
 
 Helper builder yang saat ini tersedia:
 
+- `createLaboratoryPanelBuilder`
 - `createOrganizationBuilder`
 - `createServiceRequestSpecimenObservationBuilder`
 
@@ -43,7 +44,7 @@ const patient = await client.patient.search({
 
 ## Environment Variables
 
-Salin template dari [.env.example](D:/project/satusehat/.env.example).
+Salin template dari [.env.example](./.env.example).
 
 Variable utama:
 
@@ -101,25 +102,26 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 
 ## Documentation
 
-- [Getting Started](D:/project/satusehat/docs/getting-started.md)
-- [Authentication](D:/project/satusehat/docs/authentication.md)
-- [Errors](D:/project/satusehat/docs/errors.md)
-- [Condition](D:/project/satusehat/docs/resources/condition.md)
-- [DiagnosticReport](D:/project/satusehat/docs/resources/diagnostic-report.md)
-- [Patient](D:/project/satusehat/docs/resources/patient.md)
-- [Encounter](D:/project/satusehat/docs/resources/encounter.md)
-- [Procedure](D:/project/satusehat/docs/resources/procedure.md)
-- [Observation](D:/project/satusehat/docs/resources/observation.md)
-- [Medication](D:/project/satusehat/docs/resources/medication.md)
-- [MedicationRequest](D:/project/satusehat/docs/resources/medication-request.md)
-- [ServiceRequest](D:/project/satusehat/docs/resources/service-request.md)
-- [Specimen](D:/project/satusehat/docs/resources/specimen.md)
-- [ServiceRequest -> Specimen -> Observation Builder](D:/project/satusehat/docs/helpers/service-request-specimen-observation-builder.md)
-- [Organization](D:/project/satusehat/docs/resources/organization.md)
-- [Location](D:/project/satusehat/docs/resources/location.md)
-- [Practitioner](D:/project/satusehat/docs/resources/practitioner.md)
-- [PractitionerRole](D:/project/satusehat/docs/resources/practitioner-role.md)
-- [Planning](D:/project/satusehat/docs/planning.md)
+- [Getting Started](./docs/getting-started.md)
+- [Authentication](./docs/authentication.md)
+- [Errors](./docs/errors.md)
+- [Condition](./docs/resources/condition.md)
+- [DiagnosticReport](./docs/resources/diagnostic-report.md)
+- [Patient](./docs/resources/patient.md)
+- [Encounter](./docs/resources/encounter.md)
+- [Procedure](./docs/resources/procedure.md)
+- [Observation](./docs/resources/observation.md)
+- [Medication](./docs/resources/medication.md)
+- [MedicationRequest](./docs/resources/medication-request.md)
+- [ServiceRequest](./docs/resources/service-request.md)
+- [Specimen](./docs/resources/specimen.md)
+- [ServiceRequest -> Specimen -> Observation Builder](./docs/helpers/service-request-specimen-observation-builder.md)
+- [Laboratory Panel Builder](./docs/helpers/laboratory-panel-builder.md)
+- [Organization](./docs/resources/organization.md)
+- [Location](./docs/resources/location.md)
+- [Practitioner](./docs/resources/practitioner.md)
+- [PractitionerRole](./docs/resources/practitioner-role.md)
+- [Planning](./docs/planning.md)
 
 ## Premium Support
 
