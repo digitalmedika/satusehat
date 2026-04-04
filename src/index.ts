@@ -31,6 +31,7 @@ export {
 } from "./core/errors";
 export type {
   AccessTokenProvider,
+  AllergyIntoleranceClient,
   ConditionClient,
   DicomRouterClient,
   DiagnosticReportClient,
@@ -56,6 +57,20 @@ export type {
   TokenExpiryCheckOptions,
   TokenStore,
 } from "./core/types";
+export type {
+  AllergyIntolerance,
+  AllergyIntoleranceCoding,
+  AllergyIntoleranceCreateInput,
+  AllergyIntoleranceIdentifier,
+  AllergyIntoleranceNote,
+  AllergyIntolerancePatchInput,
+  AllergyIntolerancePatchOperation,
+  AllergyIntoleranceQuantity,
+  AllergyIntoleranceRange,
+  AllergyIntoleranceReaction,
+  AllergyIntoleranceSearchParams,
+  AllergyIntoleranceSearchResponse,
+} from "./schemas/allergy-intolerance";
 export type {
   DiagnosticReportBuildLinks,
   ObservationBuildLinks,

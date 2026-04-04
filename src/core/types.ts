@@ -79,6 +79,34 @@ export interface PatientClient {
   ): Promise<import("../schemas/patient").PatientSearchResponse>;
 }
 
+export interface AllergyIntoleranceClient {
+  create(
+    input: import("../schemas/allergy-intolerance").AllergyIntoleranceCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/allergy-intolerance").AllergyIntolerance>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/allergy-intolerance").AllergyIntolerance>;
+  search(
+    input: import("../schemas/allergy-intolerance").AllergyIntoleranceSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/allergy-intolerance").AllergyIntoleranceSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/allergy-intolerance").AllergyIntolerancePatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/allergy-intolerance").AllergyIntolerance>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/allergy-intolerance").AllergyIntoleranceCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/allergy-intolerance").AllergyIntolerance>;
+}
+
 export interface ConditionClient {
   create(
     input: import("../schemas/condition").ConditionCreateInput,
@@ -419,6 +447,7 @@ export interface LocationClient {
 }
 
 export interface SatuSehatClient {
+  allergyIntolerance: AllergyIntoleranceClient;
   condition: ConditionClient;
   dicomRouter: DicomRouterClient;
   diagnosticReport: DiagnosticReportClient;

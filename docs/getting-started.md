@@ -72,6 +72,7 @@ console.log(dockerCompose);
 
 ## Resource yang Sudah Tersedia
 
+- `allergyIntolerance`
 - `patient`
 - `organization`
 - `location`

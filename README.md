@@ -61,6 +61,7 @@ Variable utama:
 
 Saat ini resource yang sudah tersedia:
 
+- `allergyIntolerance`
 - `condition`
 - `dicomRouter`
 - `diagnosticReport`
@@ -108,6 +109,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Getting Started](./docs/getting-started.md)
 - [Authentication](./docs/authentication.md)
 - [Errors](./docs/errors.md)
+- [AllergyIntolerance](./docs/resources/allergy-intolerance.md)
 - [Condition](./docs/resources/condition.md)
 - [DICOM Router](./docs/resources/dicom-router.md)
 - [DiagnosticReport](./docs/resources/diagnostic-report.md)
