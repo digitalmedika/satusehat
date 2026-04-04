@@ -135,6 +135,34 @@ export interface ClinicalImpressionClient {
   ): Promise<import("../schemas/clinical-impression").ClinicalImpression>;
 }
 
+export interface CompositionClient {
+  create(
+    input: import("../schemas/composition").CompositionCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/composition").Composition>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/composition").Composition>;
+  search(
+    input: import("../schemas/composition").CompositionSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/composition").CompositionSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/composition").CompositionPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/composition").Composition>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/composition").CompositionCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/composition").Composition>;
+}
+
 export interface QuestionnaireResponseClient {
   create(
     input: import("../schemas/questionnaire-response").QuestionnaireResponseCreateInput,
@@ -561,6 +589,7 @@ export interface LocationClient {
 export interface SatuSehatClient {
   allergyIntolerance: AllergyIntoleranceClient;
   clinicalImpression: ClinicalImpressionClient;
+  composition: CompositionClient;
   condition: ConditionClient;
   dicomRouter: DicomRouterClient;
   diagnosticReport: DiagnosticReportClient;

@@ -3,6 +3,7 @@ import { createFileTokenStore, createMemoryTokenStore } from "./token-store";
 import { createTransport } from "./transport";
 import { createAllergyIntoleranceClient } from "../endpoints/allergy-intolerance";
 import { createClinicalImpressionClient } from "../endpoints/clinical-impression";
+import { createCompositionClient } from "../endpoints/composition";
 import { createConditionClient } from "../endpoints/condition";
 import { createDicomRouterClient } from "../endpoints/dicom-router";
 import { createDiagnosticReportClient } from "../endpoints/diagnostic-report";
@@ -85,6 +86,7 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
   return {
     allergyIntolerance: createAllergyIntoleranceClient(transport),
     clinicalImpression: createClinicalImpressionClient(transport),
+    composition: createCompositionClient(transport),
     condition: createConditionClient(transport),
     dicomRouter: createDicomRouterClient(dicomTransport),
     diagnosticReport: createDiagnosticReportClient(transport),
