@@ -359,6 +359,34 @@ export interface MedicationRequestClient {
   ): Promise<import("../schemas/medication-request").MedicationRequest>;
 }
 
+export interface NutritionOrderClient {
+  create(
+    input: import("../schemas/nutrition-order").NutritionOrderCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/nutrition-order").NutritionOrder>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/nutrition-order").NutritionOrder>;
+  search(
+    input: import("../schemas/nutrition-order").NutritionOrderSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/nutrition-order").NutritionOrderSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/nutrition-order").NutritionOrderPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/nutrition-order").NutritionOrder>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/nutrition-order").NutritionOrderCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/nutrition-order").NutritionOrder>;
+}
+
 export interface ServiceRequestClient {
   create(
     input: import("../schemas/service-request").ServiceRequestCreateInput,
@@ -541,6 +569,7 @@ export interface SatuSehatClient {
   medicationAdministration: MedicationAdministrationClient;
   medication: MedicationClient;
   medicationRequest: MedicationRequestClient;
+  nutritionOrder: NutritionOrderClient;
   observation: ObservationClient;
   organization: OrganizationClient;
   patient: PatientClient;

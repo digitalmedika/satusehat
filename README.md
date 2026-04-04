@@ -69,6 +69,7 @@ Saat ini resource yang sudah tersedia:
 - `encounter`
 - `medicationAdministration`
 - `observation`
+- `nutritionOrder`
 - `procedure`
 - `medication`
 - `medicationRequest`
@@ -123,6 +124,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Procedure](./docs/resources/procedure.md)
 - [Observation](./docs/resources/observation.md)
 - [MedicationAdministration](./docs/resources/medication-administration.md)
+- [NutritionOrder](./docs/resources/nutrition-order.md)
 - [Medication](./docs/resources/medication.md)
 - [MedicationRequest](./docs/resources/medication-request.md)
 - [ServiceRequest](./docs/resources/service-request.md)

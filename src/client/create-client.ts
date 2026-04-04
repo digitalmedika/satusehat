@@ -11,6 +11,7 @@ import { createLocationClient } from "../endpoints/location";
 import { createMedicationAdministrationClient } from "../endpoints/medication-administration";
 import { createMedicationClient } from "../endpoints/medication";
 import { createMedicationRequestClient } from "../endpoints/medication-request";
+import { createNutritionOrderClient } from "../endpoints/nutrition-order";
 import { createObservationClient } from "../endpoints/observation";
 import { createOrganizationClient } from "../endpoints/organization";
 import { createPatientClient } from "../endpoints/patient";
@@ -92,6 +93,7 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
     medicationAdministration: createMedicationAdministrationClient(transport),
     medication: createMedicationClient(transport),
     medicationRequest: createMedicationRequestClient(transport),
+    nutritionOrder: createNutritionOrderClient(transport),
     observation: createObservationClient(transport),
     organization: createOrganizationClient(transport),
     patient: createPatientClient(transport),
