@@ -55,6 +55,7 @@ Saat ini resource yang sudah tersedia:
 - `organization`
 - `location`
 - `practitioner`
+- `practitionerRole`
 
 ## Token Handling
 
@@ -91,4 +92,5 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Organization](D:/project/satusehat/docs/resources/organization.md)
 - [Location](D:/project/satusehat/docs/resources/location.md)
 - [Practitioner](D:/project/satusehat/docs/resources/practitioner.md)
+- [PractitionerRole](D:/project/satusehat/docs/resources/practitioner-role.md)
 - [Planning](D:/project/satusehat/docs/planning.md)

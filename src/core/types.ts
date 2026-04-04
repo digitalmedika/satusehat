@@ -87,6 +87,34 @@ export interface PractitionerClient {
   ): Promise<import("../schemas/practitioner").PractitionerSearchResponse>;
 }
 
+export interface PractitionerRoleClient {
+  create(
+    input: import("../schemas/practitioner-role").PractitionerRoleCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/practitioner-role").PractitionerRole>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/practitioner-role").PractitionerRole>;
+  search(
+    input: import("../schemas/practitioner-role").PractitionerRoleSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/practitioner-role").PractitionerRoleSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/practitioner-role").PractitionerRolePatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/practitioner-role").PractitionerRole>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/practitioner-role").PractitionerRoleCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/practitioner-role").PractitionerRole>;
+}
+
 export interface OrganizationClient {
   create(
     input: import("../schemas/organization").OrganizationCreateInput,
@@ -141,4 +169,5 @@ export interface SatuSehatClient {
   organization: OrganizationClient;
   patient: PatientClient;
   practitioner: PractitionerClient;
+  practitionerRole: PractitionerRoleClient;
 }

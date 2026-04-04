@@ -67,6 +67,7 @@ console.log(result.total);
 - `organization`
 - `location`
 - `practitioner`
+- `practitionerRole`
 
 ## Verifikasi Lokal
 

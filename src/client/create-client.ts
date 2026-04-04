@@ -5,6 +5,7 @@ import { createLocationClient } from "../endpoints/location";
 import { createOrganizationClient } from "../endpoints/organization";
 import { createPatientClient } from "../endpoints/patient";
 import { createPractitionerClient } from "../endpoints/practitioner";
+import { createPractitionerRoleClient } from "../endpoints/practitioner-role";
 import { SatuSehatConfigError } from "../core/errors";
 import {
   type AccessTokenProvider,
@@ -50,6 +51,7 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
     organization: createOrganizationClient(transport),
     patient: createPatientClient(transport),
     practitioner: createPractitionerClient(transport),
+    practitionerRole: createPractitionerRoleClient(transport),
   };
 }
 

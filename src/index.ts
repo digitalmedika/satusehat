@@ -24,6 +24,7 @@ export type {
   OrganizationClient,
   PatientClient,
   PractitionerClient,
+  PractitionerRoleClient,
   QueryParams,
   SatuSehatClient,
   SatuSehatClientConfig,
@@ -61,6 +62,16 @@ export type {
   PractitionerSearchParams,
   PractitionerSearchResponse,
 } from "./schemas/practitioner";
+export type {
+  PractitionerRole,
+  PractitionerRoleAvailableTime,
+  PractitionerRoleCreateInput,
+  PractitionerRoleNotAvailable,
+  PractitionerRolePatchInput,
+  PractitionerRolePatchOperation,
+  PractitionerRoleSearchParams,
+  PractitionerRoleSearchResponse,
+} from "./schemas/practitioner-role";
 export type {
   Organization,
   OrganizationAddress,
