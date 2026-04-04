@@ -251,6 +251,27 @@ export interface DiagnosticReportClient {
   ): Promise<import("../schemas/diagnostic-report").DiagnosticReport>;
 }
 
+export interface ImagingStudyClient {
+  create(
+    input: import("../schemas/imaging-study").ImagingStudyCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/imaging-study").ImagingStudy>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/imaging-study").ImagingStudy>;
+  search(
+    input: import("../schemas/imaging-study").ImagingStudySearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/imaging-study").ImagingStudySearchResponse>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/imaging-study").ImagingStudyCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/imaging-study").ImagingStudy>;
+}
+
 export interface ObservationClient {
   create(
     input: import("../schemas/observation").ObservationCreateInput,
@@ -594,6 +615,7 @@ export interface SatuSehatClient {
   dicomRouter: DicomRouterClient;
   diagnosticReport: DiagnosticReportClient;
   encounter: EncounterClient;
+  imagingStudy: ImagingStudyClient;
   location: LocationClient;
   medicationAdministration: MedicationAdministrationClient;
   medication: MedicationClient;

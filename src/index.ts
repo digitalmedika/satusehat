@@ -38,6 +38,7 @@ export type {
   DicomRouterClient,
   DiagnosticReportClient,
   EncounterClient,
+  ImagingStudyClient,
   LocationClient,
   MedicationAdministrationClient,
   MedicationClient,
@@ -164,6 +165,19 @@ export type {
   DiagnosticReportSearchResponse,
   DiagnosticReportStatus,
 } from "./schemas/diagnostic-report";
+export type {
+  ImagingStudy,
+  ImagingStudyCoding,
+  ImagingStudyCreateInput,
+  ImagingStudyIdentifier,
+  ImagingStudyNote,
+  ImagingStudySearchParams,
+  ImagingStudySearchResponse,
+  ImagingStudySeries,
+  ImagingStudySeriesInstance,
+  ImagingStudySeriesPerformer,
+  ImagingStudyStatus,
+} from "./schemas/imaging-study";
 export type {
   Observation,
   ObservationCoding,

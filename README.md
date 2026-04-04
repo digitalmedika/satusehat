@@ -68,6 +68,7 @@ Saat ini resource yang sudah tersedia:
 - `dicomRouter`
 - `diagnosticReport`
 - `encounter`
+- `imagingStudy`
 - `medicationAdministration`
 - `observation`
 - `nutritionOrder`
@@ -121,6 +122,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [DICOM Router](./docs/resources/dicom-router.md)
 - [QuestionnaireResponse](./docs/resources/questionnaire-response.md)
 - [DiagnosticReport](./docs/resources/diagnostic-report.md)
+- [ImagingStudy](./docs/resources/imaging-study.md)
 - [Patient](./docs/resources/patient.md)
 - [Encounter](./docs/resources/encounter.md)
 - [Procedure](./docs/resources/procedure.md)
