@@ -161,6 +161,30 @@ export interface ProcedureClient {
   ): Promise<import("../schemas/procedure").Procedure>;
 }
 
+export interface MedicationClient {
+  create(
+    input: import("../schemas/medication").MedicationCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/medication").Medication>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/medication").Medication>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/medication").MedicationPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/medication").Medication>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/medication").MedicationCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/medication").Medication>;
+}
+
 export interface MedicationRequestClient {
   create(
     input: import("../schemas/medication-request").MedicationRequestCreateInput,
@@ -308,6 +332,7 @@ export interface SatuSehatClient {
   condition: ConditionClient;
   encounter: EncounterClient;
   location: LocationClient;
+  medication: MedicationClient;
   medicationRequest: MedicationRequestClient;
   observation: ObservationClient;
   organization: OrganizationClient;

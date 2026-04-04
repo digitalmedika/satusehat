@@ -22,6 +22,7 @@ export type {
   ConditionClient,
   EncounterClient,
   LocationClient,
+  MedicationClient,
   MedicationRequestClient,
   MaybePromise,
   ObservationClient,
@@ -84,6 +85,20 @@ export type {
   ProcedureSearchResponse,
   ProcedureStatus,
 } from "./schemas/procedure";
+export type {
+  Medication,
+  MedicationBatch,
+  MedicationCoding,
+  MedicationCreateInput,
+  MedicationIdentifier,
+  MedicationIngredient,
+  MedicationPatchInput,
+  MedicationPatchOperation,
+  MedicationQuantity,
+  MedicationRatio,
+  MedicationStatus,
+  MedicationTypeExtension,
+} from "./schemas/medication";
 export type {
   MedicationRequest,
   MedicationRequestCoding,
