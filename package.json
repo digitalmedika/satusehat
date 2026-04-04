@@ -1,10 +1,19 @@
 {
-  "name": "satusehat",
+  "name": "@digitalmedika/satusehat",
   "version": "0.1.0",
   "description": "Type-safe TypeScript wrapper for SATUSEHAT API.",
+  "author": "Digital Medika",
   "type": "module",
   "license": "MIT",
   "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digitalmedika/satusehat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/digitalmedika/satusehat/issues"
+  },
+  "homepage": "https://github.com/digitalmedika/satusehat#readme",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -30,10 +39,18 @@
   "keywords": [
     "satusehat",
     "kemkes",
+    "kemenkes",
     "fhir",
+    "hl7-fhir",
+    "indonesia",
+    "healthcare",
     "typescript",
-    "sdk"
+    "sdk",
+    "api-client"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@types/bun": "^1.3.11",
     "typescript": "^5.8.3"

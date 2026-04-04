@@ -1,4 +1,4 @@
-# satusehat
+# @digitalmedika/satusehat
 
 Type-safe TypeScript SDK untuk SATUSEHAT API.
 
@@ -22,7 +22,7 @@ Helper builder yang saat ini tersedia:
 ## Installation
 
 ```bash
-bun add satusehat
+bun add @digitalmedika/satusehat
 ```
 
 Untuk development library ini sendiri:
@@ -34,7 +34,7 @@ bun install
 ## Quick Start
 
 ```ts
-import { createSatuSehatClientFromEnv } from "satusehat";
+import { createSatuSehatClientFromEnv } from "@digitalmedika/satusehat";
 
 const client = createSatuSehatClientFromEnv();
 
