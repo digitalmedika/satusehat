@@ -84,6 +84,8 @@ export const ReferenceSchema = z.object({
   type: z.string().optional(),
 });
 
+export type Reference = z.infer<typeof ReferenceSchema>;
+
 export const BundleLinkSchema = z.object({
   relation: z.string().optional(),
   url: z.string().optional(),

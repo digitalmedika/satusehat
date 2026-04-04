@@ -12,6 +12,10 @@ export {
 } from "./client/token-store";
 export { OrganizationBuilder, createOrganizationBuilder } from "./builders/organization-builder";
 export {
+  ServiceRequestSpecimenObservationBuilder,
+  createServiceRequestSpecimenObservationBuilder,
+} from "./builders/service-request-specimen-observation-builder";
+export {
   SatuSehatApiError,
   SatuSehatConfigError,
   SatuSehatError,
@@ -20,6 +24,7 @@ export {
 export type {
   AccessTokenProvider,
   ConditionClient,
+  DiagnosticReportClient,
   EncounterClient,
   LocationClient,
   MedicationClient,
@@ -43,6 +48,11 @@ export type {
   TokenStore,
 } from "./core/types";
 export type {
+  ObservationBuildLinks,
+  ServiceRequestBuildLinks,
+  ServiceRequestSpecimenObservationBuilderInput,
+} from "./builders/service-request-specimen-observation-builder";
+export type {
   Condition,
   ConditionAge,
   ConditionCoding,
@@ -57,6 +67,18 @@ export type {
   ConditionSearchResponse,
   ConditionStage,
 } from "./schemas/condition";
+export type {
+  DiagnosticReport,
+  DiagnosticReportCoding,
+  DiagnosticReportCreateInput,
+  DiagnosticReportIdentifier,
+  DiagnosticReportMedia,
+  DiagnosticReportPatchInput,
+  DiagnosticReportPatchOperation,
+  DiagnosticReportSearchParams,
+  DiagnosticReportSearchResponse,
+  DiagnosticReportStatus,
+} from "./schemas/diagnostic-report";
 export type {
   Observation,
   ObservationCoding,

@@ -10,6 +10,13 @@ SDK ini dirancang untuk:
 - token cache in-memory atau file-based
 - ergonomi SDK yang cocok untuk backend service dan internal tooling
 
+## Helpers
+
+Helper builder yang saat ini tersedia:
+
+- `createOrganizationBuilder`
+- `createServiceRequestSpecimenObservationBuilder`
+
 ## Installation
 
 ```bash
@@ -52,6 +59,7 @@ Variable utama:
 Saat ini resource yang sudah tersedia:
 
 - `condition`
+- `diagnosticReport`
 - `encounter`
 - `observation`
 - `procedure`
@@ -97,6 +105,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Authentication](D:/project/satusehat/docs/authentication.md)
 - [Errors](D:/project/satusehat/docs/errors.md)
 - [Condition](D:/project/satusehat/docs/resources/condition.md)
+- [DiagnosticReport](D:/project/satusehat/docs/resources/diagnostic-report.md)
 - [Patient](D:/project/satusehat/docs/resources/patient.md)
 - [Encounter](D:/project/satusehat/docs/resources/encounter.md)
 - [Procedure](D:/project/satusehat/docs/resources/procedure.md)
@@ -105,6 +114,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [MedicationRequest](D:/project/satusehat/docs/resources/medication-request.md)
 - [ServiceRequest](D:/project/satusehat/docs/resources/service-request.md)
 - [Specimen](D:/project/satusehat/docs/resources/specimen.md)
+- [ServiceRequest -> Specimen -> Observation Builder](D:/project/satusehat/docs/helpers/service-request-specimen-observation-builder.md)
 - [Organization](D:/project/satusehat/docs/resources/organization.md)
 - [Location](D:/project/satusehat/docs/resources/location.md)
 - [Practitioner](D:/project/satusehat/docs/resources/practitioner.md)

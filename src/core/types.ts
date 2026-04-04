@@ -105,6 +105,34 @@ export interface ConditionClient {
   ): Promise<import("../schemas/condition").Condition>;
 }
 
+export interface DiagnosticReportClient {
+  create(
+    input: import("../schemas/diagnostic-report").DiagnosticReportCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/diagnostic-report").DiagnosticReport>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/diagnostic-report").DiagnosticReport>;
+  search(
+    input: import("../schemas/diagnostic-report").DiagnosticReportSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/diagnostic-report").DiagnosticReportSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/diagnostic-report").DiagnosticReportPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/diagnostic-report").DiagnosticReport>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/diagnostic-report").DiagnosticReportCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/diagnostic-report").DiagnosticReport>;
+}
+
 export interface ObservationClient {
   create(
     input: import("../schemas/observation").ObservationCreateInput,
@@ -386,6 +414,7 @@ export interface LocationClient {
 
 export interface SatuSehatClient {
   condition: ConditionClient;
+  diagnosticReport: DiagnosticReportClient;
   encounter: EncounterClient;
   location: LocationClient;
   medication: MedicationClient;

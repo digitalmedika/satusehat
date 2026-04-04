@@ -2,6 +2,7 @@ import { createClientCredentialsTokenProvider } from "./auth";
 import { createFileTokenStore, createMemoryTokenStore } from "./token-store";
 import { createTransport } from "./transport";
 import { createConditionClient } from "../endpoints/condition";
+import { createDiagnosticReportClient } from "../endpoints/diagnostic-report";
 import { createEncounterClient } from "../endpoints/encounter";
 import { createLocationClient } from "../endpoints/location";
 import { createMedicationClient } from "../endpoints/medication";
@@ -56,6 +57,7 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
 
   return {
     condition: createConditionClient(transport),
+    diagnosticReport: createDiagnosticReportClient(transport),
     encounter: createEncounterClient(transport),
     location: createLocationClient(transport),
     medication: createMedicationClient(transport),
