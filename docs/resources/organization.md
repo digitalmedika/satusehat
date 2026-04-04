@@ -62,7 +62,7 @@ Field opsional yang saat ini dimodelkan:
 Contoh create dengan builder:
 
 ```ts
-import { createOrganizationBuilder } from "satusehat";
+import { createOrganizationBuilder } from "@digitalmedika/satusehat";
 
 const body = createOrganizationBuilder({
   active: true,

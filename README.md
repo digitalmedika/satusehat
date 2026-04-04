@@ -38,12 +38,81 @@ bun install
 ## Quick Start
 
 ```ts
-import { createSatuSehatClientFromEnv } from "@digitalmedika/satusehat";
+import {
+  createEncounterBuilder,
+  createSatuSehatClientFromEnv,
+} from "@digitalmedika/satusehat";
 
 const client = createSatuSehatClientFromEnv();
 
-const patient = await client.patient.search({
+const patientResult = await client.patient.search({
   identifier: "https://fhir.kemkes.go.id/id/nik|9271060312000001",
+});
+
+const patient = patientResult.entry?.[0]?.resource;
+
+if (!patient?.id) {
+  throw new Error("Patient tidak ditemukan");
+}
+
+const encounterDraft = createEncounterBuilder({
+  preset: "outpatient",
+  identifier: {
+    system: "http://sys-ids.kemkes.go.id/encounter/10000004",
+    use: "official",
+    value: "RJ-20240001",
+  },
+  status: "arrived",
+  subject: {
+    reference: `Patient/${patient.id}`,
+    display: patient.name?.[0]?.text ?? "Pasien SATUSEHAT",
+  },
+  period: {
+    start: "2024-04-01T01:00:00+00:00",
+    end: "2024-04-01T02:00:00+00:00",
+  },
+  reasonCode: {
+    coding: [
+      {
+        system: "http://terminology.hl7.org/CodeSystem/encounter-reason",
+        code: "185349003",
+        display: "Encounter for check up",
+      },
+    ],
+  },
+  diagnosis: {
+    condition: {
+      reference: "Condition/4bbbe654-14f5-4ab3-a36e-a1e307f67bb8",
+    },
+    use: {
+      coding: [
+        {
+          system: "https://www.hl7.org/fhir/Codesystem-diagnosis-role",
+          code: "AD",
+          display: "Admission diagnosis",
+        },
+      ],
+    },
+    rank: 1,
+  },
+  location: {
+    location: {
+      reference: "Location/408ba28c-3115-4df5-85c6-60f15b44e7fa",
+      display: "Poliklinik Rawat Jalan",
+    },
+    status: "active",
+  },
+  serviceProvider: {
+    reference: "Organization/10000004",
+    display: "RS SATUSEHAT",
+  },
+}).build();
+
+const encounter = await client.encounter.create(encounterDraft);
+
+console.log({
+  patientId: patient.id,
+  encounterId: encounter.id,
 });
 ```
 

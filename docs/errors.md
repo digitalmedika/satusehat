@@ -14,7 +14,7 @@ Dipakai saat konfigurasi client tidak valid, misalnya:
 Contoh:
 
 ```ts
-import { SatuSehatConfigError, createSatuSehatClientFromEnv } from "satusehat";
+import { SatuSehatConfigError, createSatuSehatClientFromEnv } from "@digitalmedika/satusehat";
 
 try {
   const client = createSatuSehatClientFromEnv();
@@ -39,7 +39,7 @@ Dipakai saat:
 Error ini menyertakan properti `issues` dari Zod.
 
 ```ts
-import { SatuSehatValidationError } from "satusehat";
+import { SatuSehatValidationError } from "@digitalmedika/satusehat";
 
 try {
   await client.location.search({});
@@ -63,7 +63,7 @@ Properti yang tersedia:
 Perlu diperhatikan bahwa payload `response` tidak selalu JSON. Pada beberapa dokumentasi resmi SATUSEHAT, respons `5xx` untuk endpoint lookup seperti `Practitioner` dapat dikembalikan sebagai `text/plain` seperti `Gateway Timeout`. SDK akan mempertahankan payload mentah tersebut di properti `response`.
 
 ```ts
-import { SatuSehatApiError } from "satusehat";
+import { SatuSehatApiError } from "@digitalmedika/satusehat";
 
 try {
   await client.organization.getById({

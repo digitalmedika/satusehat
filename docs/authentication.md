@@ -14,7 +14,7 @@ Secara default alurnya:
 ## Client Credentials
 
 ```ts
-import { createSatuSehatClient } from "satusehat";
+import { createSatuSehatClient } from "@digitalmedika/satusehat";
 
 const client = createSatuSehatClient({
   environment: "sandbox",
@@ -36,7 +36,7 @@ Ini perilaku default untuk proses runtime yang sedang aktif.
 Cocok untuk internal testing dan local tooling.
 
 ```ts
-import { createFileTokenStore, createSatuSehatClient } from "satusehat";
+import { createFileTokenStore, createSatuSehatClient } from "@digitalmedika/satusehat";
 
 const client = createSatuSehatClient({
   environment: "sandbox",
@@ -74,7 +74,7 @@ const client = createSatuSehatClient({
 SDK menyediakan helper:
 
 ```ts
-import { isAccessTokenExpired } from "satusehat";
+import { isAccessTokenExpired } from "@digitalmedika/satusehat";
 
 const expired = isAccessTokenExpired({
   expiresAt: Date.now() + 30_000,
