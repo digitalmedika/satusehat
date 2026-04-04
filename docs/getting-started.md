@@ -62,6 +62,32 @@ const result = await client.patient.search({
 console.log(result.total);
 ```
 
+## Contoh RiskAssessment
+
+```ts
+import { createRiskAssessmentBuilder } from "satusehat";
+
+const draft = createRiskAssessmentBuilder({
+  subject: {
+    reference: "Patient/100000030009",
+  },
+  encounter: {
+    reference: "Encounter/4f735a03-128b-464d-bf91-e6eacdf1c38f",
+  },
+  status: "final",
+})
+  .addPrediction({
+    probabilityDecimal: 0.32,
+    rationale: "Faktor risiko meningkat berdasarkan profil lipid dan riwayat keluarga.",
+  })
+  .setMitigation("Anjurkan modifikasi gaya hidup dan follow-up kardiologi.")
+  .build();
+
+const riskAssessment = await client.riskAssessment.create(draft);
+
+console.log(riskAssessment.id);
+```
+
 ## Download DICOM Router Config
 
 ```ts
@@ -81,6 +107,7 @@ console.log(dockerCompose);
 - `practitionerRole`
 - `questionnaireResponse`
 - `dicomRouter`
+- `riskAssessment`
 
 ## Verifikasi Lokal
 

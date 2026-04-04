@@ -105,3 +105,4 @@ const updated = await client.riskAssessment.patch({
 
 - Search `RiskAssessment` di SDK ini mengikuti pola parameter `subject` dan `encounter` seperti resource klinis lain yang sudah ada.
 - Untuk prediksi risiko, SDK saat ini memodelkan `probabilityDecimal`, `probabilityRange`, `qualitativeRisk`, `relativeRisk`, `whenPeriod`, dan `whenRange`.
+- Jika payload dibentuk bertahap, gunakan helper [`createRiskAssessmentBuilder`](../helpers/risk-assessment-builder.md).

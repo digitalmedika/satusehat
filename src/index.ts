@@ -13,6 +13,14 @@ export {
 } from "./client/token-store";
 export { OrganizationBuilder, createOrganizationBuilder } from "./builders/organization-builder";
 export {
+  EncounterBuilder,
+  createEncounterBuilder,
+} from "./builders/encounter-builder";
+export {
+  RiskAssessmentBuilder,
+  createRiskAssessmentBuilder,
+} from "./builders/risk-assessment-builder";
+export {
   createChestXRayStudyBuilder,
 } from "./builders/chest-xray-study-builder";
 export {
@@ -142,6 +150,13 @@ export type {
   RiskAssessmentSearchResponse,
   RiskAssessmentStatus,
 } from "./schemas/risk-assessment";
+export type {
+  EncounterBuilderInput,
+  EncounterBuilderPreset,
+} from "./builders/encounter-builder";
+export type {
+  RiskAssessmentBuilderInput,
+} from "./builders/risk-assessment-builder";
 export type {
   ChestXRayStudyBuilderInput,
 } from "./builders/chest-xray-study-builder";

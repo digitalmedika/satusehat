@@ -14,10 +14,12 @@ SDK ini dirancang untuk:
 
 Helper builder yang saat ini tersedia:
 
+- `createEncounterBuilder`
 - `createChestXRayStudyBuilder`
 - `createCompleteBloodCountPanelBuilder`
 - `createLaboratoryPanelBuilder`
 - `createOrganizationBuilder`
+- `createRiskAssessmentBuilder`
 - `createServiceRequestImagingStudyDiagnosticReportBuilder`
 - `createServiceRequestSpecimenObservationBuilder`
 
@@ -127,6 +129,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [RiskAssessment](./docs/resources/risk-assessment.md)
 - [DiagnosticReport](./docs/resources/diagnostic-report.md)
 - [ImagingStudy](./docs/resources/imaging-study.md)
+- [Encounter Builder](./docs/helpers/encounter-builder.md)
 - [Patient](./docs/resources/patient.md)
 - [Encounter](./docs/resources/encounter.md)
 - [Procedure](./docs/resources/procedure.md)
@@ -142,6 +145,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Chest X-Ray Study Builder](./docs/helpers/chest-xray-study-builder.md)
 - [Laboratory Panel Builder](./docs/helpers/laboratory-panel-builder.md)
 - [CBC Panel Builder](./docs/helpers/cbc-panel-builder.md)
+- [Risk Assessment Builder](./docs/helpers/risk-assessment-builder.md)
 - [Organization](./docs/resources/organization.md)
 - [Location](./docs/resources/location.md)
 - [Practitioner](./docs/resources/practitioner.md)
