@@ -19,6 +19,7 @@ export {
 } from "./core/errors";
 export type {
   AccessTokenProvider,
+  EncounterClient,
   LocationClient,
   MaybePromise,
   OrganizationClient,
@@ -34,6 +35,24 @@ export type {
   TokenExpiryCheckOptions,
   TokenStore,
 } from "./core/types";
+export type {
+  Encounter,
+  EncounterClass,
+  EncounterClassHistory,
+  EncounterCreateInput,
+  EncounterDiagnosis,
+  EncounterDuration,
+  EncounterHospitalization,
+  EncounterIdentifier,
+  EncounterLocation,
+  EncounterParticipant,
+  EncounterPatchInput,
+  EncounterPatchOperation,
+  EncounterSearchParams,
+  EncounterSearchResponse,
+  EncounterStatus,
+  EncounterStatusHistory,
+} from "./schemas/encounter";
 export type {
   Location,
   LocationCreateInput,
