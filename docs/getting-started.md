@@ -79,6 +79,7 @@ console.log(dockerCompose);
 - `location`
 - `practitioner`
 - `practitionerRole`
+- `questionnaireResponse`
 - `dicomRouter`
 
 ## Verifikasi Lokal

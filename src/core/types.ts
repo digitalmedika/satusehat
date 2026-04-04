@@ -135,6 +135,34 @@ export interface ClinicalImpressionClient {
   ): Promise<import("../schemas/clinical-impression").ClinicalImpression>;
 }
 
+export interface QuestionnaireResponseClient {
+  create(
+    input: import("../schemas/questionnaire-response").QuestionnaireResponseCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/questionnaire-response").QuestionnaireResponse>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/questionnaire-response").QuestionnaireResponse>;
+  search(
+    input: import("../schemas/questionnaire-response").QuestionnaireResponseSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/questionnaire-response").QuestionnaireResponseSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/questionnaire-response").QuestionnaireResponsePatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/questionnaire-response").QuestionnaireResponse>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/questionnaire-response").QuestionnaireResponseCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/questionnaire-response").QuestionnaireResponse>;
+}
+
 export interface ConditionClient {
   create(
     input: import("../schemas/condition").ConditionCreateInput,
@@ -490,6 +518,7 @@ export interface SatuSehatClient {
   practitioner: PractitionerClient;
   practitionerRole: PractitionerRoleClient;
   procedure: ProcedureClient;
+  questionnaireResponse: QuestionnaireResponseClient;
   serviceRequest: ServiceRequestClient;
   specimen: SpecimenClient;
 }

@@ -47,6 +47,7 @@ export type {
   PractitionerClient,
   PractitionerRoleClient,
   ProcedureClient,
+  QuestionnaireResponseClient,
   QueryParams,
   SpecimenClient,
   ServiceRequestClient,
@@ -84,6 +85,17 @@ export type {
   ClinicalImpressionSearchParams,
   ClinicalImpressionSearchResponse,
 } from "./schemas/clinical-impression";
+export type {
+  QuestionnaireResponse,
+  QuestionnaireResponseAnswer,
+  QuestionnaireResponseAnswerValue,
+  QuestionnaireResponseCreateInput,
+  QuestionnaireResponseItem,
+  QuestionnaireResponsePatchInput,
+  QuestionnaireResponsePatchOperation,
+  QuestionnaireResponseSearchParams,
+  QuestionnaireResponseSearchResponse,
+} from "./schemas/questionnaire-response";
 export type {
   DiagnosticReportBuildLinks,
   ObservationBuildLinks,

@@ -16,6 +16,7 @@ import { createPatientClient } from "../endpoints/patient";
 import { createPractitionerClient } from "../endpoints/practitioner";
 import { createPractitionerRoleClient } from "../endpoints/practitioner-role";
 import { createProcedureClient } from "../endpoints/procedure";
+import { createQuestionnaireResponseClient } from "../endpoints/questionnaire-response";
 import { createServiceRequestClient } from "../endpoints/service-request";
 import { createSpecimenClient } from "../endpoints/specimen";
 import { SatuSehatConfigError } from "../core/errors";
@@ -95,6 +96,7 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
     practitioner: createPractitionerClient(transport),
     practitionerRole: createPractitionerRoleClient(transport),
     procedure: createProcedureClient(transport),
+    questionnaireResponse: createQuestionnaireResponseClient(transport),
     serviceRequest: createServiceRequestClient(transport),
     specimen: createSpecimenClient(transport),
   };
