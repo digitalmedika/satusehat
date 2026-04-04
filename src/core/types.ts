@@ -98,7 +98,36 @@ export interface OrganizationClient {
   ): Promise<import("../schemas/organization").Organization>;
 }
 
+export interface LocationClient {
+  create(
+    input: import("../schemas/location").LocationCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/location").Location>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/location").Location>;
+  search(
+    input: import("../schemas/location").LocationSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/location").LocationSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/location").LocationPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/location").Location>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/location").LocationCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/location").Location>;
+}
+
 export interface SatuSehatClient {
+  location: LocationClient;
   organization: OrganizationClient;
   patient: PatientClient;
 }

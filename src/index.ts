@@ -19,6 +19,7 @@ export {
 } from "./core/errors";
 export type {
   AccessTokenProvider,
+  LocationClient,
   MaybePromise,
   OrganizationClient,
   PatientClient,
@@ -31,6 +32,21 @@ export type {
   TokenExpiryCheckOptions,
   TokenStore,
 } from "./core/types";
+export type {
+  Location,
+  LocationCreateInput,
+  LocationHoursOfOperation,
+  LocationIdentifier,
+  LocationMode,
+  LocationPatchInput,
+  LocationPatchOperation,
+  LocationPhysicalType,
+  LocationPosition,
+  LocationSearchParams,
+  LocationSearchResponse,
+  LocationStatus,
+  LocationType,
+} from "./schemas/location";
 export type {
   Patient,
   PatientIdentifier,

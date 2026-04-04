@@ -1,6 +1,7 @@
 import { createClientCredentialsTokenProvider } from "./auth";
 import { createFileTokenStore, createMemoryTokenStore } from "./token-store";
 import { createTransport } from "./transport";
+import { createLocationClient } from "../endpoints/location";
 import { createOrganizationClient } from "../endpoints/organization";
 import { createPatientClient } from "../endpoints/patient";
 import { SatuSehatConfigError } from "../core/errors";
@@ -44,6 +45,7 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
   });
 
   return {
+    location: createLocationClient(transport),
     organization: createOrganizationClient(transport),
     patient: createPatientClient(transport),
   };

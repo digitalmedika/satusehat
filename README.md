@@ -53,6 +53,7 @@ Saat ini resource yang sudah tersedia:
 
 - `patient`
 - `organization`
+- `location`
 
 ## Token Handling
 
@@ -84,6 +85,8 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 
 - [Getting Started](D:/project/satusehat/docs/getting-started.md)
 - [Authentication](D:/project/satusehat/docs/authentication.md)
+- [Errors](D:/project/satusehat/docs/errors.md)
 - [Patient](D:/project/satusehat/docs/resources/patient.md)
 - [Organization](D:/project/satusehat/docs/resources/organization.md)
+- [Location](D:/project/satusehat/docs/resources/location.md)
 - [Planning](D:/project/satusehat/docs/planning.md)
