@@ -23,6 +23,7 @@ export type {
   EncounterClient,
   LocationClient,
   MaybePromise,
+  ObservationClient,
   OrganizationClient,
   PatientClient,
   PractitionerClient,
@@ -51,6 +52,22 @@ export type {
   ConditionSearchResponse,
   ConditionStage,
 } from "./schemas/condition";
+export type {
+  Observation,
+  ObservationCoding,
+  ObservationComponent,
+  ObservationCreateInput,
+  ObservationIdentifier,
+  ObservationNote,
+  ObservationPatchInput,
+  ObservationPatchOperation,
+  ObservationQuantity,
+  ObservationRange,
+  ObservationReferenceRange,
+  ObservationSearchParams,
+  ObservationSearchResponse,
+  ObservationStatus,
+} from "./schemas/observation";
 export type {
   Encounter,
   EncounterClass,

@@ -105,6 +105,34 @@ export interface ConditionClient {
   ): Promise<import("../schemas/condition").Condition>;
 }
 
+export interface ObservationClient {
+  create(
+    input: import("../schemas/observation").ObservationCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/observation").Observation>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/observation").Observation>;
+  search(
+    input: import("../schemas/observation").ObservationSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/observation").ObservationSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/observation").ObservationPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/observation").Observation>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/observation").ObservationCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/observation").Observation>;
+}
+
 export interface EncounterClient {
   create(
     input: import("../schemas/encounter").EncounterCreateInput,
@@ -224,6 +252,7 @@ export interface SatuSehatClient {
   condition: ConditionClient;
   encounter: EncounterClient;
   location: LocationClient;
+  observation: ObservationClient;
   organization: OrganizationClient;
   patient: PatientClient;
   practitioner: PractitionerClient;

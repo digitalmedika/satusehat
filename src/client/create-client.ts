@@ -4,6 +4,7 @@ import { createTransport } from "./transport";
 import { createConditionClient } from "../endpoints/condition";
 import { createEncounterClient } from "../endpoints/encounter";
 import { createLocationClient } from "../endpoints/location";
+import { createObservationClient } from "../endpoints/observation";
 import { createOrganizationClient } from "../endpoints/organization";
 import { createPatientClient } from "../endpoints/patient";
 import { createPractitionerClient } from "../endpoints/practitioner";
@@ -52,6 +53,7 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
     condition: createConditionClient(transport),
     encounter: createEncounterClient(transport),
     location: createLocationClient(transport),
+    observation: createObservationClient(transport),
     organization: createOrganizationClient(transport),
     patient: createPatientClient(transport),
     practitioner: createPractitionerClient(transport),
