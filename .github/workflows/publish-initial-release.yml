@@ -45,19 +45,23 @@ jobs:
 
       - name: Check if version already exists on npm
         id: npm
-        continue-on-error: true
-        run: npm view "${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}" version
-
-      - name: Fail if version already exists
-        if: steps.npm.outcome == 'success'
+        shell: bash
         run: |
-          echo "Version ${{ steps.package.outputs.version }} is already published to npm."
-          exit 1
+          if npm view "${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}" version >/dev/null 2>&1; then
+            echo "already_published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "already_published=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Publish package to npm
+        if: steps.npm.outputs.already_published != 'true'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Skip npm publish because version already exists
+        if: steps.npm.outputs.already_published == 'true'
+        run: echo "Package version ${{ steps.package.outputs.version }} is already published on npm. Skipping publish."
 
       - name: Extract release notes from changelog
         id: notes
