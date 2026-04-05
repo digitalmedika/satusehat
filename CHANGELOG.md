@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0
+
+### Minor Changes
+
+- acda63d: Add `createEncounterMedicationRequestBuilder` for post-encounter prescribing flows, including exports, documentation, and tests.
+
 ## 0.5.0
 
 ### Minor Changes
