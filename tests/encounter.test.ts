@@ -1,114 +1,9 @@
 import { describe, expect, test } from "bun:test";
 
 import { createSatuSehatClient, SatuSehatValidationError } from "../src";
+import { createEncounterFixture } from "./fixtures/encounter";
 
-const encounterPayload = {
-  resourceType: "Encounter" as const,
-  identifier: [
-    {
-      system: "http://sys-ids.kemkes.go.id/encounter/10000004",
-      use: "official",
-      value: "P20240001",
-    },
-  ],
-  status: "arrived" as const,
-  statusHistory: [
-    {
-      status: "arrived" as const,
-      period: {
-        start: "2024-04-01T01:00:00+00:00",
-        end: "2024-04-01T01:10:00+00:00",
-      },
-    },
-  ],
-  class: {
-    system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-    code: "AMB",
-    display: "ambulatory",
-  },
-  classHistory: [
-    {
-      class: {
-        system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-        code: "AMB",
-        display: "ambulatory",
-      },
-      period: {
-        start: "2024-04-01T01:00:00+00:00",
-        end: "2024-04-01T02:00:00+00:00",
-      },
-    },
-  ],
-  subject: {
-    reference: "Patient/100000030009",
-    display: "Budi Santoso",
-  },
-  participant: [
-    {
-      type: [
-        {
-          coding: [
-            {
-              system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
-              code: "ATND",
-              display: "attender",
-            },
-          ],
-        },
-      ],
-      individual: {
-        reference: "Practitioner/N10000001",
-        display: "Dokter Bronsig",
-      },
-    },
-  ],
-  period: {
-    start: "2024-04-01T01:00:00+00:00",
-    end: "2024-04-01T02:00:00+00:00",
-  },
-  reasonCode: [
-    {
-      coding: [
-        {
-          system: "http://terminology.hl7.org/CodeSystem/encounter-reason",
-          code: "185349003",
-          display: "Encounter for check up",
-        },
-      ],
-    },
-  ],
-  diagnosis: [
-    {
-      condition: {
-        reference: "Condition/4bbbe654-14f5-4ab3-a36e-a1e307f67bb8",
-        display: "Tuberculosis of lung",
-      },
-      use: {
-        coding: [
-          {
-            system: "https://www.hl7.org/fhir/Codesystem-diagnosis-role",
-            code: "AD",
-            display: "Admission diagnosis",
-          },
-        ],
-      },
-      rank: 1,
-    },
-  ],
-  location: [
-    {
-      location: {
-        reference: "Location/408ba28c-3115-4df5-85c6-60f15b44e7fa",
-        display: "Ruang 1A, Poliklinik Rawat Jalan",
-      },
-      status: "active" as const,
-    },
-  ],
-  serviceProvider: {
-    reference: "Organization/10000004",
-    display: "RS SATUSEHAT",
-  },
-};
+const encounterPayload = createEncounterFixture("outpatient");
 
 describe("encounter endpoint", () => {
   test("validates that search requires subject", async () => {
@@ -189,9 +84,8 @@ describe("encounter endpoint", () => {
 
     expect((capturedBody as { resourceType: string }).resourceType).toBe("Encounter");
     expect(encounter.id).toBe("4f735a03-128b-464d-bf91-e6eacdf1c38f");
-    expect(encounter.location[0]?.location.reference).toBe(
-      "Location/408ba28c-3115-4df5-85c6-60f15b44e7fa",
-    );
+    expect(encounter.location[0]?.location.reference).toBe("Location/poli-interna");
+    expect(encounter.serviceType?.coding?.[0]?.code).toBe("poli-interna");
   });
 
   test("patches encounter with replace operations", async () => {

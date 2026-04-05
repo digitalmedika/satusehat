@@ -4,59 +4,41 @@ import {
   createEncounterBuilder,
   createServiceRequestSpecimenObservationBuilder,
 } from "../src";
+import type { EncounterCreateInput } from "../src";
+import { createEncounterFixture } from "./fixtures/encounter";
+
+function toBuilderInput(fixture: EncounterCreateInput) {
+  return {
+    identifier: fixture.identifier,
+    status: fixture.status,
+    statusHistory: fixture.statusHistory,
+    classHistory: fixture.classHistory,
+    ...(fixture.type ? { type: fixture.type } : {}),
+    ...(fixture.serviceType ? { serviceType: fixture.serviceType } : {}),
+    ...(fixture.priority ? { priority: fixture.priority } : {}),
+    subject: fixture.subject,
+    ...(fixture.episodeOfCare ? { episodeOfCare: fixture.episodeOfCare } : {}),
+    ...(fixture.basedOn ? { basedOn: fixture.basedOn } : {}),
+    ...(fixture.participant ? { participant: fixture.participant } : {}),
+    period: fixture.period,
+    ...(fixture.length ? { length: fixture.length } : {}),
+    reasonCode: fixture.reasonCode,
+    ...(fixture.reasonReference ? { reasonReference: fixture.reasonReference } : {}),
+    diagnosis: fixture.diagnosis,
+    ...(fixture.account ? { account: fixture.account } : {}),
+    ...(fixture.hospitalization ? { hospitalization: fixture.hospitalization } : {}),
+    location: fixture.location,
+    serviceProvider: fixture.serviceProvider,
+    ...(fixture.partOf ? { partOf: fixture.partOf } : {}),
+  };
+}
 
 describe("encounter builder integration", () => {
   test("reuses encounter subject and created encounter reference in downstream builders", () => {
+    const fixture = createEncounterFixture("outpatient");
     const encounterDraft = createEncounterBuilder({
       preset: "outpatient",
-      identifier: {
-        system: "http://sys-ids.kemkes.go.id/encounter/10000004",
-        use: "official",
-        value: "RJ-20240099",
-      },
-      status: "arrived",
-      subject: {
-        reference: "Patient/100000030009",
-        display: "Budi Santoso",
-      },
-      period: {
-        start: "2024-04-01T01:00:00+00:00",
-        end: "2024-04-01T02:00:00+00:00",
-      },
-      reasonCode: {
-        coding: [
-          {
-            system: "http://terminology.hl7.org/CodeSystem/encounter-reason",
-            code: "185349003",
-            display: "Encounter for check up",
-          },
-        ],
-      },
-      diagnosis: {
-        condition: {
-          reference: "Condition/4bbbe654-14f5-4ab3-a36e-a1e307f67bb8",
-        },
-        use: {
-          coding: [
-            {
-              system: "https://www.hl7.org/fhir/Codesystem-diagnosis-role",
-              code: "AD",
-              display: "Admission diagnosis",
-            },
-          ],
-        },
-        rank: 1,
-      },
-      location: {
-        location: {
-          reference: "Location/poli-interna",
-          display: "Poliklinik Penyakit Dalam",
-        },
-        status: "active",
-      },
-      serviceProvider: {
-        reference: "Organization/10000004",
-      },
+      ...toBuilderInput(fixture),
     }).build();
 
     const createdEncounter = {
