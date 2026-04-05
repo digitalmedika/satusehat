@@ -127,7 +127,8 @@ type GetPatientParams = z.infer<typeof GetPatientParamsSchema>;
 
 - Library sudah berada di fase ekspansi helper, dokumentasi, dan use case klinis spesifik.
 - Resource publik utama sudah tersedia lengkap dengan schema, endpoint, dan test.
-- Helper builder sudah mencakup encounter, alur IGD/triage, workflow pasca-encounter `Encounter -> Condition`, `Encounter -> Procedure`, `Encounter -> MedicationAdministration`, dan `Encounter -> MedicationRequest`, rawat inap, organisasi, risk assessment, radiologi, dan panel laboratorium.
+- Helper builder sudah mencakup encounter, alur IGD/triage, workflow pasca-encounter `Encounter -> Condition`, `Encounter -> Procedure`, `Encounter -> Medication`, `Encounter -> MedicationAdministration`, dan `Encounter -> MedicationRequest`, rawat inap, organisasi, risk assessment, radiologi, dan panel laboratorium.
+- Dokumentasi workflow end-to-end pasca-encounter sekarang juga sudah menunjukkan rangkaian `Encounter -> Condition -> Procedure -> Medication -> MedicationRequest -> MedicationAdministration`.
 - Build, typecheck, dan test suite penuh sudah berjalan hijau di repo lokal.
 
 ## Checklist Publish ke npm
@@ -148,10 +149,9 @@ type GetPatientParams = z.infer<typeof GetPatientParamsSchema>;
 
 ## Langkah Praktis Berikutnya
 
-1. Perluas helper pasca-encounter dari workflow `Condition`, `Procedure`, `MedicationAdministration`, dan `MedicationRequest` ke resource terapi lain yang masih berdekatan.
-2. Pilih helper workflow berikutnya yang menghubungkan `Encounter` ke `Medication` atau resource terapi lanjutan lain.
-3. Tambahkan dokumentasi contoh penggunaan yang menunjukkan urutan resource setelah encounter dibuat, diagnosis awal tercatat, tindakan klinis awal selesai, lalu order dan pemberian obat terdokumentasi.
-4. Setelah helper workflow lanjutan stabil, baru lanjutkan backlog use case lain di luar Encounter bila ada issue baru.
+1. Gunakan helper pasca-encounter yang sudah tersedia untuk merangkai diagnosis, tindakan, definisi obat, order terapi, dan administrasi obat dalam alur yang konsisten.
+2. Evaluasi issue berikutnya untuk menentukan apakah prioritas helper lanjutan tetap di area terapi atau bergeser ke resource klinis lain.
+3. Perluas contoh dokumentasi hanya bila ada workflow lapangan baru yang butuh pola link resource berbeda dari alur yang sudah tersedia saat ini.
 
 ## TODO Backlog
 
@@ -163,19 +163,14 @@ type GetPatientParams = z.infer<typeof GetPatientParamsSchema>;
 - Selesai: dukungan extension `serviceClass` pada `Encounter.location` untuk kelas perawatan.
 - Selesai: helper workflow pasca-encounter untuk alur IGD `Encounter -> Condition` sudah tersedia.
 - Selesai: helper workflow pasca-encounter untuk alur IGD `Encounter -> Procedure` sudah tersedia.
+- Selesai: helper workflow pasca-encounter untuk alur IGD `Encounter -> Medication` sudah tersedia.
 - Selesai: helper workflow pasca-encounter untuk alur IGD `Encounter -> MedicationAdministration` sudah tersedia.
 - Selesai: helper workflow pasca-encounter untuk alur IGD `Encounter -> MedicationRequest` sudah tersedia.
-- Belum: workflow klinis lanjutan pasca-encounter yang meluas ke `Medication`.
+- Selesai: dokumentasi end-to-end yang merangkai `Encounter -> Condition -> Procedure -> Medication -> MedicationRequest -> MedicationAdministration` sudah tersedia.
 - Selesai: test fixture dan contoh payload per use case agar validasi schema representatif terhadap skenario SATUSEHAT nyata.
 
 ## Prioritas Rekomendasi
 
-Kerjakan berikutnya:
+Prioritas helper pasca-encounter menuju `Medication` sudah selesai dikerjakan.
 
-- Helper atau contoh workflow klinis pasca-encounter yang memperluas alur dari `Encounter -> Condition`, `Encounter -> Procedure`, `Encounter -> MedicationAdministration`, dan `Encounter -> MedicationRequest` menuju `Medication`.
-
-Alasan diprioritaskan:
-
-- Fondasi alur diagnosis awal, order obat, dan pemberian obat dari encounter sudah tersedia, jadi langkah berikutnya tinggal memperluas rantai resource klinis yang tersisa.
-- Value-nya tinggi karena pengguna bisa melihat alur klinis yang makin end-to-end setelah encounter berhasil dibuat.
-- Schema, endpoint, dan builder resource lanjutan sebagian besar sudah ada, jadi risikonya lebih rendah dibanding memulai area baru.
+Fokus berikutnya bisa ditentukan dari issue baru, tergantung apakah kebutuhan pengguna lebih mendesak di workflow terapi lanjutan lain atau di domain resource klinis yang berbeda.
