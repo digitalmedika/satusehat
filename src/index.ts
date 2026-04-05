@@ -29,6 +29,10 @@ export {
   createEncounterMedicationAdministrationBuilder,
 } from "./builders/encounter-medication-administration-builder";
 export {
+  EncounterMedicationRequestBuilder,
+  createEncounterMedicationRequestBuilder,
+} from "./builders/encounter-medication-request-builder";
+export {
   EncounterProcedureBuilder,
   createEncounterProcedureBuilder,
 } from "./builders/encounter-procedure-builder";
@@ -182,6 +186,9 @@ export type {
 export type {
   EncounterMedicationAdministrationBuilderInput,
 } from "./builders/encounter-medication-administration-builder";
+export type {
+  EncounterMedicationRequestBuilderInput,
+} from "./builders/encounter-medication-request-builder";
 export type {
   EncounterProcedureBuilderInput,
 } from "./builders/encounter-procedure-builder";
