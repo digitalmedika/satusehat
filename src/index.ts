@@ -25,6 +25,10 @@ export {
   createEncounterConditionBuilder,
 } from "./builders/encounter-condition-builder";
 export {
+  EncounterMedicationAdministrationBuilder,
+  createEncounterMedicationAdministrationBuilder,
+} from "./builders/encounter-medication-administration-builder";
+export {
   EncounterProcedureBuilder,
   createEncounterProcedureBuilder,
 } from "./builders/encounter-procedure-builder";
@@ -175,6 +179,9 @@ export type {
   EncounterConditionBuilderInput,
   EncounterDiagnosisBuildLinks,
 } from "./builders/encounter-condition-builder";
+export type {
+  EncounterMedicationAdministrationBuilderInput,
+} from "./builders/encounter-medication-administration-builder";
 export type {
   EncounterProcedureBuilderInput,
 } from "./builders/encounter-procedure-builder";
