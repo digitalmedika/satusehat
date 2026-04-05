@@ -27,12 +27,13 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org
 
-      - name: Read package metadata
-        id: package
+      - name: Set release variables
+        id: vars
         shell: bash
         run: |
-          echo "name=$(node -p 'require(\"./package.json\").name')" >> "$GITHUB_OUTPUT"
-          echo "version=$(node -p 'require(\"./package.json\").version')" >> "$GITHUB_OUTPUT"
+          VERSION=$(node -p 'require("./package.json").version')
+          echo "PACKAGE_VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -47,7 +48,7 @@ jobs:
         id: notes
         shell: bash
         run: |
-          VERSION="${{ steps.package.outputs.version }}"
+          VERSION="$PACKAGE_VERSION"
           awk -v version="$VERSION" '
             $0 ~ "^## " version "([[:space:]]|$)" { capture=1; next }
             capture && $0 ~ "^## " { exit }
@@ -62,7 +63,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.package.outputs.version }}
+          tag_name: v${{ env.PACKAGE_VERSION }}
           target_commitish: ${{ github.sha }}
           body_path: release-notes.md
         env:
