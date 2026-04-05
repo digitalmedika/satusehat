@@ -9,6 +9,8 @@ Helper `createEncounterBuilder` mempermudah penyusunan payload `Encounter` secar
 - IGD
 - kebutuhan custom dengan `Encounter.class` sendiri
 
+Untuk alur IGD/triage yang punya banyak transisi status dan perpindahan class layanan, gunakan `createEmergencyEncounterHistory(...)` supaya `statusHistory` dan `classHistory` terbentuk otomatis dari titik waktu transisi.
+
 Preset yang tersedia:
 
 - `outpatient` -> `AMB`
@@ -149,6 +151,96 @@ const encounter = createEncounterBuilder({
   .build();
 ```
 
+## Contoh Alur IGD/Triage
+
+```ts
+import {
+  createEmergencyEncounterHistory,
+  createEncounterBuilder,
+} from "@digitalmedika/satusehat";
+
+const emergencyFlow = createEmergencyEncounterHistory({
+  statusStages: [
+    {
+      status: "arrived",
+      start: "2024-04-03T01:00:00+00:00",
+    },
+    {
+      status: "triaged",
+      start: "2024-04-03T01:05:00+00:00",
+    },
+    {
+      status: "in-progress",
+      start: "2024-04-03T01:15:00+00:00",
+    },
+  ],
+  classStages: [
+    {
+      start: "2024-04-03T01:00:00+00:00",
+      preset: "emergency",
+    },
+    {
+      start: "2024-04-03T03:00:00+00:00",
+      preset: "inpatient",
+    },
+  ],
+  periodEnd: "2024-04-05T05:00:00+00:00",
+});
+
+const encounter = createEncounterBuilder({
+  ...emergencyFlow,
+  identifier: {
+    system: "http://sys-ids.kemkes.go.id/encounter/10000004",
+    use: "official",
+    value: "IGD-20240001",
+  },
+  subject: {
+    reference: "Patient/100000030009",
+  },
+  reasonCode: {
+    coding: [
+      {
+        system: "http://terminology.hl7.org/CodeSystem/encounter-reason",
+        code: "29857009",
+        display: "Chest pain",
+      },
+    ],
+  },
+  diagnosis: {
+    condition: {
+      reference: "Condition/4bbbe654-14f5-4ab3-a36e-a1e307f67bb8",
+    },
+    use: {
+      coding: [
+        {
+          system: "https://www.hl7.org/fhir/Codesystem-diagnosis-role",
+          code: "AD",
+          display: "Admission diagnosis",
+        },
+      ],
+    },
+    rank: 1,
+  },
+  location: {
+    location: {
+      reference: "Location/igd-observation-bed-02",
+      display: "Bed Observasi IGD 02",
+    },
+    status: "active",
+  },
+  serviceProvider: {
+    reference: "Organization/10000004",
+  },
+}).build();
+```
+
+Aturan helper ini:
+
+- status pertama harus `arrived`
+- setiap `start` harus urut naik
+- `periodEnd` otomatis menjadi akhir status dan class terakhir
+- kalau `classStages` tidak diberikan, helper akan membuat 1 class `emergency` untuk seluruh encounter
+
 ## Method Utama
 
 - `setPreset(preset)`
@@ -180,4 +272,5 @@ const encounter = createEncounterBuilder({
 
 - Constructor otomatis mengisi `statusHistory` dan `classHistory` default dari `status`, `period`, dan preset atau `encounterClass` yang dipilih.
 - `setPreset(...)` hanya mengubah `class` saat ini. Kalau kamu juga ingin menyesuaikan histori class, tambahkan atau ganti `classHistory` secara eksplisit.
+- `createEmergencyEncounterHistory(...)` mengembalikan `status`, `period`, `encounterClass`, `statusHistory`, dan `classHistory` sehingga bisa langsung di-spread ke `createEncounterBuilder(...)`.
 - `build()` selalu memvalidasi draft akhir dengan `EncounterCreateSchema`.

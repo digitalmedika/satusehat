@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+  createEmergencyEncounterHistory,
   createEncounterBuilder,
   createEncounterHospitalization,
   createEncounterLocationServiceClassExtension,
@@ -104,6 +105,137 @@ describe("encounter builder", () => {
       "in-progress",
     ]);
     expect(encounter.location).toHaveLength(2);
+  });
+
+  test("builds IGD statusHistory and classHistory from emergency stage transitions", () => {
+    const fixture = createEncounterFixture("emergency");
+    const emergencyFlow = createEmergencyEncounterHistory({
+      statusStages: [
+        {
+          status: "arrived",
+          start: "2024-04-03T01:00:00+00:00",
+        },
+        {
+          status: "triaged",
+          start: "2024-04-03T01:05:00+00:00",
+        },
+        {
+          status: "in-progress",
+          start: "2024-04-03T01:15:00+00:00",
+        },
+      ],
+      periodEnd: "2024-04-03T03:00:00+00:00",
+    });
+
+    const encounter = createEncounterBuilder({
+      ...emergencyFlow,
+      identifier: fixture.identifier,
+      ...(fixture.type ? { type: fixture.type } : {}),
+      ...(fixture.serviceType ? { serviceType: fixture.serviceType } : {}),
+      ...(fixture.priority ? { priority: fixture.priority } : {}),
+      subject: fixture.subject,
+      ...(fixture.participant ? { participant: fixture.participant } : {}),
+      reasonCode: fixture.reasonCode,
+      diagnosis: fixture.diagnosis,
+      location: fixture.location,
+      serviceProvider: fixture.serviceProvider,
+    }).build();
+
+    expect(encounter.status).toBe("in-progress");
+    expect(encounter.period).toEqual({
+      start: "2024-04-03T01:00:00+00:00",
+      end: "2024-04-03T03:00:00+00:00",
+    });
+    expect(encounter.statusHistory).toEqual(fixture.statusHistory);
+    expect(encounter.class.code).toBe("EMER");
+    expect(encounter.classHistory).toEqual(fixture.classHistory);
+  });
+
+  test("supports class transitions from IGD to rawat inap without manual class history", () => {
+    const fixture = createEncounterFixture("inpatient");
+    const emergencyFlow = createEmergencyEncounterHistory({
+      statusStages: [
+        {
+          status: "arrived",
+          start: "2024-04-02T01:00:00+00:00",
+        },
+        {
+          status: "in-progress",
+          start: "2024-04-02T01:20:00+00:00",
+        },
+        {
+          status: "finished",
+          start: "2024-04-05T03:00:00+00:00",
+        },
+      ],
+      classStages: [
+        {
+          start: "2024-04-02T01:00:00+00:00",
+          preset: "emergency",
+        },
+        {
+          start: "2024-04-02T03:00:00+00:00",
+          preset: "inpatient",
+        },
+      ],
+      periodEnd: "2024-04-05T05:00:00+00:00",
+    });
+
+    const encounter = createEncounterBuilder({
+      ...emergencyFlow,
+      identifier: fixture.identifier,
+      ...(fixture.type ? { type: fixture.type } : {}),
+      ...(fixture.serviceType ? { serviceType: fixture.serviceType } : {}),
+      ...(fixture.priority ? { priority: fixture.priority } : {}),
+      subject: fixture.subject,
+      ...(fixture.participant ? { participant: fixture.participant } : {}),
+      reasonCode: fixture.reasonCode,
+      diagnosis: fixture.diagnosis,
+      ...(fixture.hospitalization ? { hospitalization: fixture.hospitalization } : {}),
+      location: fixture.location,
+      serviceProvider: fixture.serviceProvider,
+      ...(fixture.length ? { length: fixture.length } : {}),
+    }).build();
+
+    expect(encounter.class.code).toBe("IMP");
+    expect(encounter.classHistory).toEqual(fixture.classHistory);
+    expect(encounter.statusHistory).toEqual(fixture.statusHistory);
+  });
+
+  test("rejects inconsistent emergency timelines", () => {
+    expect(() =>
+      createEmergencyEncounterHistory({
+        statusStages: [
+          {
+            status: "triaged",
+            start: "2024-04-03T01:05:00+00:00",
+          },
+        ],
+        periodEnd: "2024-04-03T03:00:00+00:00",
+      }),
+    ).toThrow("Emergency encounter flow must start with status 'arrived'");
+
+    expect(() =>
+      createEmergencyEncounterHistory({
+        statusStages: [
+          {
+            status: "arrived",
+            start: "2024-04-03T01:00:00+00:00",
+          },
+          {
+            status: "triaged",
+            start: "2024-04-03T01:05:00+00:00",
+          },
+        ],
+        classStages: [
+          {
+            start: "2024-04-03T01:05:00+00:00",
+            preset: "emergency",
+          },
+        ],
+        periodEnd: "2024-04-03T03:00:00+00:00",
+      }),
+    ).toThrow("Emergency encounter class timeline must start at the same time");
   });
 
   test("builds rawat inap helpers for hospitalization and service class", () => {

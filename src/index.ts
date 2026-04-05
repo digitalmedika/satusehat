@@ -14,6 +14,7 @@ export {
 export { OrganizationBuilder, createOrganizationBuilder } from "./builders/organization-builder";
 export {
   EncounterBuilder,
+  createEmergencyEncounterHistory,
   createEncounterHospitalization,
   createEncounterBuilder,
   createEncounterLocationServiceClassExtension,
@@ -157,6 +158,10 @@ export type {
   EncounterBuilderInput,
   EncounterHospitalizationHelperInput,
   EncounterBuilderPreset,
+  EmergencyEncounterClassStageInput,
+  EmergencyEncounterHistoryInput,
+  EmergencyEncounterHistoryResult,
+  EmergencyEncounterStatusStageInput,
 } from "./builders/encounter-builder";
 export type {
   RiskAssessmentBuilderInput,

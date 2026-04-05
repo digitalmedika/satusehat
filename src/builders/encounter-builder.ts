@@ -90,6 +90,43 @@ export type EncounterHospitalizationHelperInput = Omit<
   dischargeDisposition?: EncounterDischargeDisposition | string;
 };
 
+export interface EmergencyEncounterStatusStageInput {
+  status: EncounterStatus;
+  start: string;
+}
+
+export type EmergencyEncounterClassStageInput =
+  | {
+      start: string;
+      preset: EncounterBuilderPreset;
+      encounterClass?: never;
+    }
+  | {
+      start: string;
+      preset?: never;
+      encounterClass: EncounterClass;
+    };
+
+export interface EmergencyEncounterHistoryInput {
+  statusStages: [
+    EmergencyEncounterStatusStageInput,
+    ...EmergencyEncounterStatusStageInput[],
+  ];
+  periodEnd: string;
+  classStages?: [
+    EmergencyEncounterClassStageInput,
+    ...EmergencyEncounterClassStageInput[],
+  ];
+}
+
+export interface EmergencyEncounterHistoryResult {
+  status: EncounterStatus;
+  period: EncounterCreateInput["period"];
+  encounterClass: EncounterClass;
+  statusHistory: EncounterStatusHistory[];
+  classHistory: EncounterClassHistory[];
+}
+
 function toArray<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value];
 }
@@ -98,12 +135,88 @@ function cloneEncounterClass(value: EncounterClass): EncounterClass {
   return { ...value };
 }
 
+function parseIsoDateTime(value: string, label: string): number {
+  const timestamp = Date.parse(value);
+
+  if (Number.isNaN(timestamp)) {
+    throw new TypeError(`${label} must be a valid ISO date-time string`);
+  }
+
+  return timestamp;
+}
+
+function assertAscendingTimeline(
+  label: string,
+  starts: { start: string }[],
+  periodEnd: string,
+): void {
+  const endTimestamp = parseIsoDateTime(periodEnd, `${label} periodEnd`);
+
+  let previousTimestamp: number | undefined;
+
+  starts.forEach((entry, index) => {
+    const currentTimestamp = parseIsoDateTime(
+      entry.start,
+      `${label} stage ${index + 1} start`,
+    );
+
+    if (previousTimestamp !== undefined && currentTimestamp <= previousTimestamp) {
+      throw new RangeError(`${label} stages must be sorted in strictly ascending order`);
+    }
+
+    if (currentTimestamp >= endTimestamp) {
+      throw new RangeError(`${label} stage ${index + 1} must start before periodEnd`);
+    }
+
+    previousTimestamp = currentTimestamp;
+  });
+}
+
 function resolveEncounterClass(input: EncounterBuilderInput): EncounterClass {
   if ("encounterClass" in input && input.encounterClass) {
     return cloneEncounterClass(input.encounterClass);
   }
 
   return cloneEncounterClass(ENCOUNTER_CLASS_PRESETS[input.preset]);
+}
+
+function resolveEncounterClassStage(
+  input: EmergencyEncounterClassStageInput,
+): EncounterClass {
+  if ("encounterClass" in input && input.encounterClass) {
+    return cloneEncounterClass(input.encounterClass);
+  }
+
+  return cloneEncounterClass(ENCOUNTER_CLASS_PRESETS[input.preset]);
+}
+
+function createStatusHistoryFromStages(
+  stages: EmergencyEncounterHistoryInput["statusStages"],
+  periodEnd: string,
+): EncounterStatusHistory[] {
+  return stages.map((stage, index) => ({
+    status: stage.status,
+    period: {
+      start: stage.start,
+      end: stages[index + 1]?.start ?? periodEnd,
+    },
+  }));
+}
+
+function createClassHistoryFromStages(
+  stages: [
+    EmergencyEncounterClassStageInput,
+    ...EmergencyEncounterClassStageInput[],
+  ],
+  periodEnd: string,
+): EncounterClassHistory[] {
+  return stages.map((stage, index) => ({
+    class: resolveEncounterClassStage(stage),
+    period: {
+      start: stage.start,
+      end: stages[index + 1]?.start ?? periodEnd,
+    },
+  }));
 }
 
 function normalizeAdmitSource(
@@ -162,6 +275,49 @@ export function createEncounterHospitalization(
   };
 
   return EncounterHospitalizationSchema.parse(hospitalization);
+}
+
+export function createEmergencyEncounterHistory(
+  input: EmergencyEncounterHistoryInput,
+): EmergencyEncounterHistoryResult {
+  const [firstStatusStage] = input.statusStages;
+
+  if (firstStatusStage.status !== "arrived") {
+    throw new RangeError("Emergency encounter flow must start with status 'arrived'");
+  }
+
+  assertAscendingTimeline("Emergency encounter status", input.statusStages, input.periodEnd);
+
+  const classStages = input.classStages ?? [
+    {
+      start: firstStatusStage.start,
+      preset: "emergency",
+    },
+  ];
+
+  assertAscendingTimeline("Emergency encounter class", classStages, input.periodEnd);
+
+  if (classStages[0]?.start !== firstStatusStage.start) {
+    throw new RangeError(
+      "Emergency encounter class timeline must start at the same time as the first status stage",
+    );
+  }
+
+  const statusHistory = createStatusHistoryFromStages(input.statusStages, input.periodEnd);
+  const classHistory = createClassHistoryFromStages(classStages, input.periodEnd);
+  const lastStatusStage = input.statusStages[input.statusStages.length - 1]!;
+  const lastClassStage = classStages[classStages.length - 1]!;
+
+  return {
+    status: lastStatusStage.status,
+    period: {
+      start: firstStatusStage.start,
+      end: input.periodEnd,
+    },
+    encounterClass: resolveEncounterClassStage(lastClassStage),
+    statusHistory,
+    classHistory,
+  };
 }
 
 export function createEncounterLocationServiceClassExtension(
