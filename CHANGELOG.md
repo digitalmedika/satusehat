@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0
+
+### Minor Changes
+
+- c07801e: Add `createEmergencyEncounterHistory` to build emergency encounter status and class history for IGD and triage flows, including transitions into inpatient care.
+
+### Patch Changes
+
+- a7833ae: implement Encounter resource builder and schemas for SatuSehat integration
+
 Semua perubahan penting pada project ini akan didokumentasikan di file ini.
 
 ## 0.1.0 - 2026-04-05
