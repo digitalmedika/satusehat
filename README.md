@@ -15,6 +15,7 @@ SDK ini dirancang untuk:
 Helper builder yang saat ini tersedia:
 
 - `createEncounterBuilder`
+- `createEmergencyEncounterHistory`
 - `createChestXRayStudyBuilder`
 - `createCompleteBloodCountPanelBuilder`
 - `createLaboratoryPanelBuilder`
