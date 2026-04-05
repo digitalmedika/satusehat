@@ -25,6 +25,10 @@ export {
   createEncounterConditionBuilder,
 } from "./builders/encounter-condition-builder";
 export {
+  EncounterProcedureBuilder,
+  createEncounterProcedureBuilder,
+} from "./builders/encounter-procedure-builder";
+export {
   RiskAssessmentBuilder,
   createRiskAssessmentBuilder,
 } from "./builders/risk-assessment-builder";
@@ -171,6 +175,9 @@ export type {
   EncounterConditionBuilderInput,
   EncounterDiagnosisBuildLinks,
 } from "./builders/encounter-condition-builder";
+export type {
+  EncounterProcedureBuilderInput,
+} from "./builders/encounter-procedure-builder";
 export type {
   RiskAssessmentBuilderInput,
 } from "./builders/risk-assessment-builder";
