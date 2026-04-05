@@ -1,6 +1,11 @@
 import { describe, expect, test } from "bun:test";
 
-import { createEncounterBuilder } from "../src";
+import {
+  createEncounterBuilder,
+  createEncounterHospitalization,
+  createEncounterLocationServiceClassExtension,
+  withEncounterLocationServiceClass,
+} from "../src";
 import type { EncounterCreateInput } from "../src";
 import { createEncounterFixture } from "./fixtures/encounter";
 
@@ -51,15 +56,15 @@ describe("encounter builder", () => {
 
   test("supports inpatient encounters with hospitalization details", () => {
     const fixture = createEncounterFixture("inpatient");
-    const {
-      hospitalization,
-    } = fixture;
-
     const encounter = createEncounterBuilder({
       preset: "inpatient",
       ...toBuilderInput(fixture),
     })
-      .setHospitalization(hospitalization!)
+      .setInpatientHospitalization({
+        ...fixture.hospitalization!,
+        admitSource: "emd",
+        dischargeDisposition: "home",
+      })
       .build();
 
     expect(encounter.class.code).toBe("IMP");
@@ -99,5 +104,47 @@ describe("encounter builder", () => {
       "in-progress",
     ]);
     expect(encounter.location).toHaveLength(2);
+  });
+
+  test("builds rawat inap helpers for hospitalization and service class", () => {
+    const hospitalization = createEncounterHospitalization({
+      admitSource: "emd",
+      destination: {
+        reference: "Location/icu-bed-01",
+        display: "ICU Bed 01",
+      },
+      dischargeDisposition: "home",
+    });
+
+    const location = withEncounterLocationServiceClass(
+      {
+        location: {
+          reference: "Location/ward-mawar-bed-b",
+          display: "Ruang Mawar Bed B",
+        },
+        status: "active",
+      },
+      "kelas-2",
+    );
+
+    expect(hospitalization.admitSource?.coding?.[0]?.system).toBe(
+      "http://terminology.hl7.org/CodeSystem/admit-source",
+    );
+    expect(hospitalization.dischargeDisposition?.coding?.[0]?.system).toBe(
+      "http://terminology.hl7.org/CodeSystem/discharge-disposition",
+    );
+    expect(location.extension?.[0]).toEqual(createEncounterLocationServiceClassExtension("kelas-2"));
+
+    const fixture = createEncounterFixture("outpatient");
+    const encounter = createEncounterBuilder({
+      preset: "outpatient",
+      ...toBuilderInput(fixture),
+    })
+      .setLocationServiceClass(0, "kelas-vip")
+      .build();
+
+    expect(encounter.location[0]?.extension?.[0]).toEqual(
+      createEncounterLocationServiceClassExtension("kelas-vip"),
+    );
   });
 });

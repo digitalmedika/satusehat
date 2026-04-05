@@ -62,4 +62,30 @@ describe("encounter fixtures", () => {
     expect(emergency.location[0]?.status).toBe("completed");
     expect(emergency.location[1]?.status).toBe("active");
   });
+
+  test("rejects inpatient payloads with invalid hospitalization coding systems", () => {
+    const inpatient = createEncounterFixture("inpatient");
+    (
+      inpatient.hospitalization!.admitSource!.coding![0] as {
+        system: string;
+      }
+    ).system = "http://example.com/admit-source";
+
+    expect(() => EncounterCreateSchema.parse(inpatient)).toThrow(
+      "http://terminology.hl7.org/CodeSystem/admit-source",
+    );
+  });
+
+  test("rejects serviceClass extensions that omit the structured valueCode", () => {
+    const inpatient = createEncounterFixture("inpatient");
+    inpatient.location[0]!.extension = [
+      {
+        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/serviceClass",
+      } as never,
+    ];
+
+    expect(() => EncounterCreateSchema.parse(inpatient)).toThrow(
+      "serviceClass extension must include a structured valueCode entry",
+    );
+  });
 });

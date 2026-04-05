@@ -1,13 +1,23 @@
-import { EncounterCreateSchema } from "../schemas/encounter";
+import {
+  EncounterAdmitSourceSchema,
+  EncounterCreateSchema,
+  EncounterDischargeDispositionSchema,
+  EncounterHospitalizationSchema,
+  EncounterLocationSchema,
+  EncounterLocationServiceClassExtensionSchema,
+} from "../schemas/encounter";
 import type { Reference } from "../schemas/common";
 import type {
+  EncounterAdmitSource,
   EncounterClass,
   EncounterClassHistory,
   EncounterCreateInput,
+  EncounterDischargeDisposition,
   EncounterDiagnosis,
   EncounterHospitalization,
   EncounterIdentifier,
   EncounterLocation,
+  EncounterLocationServiceClassExtension,
   EncounterParticipant,
   EncounterStatus,
   EncounterStatusHistory,
@@ -72,6 +82,14 @@ export type EncounterBuilderInput =
   | EncounterBuilderPresetInput
   | EncounterBuilderCustomClassInput;
 
+export type EncounterHospitalizationHelperInput = Omit<
+  EncounterHospitalization,
+  "admitSource" | "dischargeDisposition"
+> & {
+  admitSource?: EncounterAdmitSource | string;
+  dischargeDisposition?: EncounterDischargeDisposition | string;
+};
+
 function toArray<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value];
 }
@@ -86,6 +104,99 @@ function resolveEncounterClass(input: EncounterBuilderInput): EncounterClass {
   }
 
   return cloneEncounterClass(ENCOUNTER_CLASS_PRESETS[input.preset]);
+}
+
+function normalizeAdmitSource(
+  admitSource: EncounterHospitalizationHelperInput["admitSource"],
+): EncounterAdmitSource | undefined {
+  if (!admitSource) {
+    return undefined;
+  }
+
+  if (typeof admitSource === "string") {
+    return EncounterAdmitSourceSchema.parse({
+      coding: [
+        {
+          system: "http://terminology.hl7.org/CodeSystem/admit-source",
+          code: admitSource,
+        },
+      ],
+    });
+  }
+
+  return EncounterAdmitSourceSchema.parse(admitSource);
+}
+
+function normalizeDischargeDisposition(
+  dischargeDisposition: EncounterHospitalizationHelperInput["dischargeDisposition"],
+): EncounterDischargeDisposition | undefined {
+  if (!dischargeDisposition) {
+    return undefined;
+  }
+
+  if (typeof dischargeDisposition === "string") {
+    return EncounterDischargeDispositionSchema.parse({
+      coding: [
+        {
+          system: "http://terminology.hl7.org/CodeSystem/discharge-disposition",
+          code: dischargeDisposition,
+        },
+      ],
+    });
+  }
+
+  return EncounterDischargeDispositionSchema.parse(dischargeDisposition);
+}
+
+export function createEncounterHospitalization(
+  input: EncounterHospitalizationHelperInput,
+): EncounterHospitalization {
+  const hospitalization = {
+    ...input,
+    ...(input.admitSource ? { admitSource: normalizeAdmitSource(input.admitSource) } : {}),
+    ...(input.dischargeDisposition
+      ? {
+          dischargeDisposition: normalizeDischargeDisposition(input.dischargeDisposition),
+        }
+      : {}),
+  };
+
+  return EncounterHospitalizationSchema.parse(hospitalization);
+}
+
+export function createEncounterLocationServiceClassExtension(
+  valueCode: string,
+): EncounterLocationServiceClassExtension {
+  return EncounterLocationServiceClassExtensionSchema.parse({
+    url: "https://fhir.kemkes.go.id/r4/StructureDefinition/serviceClass",
+    extension: [
+      {
+        url: "valueCode",
+        valueCode,
+      },
+    ],
+  });
+}
+
+export function withEncounterLocationServiceClass(
+  location: EncounterLocation,
+  valueCode: string,
+): EncounterLocation {
+  return EncounterLocationSchema.parse({
+    ...location,
+    extension: [
+      ...(location.extension ?? []).filter(
+        (entry) =>
+          !(
+            typeof entry === "object" &&
+            entry !== null &&
+            "url" in entry &&
+            entry.url === "https://fhir.kemkes.go.id/r4/StructureDefinition/serviceClass"
+          ),
+      ),
+      createEncounterLocationServiceClassExtension(valueCode),
+    ],
+  });
 }
 
 export class EncounterBuilder {
@@ -209,6 +320,11 @@ export class EncounterBuilder {
     return this;
   }
 
+  public setInpatientHospitalization(input: EncounterHospitalizationHelperInput): this {
+    this.draft.hospitalization = createEncounterHospitalization(input);
+    return this;
+  }
+
   public setLength(value: NonNullable<EncounterCreateInput["length"]>): this {
     this.draft.length = value;
     return this;
@@ -241,6 +357,17 @@ export class EncounterBuilder {
 
   public setServiceType(value: NonNullable<EncounterCreateInput["serviceType"]>): this {
     this.draft.serviceType = value;
+    return this;
+  }
+
+  public setLocationServiceClass(locationIndex: number, valueCode: string): this {
+    const location = this.draft.location[locationIndex];
+
+    if (!location) {
+      throw new RangeError(`Encounter location at index ${locationIndex} does not exist`);
+    }
+
+    this.draft.location[locationIndex] = withEncounterLocationServiceClass(location, valueCode);
     return this;
   }
 

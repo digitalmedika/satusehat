@@ -69,23 +69,73 @@ export const EncounterDiagnosisSchema = z.object({
   rank: z.number().int().positive(),
 });
 
+export const EncounterHospitalizationLocationReferenceSchema = ReferenceSchema.extend({
+  reference: z
+    .string()
+    .regex(
+      /^(Location|Organization|HealthcareService|Patient)\/.+$/,
+      "Encounter hospitalization references must target Location, Organization, HealthcareService, or Patient",
+    ),
+});
+
+export const EncounterAdmitSourceCodingSchema = CodingSchema.extend({
+  system: z.literal("http://terminology.hl7.org/CodeSystem/admit-source"),
+  code: z.string().min(1),
+});
+
+export const EncounterAdmitSourceSchema = CodeableConceptSchema.extend({
+  coding: z.array(EncounterAdmitSourceCodingSchema).min(1),
+});
+
+export const EncounterDischargeDispositionCodingSchema = CodingSchema.extend({
+  system: z.literal("http://terminology.hl7.org/CodeSystem/discharge-disposition"),
+  code: z.string().min(1),
+});
+
+export const EncounterDischargeDispositionSchema = CodeableConceptSchema.extend({
+  coding: z.array(EncounterDischargeDispositionCodingSchema).min(1),
+});
+
 export const EncounterHospitalizationSchema = z.object({
   preAdmissionIdentifier: IdentifierSchema.optional(),
-  origin: ReferenceSchema.optional(),
-  admitSource: CodeableConceptSchema.optional(),
+  origin: EncounterHospitalizationLocationReferenceSchema.optional(),
+  admitSource: EncounterAdmitSourceSchema.optional(),
   reAdmission: CodeableConceptSchema.optional(),
   dietPreference: z.array(CodeableConceptSchema).optional(),
   specialArrangement: z.array(CodeableConceptSchema).optional(),
-  destination: ReferenceSchema.optional(),
-  dischargeDisposition: CodeableConceptSchema.optional(),
+  destination: EncounterHospitalizationLocationReferenceSchema.optional(),
+  dischargeDisposition: EncounterDischargeDispositionSchema.optional(),
 });
+
+export const EncounterLocationServiceClassValueSchema = z.object({
+  url: z.literal("valueCode"),
+  valueCode: z.string().min(1),
+});
+
+export const EncounterLocationServiceClassExtensionSchema = z.object({
+  url: z.literal("https://fhir.kemkes.go.id/r4/StructureDefinition/serviceClass"),
+  extension: z.array(EncounterLocationServiceClassValueSchema).min(1),
+});
+
+const GenericEncounterLocationExtensionSchema = z
+  .object({ url: z.string().min(1) })
+  .passthrough()
+  .refine(
+    (value) => value.url !== "https://fhir.kemkes.go.id/r4/StructureDefinition/serviceClass",
+    "serviceClass extension must include a structured valueCode entry",
+  );
+
+export const EncounterLocationExtensionSchema = z.union([
+  EncounterLocationServiceClassExtensionSchema,
+  GenericEncounterLocationExtensionSchema,
+]);
 
 export const EncounterLocationSchema = z.object({
   location: ReferenceSchema,
   status: z.enum(["planned", "active", "reserved", "completed"]).optional(),
   physicalType: CodeableConceptSchema.optional(),
   period: PeriodSchema.optional(),
-  extension: z.array(z.unknown()).optional(),
+  extension: z.array(EncounterLocationExtensionSchema).optional(),
 });
 
 export const EncounterDurationSchema = z.object({
@@ -162,7 +212,23 @@ export type EncounterStatusHistory = z.infer<typeof EncounterStatusHistorySchema
 export type EncounterClassHistory = z.infer<typeof EncounterClassHistorySchema>;
 export type EncounterParticipant = z.infer<typeof EncounterParticipantSchema>;
 export type EncounterDiagnosis = z.infer<typeof EncounterDiagnosisSchema>;
+export type EncounterHospitalizationLocationReference = z.infer<
+  typeof EncounterHospitalizationLocationReferenceSchema
+>;
+export type EncounterAdmitSourceCoding = z.infer<typeof EncounterAdmitSourceCodingSchema>;
+export type EncounterAdmitSource = z.infer<typeof EncounterAdmitSourceSchema>;
+export type EncounterDischargeDispositionCoding = z.infer<
+  typeof EncounterDischargeDispositionCodingSchema
+>;
+export type EncounterDischargeDisposition = z.infer<typeof EncounterDischargeDispositionSchema>;
 export type EncounterHospitalization = z.infer<typeof EncounterHospitalizationSchema>;
+export type EncounterLocationServiceClassValue = z.infer<
+  typeof EncounterLocationServiceClassValueSchema
+>;
+export type EncounterLocationServiceClassExtension = z.infer<
+  typeof EncounterLocationServiceClassExtensionSchema
+>;
+export type EncounterLocationExtension = z.infer<typeof EncounterLocationExtensionSchema>;
 export type EncounterLocation = z.infer<typeof EncounterLocationSchema>;
 export type EncounterDuration = z.infer<typeof EncounterDurationSchema>;
 export type EncounterPatchOperation = z.infer<typeof EncounterPatchOperationSchema>;

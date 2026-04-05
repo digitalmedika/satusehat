@@ -14,7 +14,10 @@ export {
 export { OrganizationBuilder, createOrganizationBuilder } from "./builders/organization-builder";
 export {
   EncounterBuilder,
+  createEncounterHospitalization,
   createEncounterBuilder,
+  createEncounterLocationServiceClassExtension,
+  withEncounterLocationServiceClass,
 } from "./builders/encounter-builder";
 export {
   RiskAssessmentBuilder,
@@ -152,6 +155,7 @@ export type {
 } from "./schemas/risk-assessment";
 export type {
   EncounterBuilderInput,
+  EncounterHospitalizationHelperInput,
   EncounterBuilderPreset,
 } from "./builders/encounter-builder";
 export type {
@@ -367,15 +371,23 @@ export type {
   SpecimenStatus,
 } from "./schemas/specimen";
 export type {
+  EncounterAdmitSource,
+  EncounterAdmitSourceCoding,
   Encounter,
   EncounterClass,
   EncounterClassHistory,
   EncounterCreateInput,
   EncounterDiagnosis,
+  EncounterDischargeDisposition,
+  EncounterDischargeDispositionCoding,
   EncounterDuration,
   EncounterHospitalization,
+  EncounterHospitalizationLocationReference,
   EncounterIdentifier,
   EncounterLocation,
+  EncounterLocationExtension,
+  EncounterLocationServiceClassExtension,
+  EncounterLocationServiceClassValue,
   EncounterParticipant,
   EncounterPatchInput,
   EncounterPatchOperation,
