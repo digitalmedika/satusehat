@@ -43,26 +43,6 @@ jobs:
           bun run typecheck
           bun test
 
-      - name: Check if version already exists on npm
-        id: npm
-        shell: bash
-        run: |
-          if npm view "${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}" version >/dev/null 2>&1; then
-            echo "already_published=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "already_published=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Publish package to npm
-        if: steps.npm.outputs.already_published != 'true'
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Skip npm publish because version already exists
-        if: steps.npm.outputs.already_published == 'true'
-        run: echo "Package version ${{ steps.package.outputs.version }} is already published on npm. Skipping publish."
-
       - name: Extract release notes from changelog
         id: notes
         shell: bash
