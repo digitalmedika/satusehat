@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0
+
+### Minor Changes
+
+- 3828b14: Add `createEncounterProcedureBuilder` to support simple post-encounter IGD flows from `Encounter` to `Procedure`, including documentation, exports, and test coverage.
+
 ## 0.3.0
 
 ### Minor Changes
