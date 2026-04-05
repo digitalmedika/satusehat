@@ -127,7 +127,7 @@ type GetPatientParams = z.infer<typeof GetPatientParamsSchema>;
 
 - Library sudah berada di fase ekspansi helper, dokumentasi, dan use case klinis spesifik.
 - Resource publik utama sudah tersedia lengkap dengan schema, endpoint, dan test.
-- Helper builder sudah mencakup encounter, alur IGD/triage, workflow pasca-encounter sederhana `Encounter -> Condition`, rawat inap, organisasi, risk assessment, radiologi, dan panel laboratorium.
+- Helper builder sudah mencakup encounter, alur IGD/triage, workflow pasca-encounter `Encounter -> Condition` dan `Encounter -> Procedure`, rawat inap, organisasi, risk assessment, radiologi, dan panel laboratorium.
 - Build, typecheck, dan test suite penuh sudah berjalan hijau di repo lokal.
 
 ## Checklist Publish ke npm
@@ -148,9 +148,9 @@ type GetPatientParams = z.infer<typeof GetPatientParamsSchema>;
 
 ## Langkah Praktis Berikutnya
 
-1. Perluas helper pasca-encounter dari alur sederhana `Encounter -> Condition` ke workflow klinis yang lebih lengkap.
-2. Pilih helper workflow berikutnya yang menghubungkan `Encounter` ke `Procedure`, `Medication`, atau `MedicationAdministration`.
-3. Tambahkan dokumentasi contoh penggunaan yang menunjukkan urutan resource setelah encounter dibuat dan diagnosis awal sudah tercatat.
+1. Perluas helper pasca-encounter dari workflow `Condition` dan `Procedure` ke resource terapi atau pemberian obat.
+2. Pilih helper workflow berikutnya yang menghubungkan `Encounter` ke `Medication`, `MedicationRequest`, atau `MedicationAdministration`.
+3. Tambahkan dokumentasi contoh penggunaan yang menunjukkan urutan resource setelah encounter dibuat, diagnosis awal tercatat, dan tindakan klinis awal selesai.
 4. Setelah helper workflow lanjutan stabil, baru lanjutkan backlog use case lain di luar Encounter bila ada issue baru.
 
 ## TODO Backlog
@@ -161,18 +161,19 @@ type GetPatientParams = z.infer<typeof GetPatientParamsSchema>;
 - Selesai: dukungan use case IGD/triage dengan pola `statusHistory` dan `classHistory` yang lebih spesifik per alur layanan.
 - Selesai: field dan contoh untuk use case poli/rawat jalan yang lebih lengkap, termasuk `serviceType`, `priority`, dan participant yang lebih terstruktur.
 - Selesai: dukungan extension `serviceClass` pada `Encounter.location` untuk kelas perawatan.
-- Selesai sebagian: helper workflow sederhana pasca-encounter untuk alur IGD `Encounter -> Condition` sudah tersedia.
-- Belum: workflow klinis lanjutan pasca-encounter yang meluas ke `Procedure`, `Medication`, atau `MedicationAdministration`.
+- Selesai: helper workflow pasca-encounter untuk alur IGD `Encounter -> Condition` sudah tersedia.
+- Selesai: helper workflow pasca-encounter untuk alur IGD `Encounter -> Procedure` sudah tersedia.
+- Belum: workflow klinis lanjutan pasca-encounter yang meluas ke `Medication`, `MedicationRequest`, atau `MedicationAdministration`.
 - Selesai: test fixture dan contoh payload per use case agar validasi schema representatif terhadap skenario SATUSEHAT nyata.
 
 ## Prioritas Rekomendasi
 
 Kerjakan berikutnya:
 
-- Helper atau contoh workflow klinis pasca-encounter yang memperluas alur dari `Encounter -> Condition` menuju `Procedure`, `Medication`, atau `MedicationAdministration`.
+- Helper atau contoh workflow klinis pasca-encounter yang memperluas alur dari `Encounter -> Condition` dan `Encounter -> Procedure` menuju `Medication`, `MedicationRequest`, atau `MedicationAdministration`.
 
 Alasan diprioritaskan:
 
-- Fondasi alur diagnosis awal dari encounter sudah tersedia, jadi langkah berikutnya tinggal memperluas rantai resource klinis.
+- Fondasi alur diagnosis awal dan tindakan klinis awal dari encounter sudah tersedia, jadi langkah berikutnya tinggal memperluas rantai resource klinis.
 - Value-nya tinggi karena pengguna bisa melihat alur klinis yang makin end-to-end setelah encounter berhasil dibuat.
 - Schema, endpoint, dan builder resource lanjutan sebagian besar sudah ada, jadi risikonya lebih rendah dibanding memulai area baru.

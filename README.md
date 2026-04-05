@@ -16,6 +16,7 @@ Helper builder yang saat ini tersedia:
 
 - `createEncounterBuilder`
 - `createEncounterConditionBuilder`
+- `createEncounterProcedureBuilder`
 - `createEmergencyEncounterHistory`
 - `createChestXRayStudyBuilder`
 - `createCompleteBloodCountPanelBuilder`
@@ -202,6 +203,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [ImagingStudy](./docs/resources/imaging-study.md)
 - [Encounter Builder](./docs/helpers/encounter-builder.md)
 - [Encounter -> Condition Builder](./docs/helpers/encounter-condition-builder.md)
+- [Encounter -> Procedure Builder](./docs/helpers/encounter-procedure-builder.md)
 - [Patient](./docs/resources/patient.md)
 - [Encounter](./docs/resources/encounter.md)
 - [Procedure](./docs/resources/procedure.md)
