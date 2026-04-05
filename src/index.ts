@@ -21,6 +21,10 @@ export {
   withEncounterLocationServiceClass,
 } from "./builders/encounter-builder";
 export {
+  EncounterConditionBuilder,
+  createEncounterConditionBuilder,
+} from "./builders/encounter-condition-builder";
+export {
   RiskAssessmentBuilder,
   createRiskAssessmentBuilder,
 } from "./builders/risk-assessment-builder";
@@ -163,6 +167,10 @@ export type {
   EmergencyEncounterHistoryResult,
   EmergencyEncounterStatusStageInput,
 } from "./builders/encounter-builder";
+export type {
+  EncounterConditionBuilderInput,
+  EncounterDiagnosisBuildLinks,
+} from "./builders/encounter-condition-builder";
 export type {
   RiskAssessmentBuilderInput,
 } from "./builders/risk-assessment-builder";
