@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0
+
+### Minor Changes
+
+- 53c9bf6: Add an encounter-to-medication-administration helper builder for post-encounter IGD workflows, including documentation and tests.
+
 ## 0.4.0
 
 ### Minor Changes
