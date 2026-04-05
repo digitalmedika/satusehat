@@ -97,31 +97,38 @@ type GetPatientParams = z.infer<typeof GetPatientParamsSchema>;
 
 ### Phase 1: Fondasi Package
 
-- Rapikan `package.json` untuk package library npm.
-- Pindahkan entry point ke `src/index.ts`.
-- Tambahkan script `build`, `typecheck`, `test`, dan `prepublishOnly`.
-- Aktifkan strict TypeScript config yang cocok untuk library.
+- Selesai: `package.json` sudah siap untuk library npm.
+- Selesai: entry point sudah memakai `src/index.ts`.
+- Selesai: script `build`, `typecheck`, `test`, dan `prepublishOnly` sudah tersedia.
+- Selesai: strict TypeScript config sudah aktif.
 
 ### Phase 2: Core Client
 
-- Buat HTTP transport wrapper berbasis `fetch`.
-- Tambahkan auth strategy untuk bearer token dan refresh token callback.
-- Buat typed error model dan response normalizer.
+- Selesai: HTTP transport wrapper berbasis `fetch` sudah dipakai di client.
+- Selesai: auth strategy untuk bearer token dan token provider sudah tersedia.
+- Selesai: typed error model dan response normalizer sudah dipakai lintas endpoint.
 
 ### Phase 3: Schema dan Endpoint Awal
 
-- Pilih 1 sampai 2 resource Satu Sehat prioritas awal, misalnya patient dan encounter.
-- Tulis schema request/response.
-- Implementasikan endpoint method typed end-to-end.
-- Tambahkan unit test untuk success, validation failure, dan API failure.
+- Selesai: implementasi sudah melewati resource awal dan meluas ke banyak resource klinis utama.
+- Selesai: schema request/response tersedia untuk resource yang diekspor publik.
+- Selesai: endpoint typed end-to-end sudah tersedia untuk patient, encounter, dan resource lanjutan lain.
+- Selesai: unit test sudah mencakup success, validation failure, dan API failure.
 
 ### Phase 4: Publishing Readiness
 
-- Lengkapi metadata npm: `name`, `version`, `description`, `license`, `repository`, `keywords`.
-- Hasilkan output `dist/`.
-- Tambahkan `exports`, `types`, dan `files`.
-- Siapkan README usage dan changelog.
-- Tambahkan CI untuk typecheck, test, dan publish pipeline.
+- Selesai: metadata npm utama sudah lengkap.
+- Selesai: output `dist/` sudah dihasilkan lewat build.
+- Selesai: `exports`, `types`, dan `files` sudah dikonfigurasi.
+- Selesai: README usage dan changelog sudah tersedia.
+- Selesai: workflow GitHub Actions untuk release/publish sudah tersedia.
+
+## Status Saat Ini
+
+- Library sudah berada di fase ekspansi helper, dokumentasi, dan use case klinis spesifik.
+- Resource publik utama sudah tersedia lengkap dengan schema, endpoint, dan test.
+- Helper builder sudah mencakup encounter, alur IGD/triage, workflow pasca-encounter sederhana `Encounter -> Condition`, rawat inap, organisasi, risk assessment, radiologi, dan panel laboratorium.
+- Build, typecheck, dan test suite penuh sudah berjalan hijau di repo lokal.
 
 ## Checklist Publish ke npm
 
@@ -141,18 +148,31 @@ type GetPatientParams = z.infer<typeof GetPatientParamsSchema>;
 
 ## Langkah Praktis Berikutnya
 
-1. Ubah scaffold Bun menjadi struktur library npm.
-2. Tambahkan dependency schema validation.
-3. Buat core client dan satu endpoint vertikal penuh sebagai reference implementation.
-4. Setelah pola stabil, lanjutkan ekspansi resource lain.
+1. Perluas helper pasca-encounter dari alur sederhana `Encounter -> Condition` ke workflow klinis yang lebih lengkap.
+2. Pilih helper workflow berikutnya yang menghubungkan `Encounter` ke `Procedure`, `Medication`, atau `MedicationAdministration`.
+3. Tambahkan dokumentasi contoh penggunaan yang menunjukkan urutan resource setelah encounter dibuat dan diagnosis awal sudah tercatat.
+4. Setelah helper workflow lanjutan stabil, baru lanjutkan backlog use case lain di luar Encounter bila ada issue baru.
 
 ## TODO Backlog
 
 ### Encounter
 
-- Tambahkan perluasan schema dan helper untuk use case rawat inap, termasuk `hospitalization`, `admitSource`, `destination`, dan `dischargeDisposition` yang lebih ketat.
-- Tambahkan dukungan use case IGD/triage dengan pola status dan class history yang lebih spesifik per alur layanan.
-- Tambahkan field dan contoh untuk use case poli/rawat jalan yang lebih lengkap, termasuk `serviceType`, `priority`, dan participant yang lebih terstruktur.
-- Tambahkan dukungan extension `serviceClass` pada `Encounter.location` untuk kelas perawatan.
-- Tambahkan contoh integrasi `Encounter` yang terhubung dengan resource klinis lanjutan seperti `Condition`, `Observation`, `Procedure`, dan `Medication`.
-- Tambahkan test fixture dan contoh payload per use case agar validasi schema tidak hanya generik, tapi juga representatif terhadap skenario SATUSEHAT nyata.
+- Selesai: perluasan schema dan helper untuk use case rawat inap, termasuk `hospitalization`, `admitSource`, `destination`, dan `dischargeDisposition` yang lebih ketat.
+- Selesai: dukungan use case IGD/triage dengan pola `statusHistory` dan `classHistory` yang lebih spesifik per alur layanan.
+- Selesai: field dan contoh untuk use case poli/rawat jalan yang lebih lengkap, termasuk `serviceType`, `priority`, dan participant yang lebih terstruktur.
+- Selesai: dukungan extension `serviceClass` pada `Encounter.location` untuk kelas perawatan.
+- Selesai sebagian: helper workflow sederhana pasca-encounter untuk alur IGD `Encounter -> Condition` sudah tersedia.
+- Belum: workflow klinis lanjutan pasca-encounter yang meluas ke `Procedure`, `Medication`, atau `MedicationAdministration`.
+- Selesai: test fixture dan contoh payload per use case agar validasi schema representatif terhadap skenario SATUSEHAT nyata.
+
+## Prioritas Rekomendasi
+
+Kerjakan berikutnya:
+
+- Helper atau contoh workflow klinis pasca-encounter yang memperluas alur dari `Encounter -> Condition` menuju `Procedure`, `Medication`, atau `MedicationAdministration`.
+
+Alasan diprioritaskan:
+
+- Fondasi alur diagnosis awal dari encounter sudah tersedia, jadi langkah berikutnya tinggal memperluas rantai resource klinis.
+- Value-nya tinggi karena pengguna bisa melihat alur klinis yang makin end-to-end setelah encounter berhasil dibuat.
+- Schema, endpoint, dan builder resource lanjutan sebagian besar sudah ada, jadi risikonya lebih rendah dibanding memulai area baru.
