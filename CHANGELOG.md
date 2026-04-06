@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.1
+
+### Patch Changes
+
+- e0468b3: fix: replace bun build with esbuild to resolve empty dist/index.js bundle — all internal modules were incorrectly marked as external, causing ReferenceError at runtime
+
 ## 0.6.0
 
 ### Minor Changes
