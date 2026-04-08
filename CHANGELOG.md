@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.2
+
+### Patch Changes
+
+- 3f5122a: reason code on encounter resource optional
+
 ## 0.6.1
 
 ### Patch Changes
