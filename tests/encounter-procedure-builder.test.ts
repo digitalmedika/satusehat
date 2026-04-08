@@ -242,7 +242,7 @@ describe("encounter -> procedure builder", () => {
     expect(procedure.subject).toEqual(encounterDraft.subject);
     expect(procedure.encounter.reference).toBe("Encounter/enc-igd-1");
     expect(procedure.reasonCode?.[0]?.coding?.[0]?.code).toBe(
-      encounterDraft.reasonCode[0]?.coding?.[0]?.code,
+      encounterDraft.reasonCode?.[0]?.coding?.[0]?.code,
     );
     expect(procedure.performer?.[0]?.actor.reference).toBe(
       encounterDraft.participant?.[1]?.individual?.reference,
