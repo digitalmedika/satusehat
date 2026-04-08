@@ -55,9 +55,10 @@ type EncounterBuilderCommonInput = {
   participant?: EncounterParticipant[];
   period: EncounterCreateInput["period"];
   length?: EncounterCreateInput["length"];
-  reasonCode:
-    | EncounterCreateInput["reasonCode"][number]
-    | EncounterCreateInput["reasonCode"];
+  reasonCode?:
+    | NonNullable<EncounterCreateInput["reasonCode"]>[number]
+    | NonNullable<EncounterCreateInput["reasonCode"]>
+    | undefined;
   reasonReference?: Reference[];
   diagnosis: EncounterDiagnosis | EncounterDiagnosis[];
   account?: Reference[];
@@ -387,7 +388,7 @@ export class EncounterBuilder {
       ...(input.participant ? { participant: input.participant } : {}),
       period: input.period,
       ...(input.length ? { length: input.length } : {}),
-      reasonCode: toArray(input.reasonCode),
+      ...(input.reasonCode ? { reasonCode: toArray(input.reasonCode) } : {}),
       ...(input.reasonReference ? { reasonReference: input.reasonReference } : {}),
       diagnosis: toArray(input.diagnosis),
       ...(input.account ? { account: input.account } : {}),
@@ -433,8 +434,8 @@ export class EncounterBuilder {
     return this;
   }
 
-  public addReasonCode(reasonCode: EncounterCreateInput["reasonCode"][number]): this {
-    this.draft.reasonCode = [...this.draft.reasonCode, reasonCode];
+  public addReasonCode(reasonCode: NonNullable<EncounterCreateInput["reasonCode"]>[number]): this {
+    this.draft.reasonCode = [...(this.draft.reasonCode ?? []), reasonCode];
     return this;
   }
 
