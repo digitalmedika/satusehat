@@ -9,6 +9,56 @@ import type { ConditionCreateInput, EncounterCreateInput } from "../src";
 const ENCOUNTER_UUID = "urn:uuid:46cd6c7b-706a-45cc-be83-6447c4863a32";
 const CONDITION_UUID = "urn:uuid:d36831ce-18fc-4218-95b0-f7872c99df07";
 
+type EncounterTransactionEntry = {
+  fullUrl: string;
+  resource: EncounterCreateInput;
+  request: { method: "POST"; url: "Encounter" };
+};
+
+type ConditionTransactionEntry = {
+  fullUrl: string;
+  resource: ConditionCreateInput;
+  request: { method: "POST"; url: "Condition" };
+};
+
+type TransactionBundle = {
+  resourceType: "Bundle";
+  type: "transaction";
+  entry: [EncounterTransactionEntry, ConditionTransactionEntry];
+};
+
+type TransactionResponseBundle = {
+  resourceType: "Bundle";
+  type: "transaction-response";
+  entry: [
+    {
+      response: {
+        status: string;
+        location: string;
+      };
+      resource: EncounterCreateInput & { id: string };
+    },
+    {
+      response: {
+        status: string;
+        location: string;
+      };
+      resource: ConditionCreateInput & { id: string };
+    },
+  ];
+};
+
+function getPrimaryEncounterDiagnosis(encounter: EncounterCreateInput) {
+  const diagnosis = encounter.diagnosis?.[0];
+
+  expect(diagnosis).toBeDefined();
+  if (!diagnosis) {
+    throw new Error("Expected encounter to contain a diagnosis entry");
+  }
+
+  return diagnosis;
+}
+
 const encounterResource: EncounterCreateInput = {
   resourceType: "Encounter",
   identifier: [
@@ -133,20 +183,20 @@ const conditionResource: ConditionCreateInput = {
   },
 };
 
-function buildBundle() {
+function buildBundle(): TransactionBundle {
   return {
-    resourceType: "Bundle" as const,
-    type: "transaction" as const,
+    resourceType: "Bundle",
+    type: "transaction",
     entry: [
       {
         fullUrl: ENCOUNTER_UUID,
         resource: encounterResource,
-        request: { method: "POST" as const, url: "Encounter" },
+        request: { method: "POST", url: "Encounter" },
       },
       {
         fullUrl: CONDITION_UUID,
         resource: conditionResource,
-        request: { method: "POST" as const, url: "Condition" },
+        request: { method: "POST", url: "Condition" },
       },
     ],
   };
@@ -268,15 +318,23 @@ describe("encounter bundle transaction integration", () => {
 
     const builtEncounter = encounterBuilder.build();
     const builtCondition = conditionBuilder.buildCondition();
+    const primaryDiagnosis = getPrimaryEncounterDiagnosis(builtEncounter);
+
+    const primaryDiagnosisCoding = primaryDiagnosis.use.coding?.[0];
+
+    expect(primaryDiagnosisCoding).toBeDefined();
+    if (!primaryDiagnosisCoding) {
+      throw new Error("Expected built encounter diagnosis to contain coding");
+    }
 
     // Verify encounter structure
     expect(builtEncounter.resourceType).toBe("Encounter");
     expect(builtEncounter.status).toBe("finished");
     expect(builtEncounter.class.code).toBe("AMB");
     expect(builtEncounter.subject.reference).toBe("Patient/P02361976250");
-    expect(builtEncounter.diagnosis[0].condition.reference).toBe(CONDITION_UUID);
-    expect(builtEncounter.diagnosis[0].use.coding[0].code).toBe("AD");
-    expect(builtEncounter.diagnosis[0].rank).toBe(1);
+    expect(primaryDiagnosis.condition.reference).toBe(CONDITION_UUID);
+    expect(primaryDiagnosisCoding.code).toBe("AD");
+    expect(primaryDiagnosis.rank).toBe(1);
 
     // Verify condition structure
     expect(builtCondition.resourceType).toBe("Condition");
@@ -294,10 +352,11 @@ describe("encounter bundle transaction integration", () => {
 
     // Encounter entry
     const encounterEntry = bundle.entry[0];
+    const encounterDiagnosis = getPrimaryEncounterDiagnosis(encounterEntry.resource);
     expect(encounterEntry.fullUrl).toBe(ENCOUNTER_UUID);
     expect(encounterEntry.request).toEqual({ method: "POST", url: "Encounter" });
     expect(encounterEntry.resource.resourceType).toBe("Encounter");
-    expect(encounterEntry.resource.diagnosis[0].condition.reference).toBe(CONDITION_UUID);
+    expect(encounterDiagnosis.condition.reference).toBe(CONDITION_UUID);
 
     // Condition entry
     const conditionEntry = bundle.entry[1];
@@ -342,7 +401,7 @@ describe("encounter bundle transaction integration", () => {
             },
           },
         ],
-      };
+      } satisfies TransactionResponseBundle;
 
       console.log(`[SatuSehat] POST ${url}`);
       console.log("[SatuSehat] Request body:", JSON.stringify(capturedBody, null, 2));
@@ -371,12 +430,14 @@ describe("encounter bundle transaction integration", () => {
 
     expect(capturedMethod).toBe("POST");
     expect(capturedBody).toEqual(bundle);
-    expect((capturedBody as Record<string, unknown>).resourceType).toBe("Bundle");
-    expect((capturedBody as Record<string, unknown>).type).toBe("transaction");
-    expect((capturedBody as { entry: unknown[] }).entry).toHaveLength(2);
+    const sentBundle = capturedBody as TransactionBundle;
+
+    expect(sentBundle.resourceType).toBe("Bundle");
+    expect(sentBundle.type).toBe("transaction");
+    expect(sentBundle.entry).toHaveLength(2);
 
     // Verify cross-references are intact in the sent payload
-    const entries = (capturedBody as { entry: Array<{ fullUrl: string; resource: Record<string, unknown>; request: { method: string; url: string } }> }).entry;
+    const entries = sentBundle.entry;
 
     expect(entries[0].fullUrl).toBe(ENCOUNTER_UUID);
     expect(entries[0].request).toEqual({ method: "POST", url: "Encounter" });
@@ -384,7 +445,7 @@ describe("encounter bundle transaction integration", () => {
     expect(entries[1].request).toEqual({ method: "POST", url: "Condition" });
 
     // Verify the response is a valid transaction-response bundle
-    const responseBody = await response.json();
+    const responseBody = (await response.json()) as TransactionResponseBundle;
     expect(responseBody.resourceType).toBe("Bundle");
     expect(responseBody.type).toBe("transaction-response");
     expect(responseBody.entry[0].response.status).toBe("201 Created");
@@ -446,9 +507,10 @@ describe("encounter bundle transaction integration", () => {
 
     const encounterEntry = bundle.entry[0];
     const conditionEntry = bundle.entry[1];
+    const encounterDiagnosis = getPrimaryEncounterDiagnosis(encounterEntry.resource);
 
     // Encounter -> Condition (via diagnosis.condition.reference)
-    const diagnosisRef = encounterEntry.resource.diagnosis[0].condition.reference;
+    const diagnosisRef = encounterDiagnosis.condition.reference;
     expect(diagnosisRef).toBe(conditionEntry.fullUrl);
 
     // Condition -> Encounter (via encounter.reference)
