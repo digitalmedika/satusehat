@@ -44,6 +44,16 @@ export interface EncounterDiagnosisBuildLinks {
   rank?: number;
 }
 
+export function createEncounterDiagnosis(
+  links: EncounterDiagnosisBuildLinks,
+): EncounterDiagnosis {
+  return EncounterDiagnosisSchema.parse({
+    condition: resolveConditionReference(links),
+    use: links.use ?? DEFAULT_ENCOUNTER_DIAGNOSIS_USE,
+    rank: links.rank ?? 1,
+  });
+}
+
 export class EncounterConditionBuilder {
   private conditionDraft: ConditionCreateInput;
 
@@ -88,11 +98,7 @@ export class EncounterConditionBuilder {
   }
 
   public buildEncounterDiagnosis(links: EncounterDiagnosisBuildLinks = {}): EncounterDiagnosis {
-    return EncounterDiagnosisSchema.parse({
-      condition: resolveConditionReference(links),
-      use: links.use ?? DEFAULT_ENCOUNTER_DIAGNOSIS_USE,
-      rank: links.rank ?? 1,
-    });
+    return createEncounterDiagnosis(links);
   }
 }
 

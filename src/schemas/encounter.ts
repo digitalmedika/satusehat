@@ -178,7 +178,7 @@ export const EncounterBaseSchema = z.object({
   length: EncounterDurationSchema.optional(),
   reasonCode: z.array(EncounterRequiredCodeableConceptSchema).min(1).optional(),
   reasonReference: z.array(ReferenceSchema).optional(),
-  diagnosis: z.array(EncounterDiagnosisSchema).min(1),
+  diagnosis: z.array(EncounterDiagnosisSchema).min(1).optional(),
   account: z.array(ReferenceSchema).optional(),
   hospitalization: EncounterHospitalizationSchema.optional(),
   location: z.array(EncounterLocationSchema).min(1),

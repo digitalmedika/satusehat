@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+  createEncounterDiagnosis,
   createEmergencyEncounterHistory,
   createEncounterBuilder,
   createEncounterConditionBuilder,
@@ -35,6 +36,16 @@ function toBuilderInput(fixture: EncounterCreateInput) {
 }
 
 describe("encounter -> condition builder", () => {
+  test("creates encounter diagnosis directly from condition id without condition builder", () => {
+    const diagnosis = createEncounterDiagnosis({
+      conditionId: "cond-direct-1",
+    });
+
+    expect(diagnosis.condition.reference).toBe("Condition/cond-direct-1");
+    expect(diagnosis.use.coding[0]?.code).toBe("AD");
+    expect(diagnosis.rank).toBe(1);
+  });
+
   test("builds a post-encounter condition draft with default encounter diagnosis category", () => {
     const builder = createEncounterConditionBuilder({
       subject: {

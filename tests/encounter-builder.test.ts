@@ -1,10 +1,16 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+  createEncounterClassFromConsultationMethod,
   createEmergencyEncounterHistory,
   createEncounterBuilder,
   createEncounterHospitalization,
+  createEncounterIdentifier,
+  createEncounterLocation,
   createEncounterLocationServiceClassExtension,
+  createEncounterParticipant,
+  createEncounterServiceProviderReference,
+  createEncounterStatusTimeline,
   withEncounterLocationServiceClass,
 } from "../src";
 import type { EncounterCreateInput } from "../src";
@@ -37,6 +43,106 @@ function toBuilderInput(fixture: EncounterCreateInput) {
 }
 
 describe("encounter builder", () => {
+  test("provides antrean-friendly helper values for identifier, participant, location, service provider, and status timeline", () => {
+    const identifier = createEncounterIdentifier("100025939", "ANTRI-88537");
+    const serviceProvider = createEncounterServiceProviderReference(
+      "100025939",
+      "RS SATUSEHAT",
+    );
+    const participant = createEncounterParticipant({
+      practitionerId: "10006330933",
+      display: "dr. Asih Aprilya, Sp. KFR, M.Ked.Klin",
+    });
+    const location = createEncounterLocation({
+      locationId: "2148a1a7-925d-4543-ac63-2e9bf53e5c68",
+      display: "FISIO TERAPI",
+      status: "active",
+    });
+    const timeline = createEncounterStatusTimeline({
+      stages: [
+        {
+          status: "arrived",
+          start: "2026-04-06T14:01:52.000+00:00",
+        },
+        {
+          status: "in-progress",
+          start: "2026-04-06T14:10:00.000+00:00",
+        },
+        {
+          status: "finished",
+          start: "2026-04-06T14:31:52.000+00:00",
+        },
+      ],
+      periodEnd: "2026-04-06T14:31:52.000+00:00",
+    });
+
+    expect(identifier.system).toBe("http://sys-ids.kemkes.go.id/encounter/100025939");
+    expect(identifier.use).toBe("official");
+    expect(serviceProvider.reference).toBe("Organization/100025939");
+    expect(participant.type?.[0]?.coding?.[0]?.code).toBe("ATND");
+    expect(participant.individual?.reference).toBe("Practitioner/10006330933");
+    expect(location.location.reference).toBe("Location/2148a1a7-925d-4543-ac63-2e9bf53e5c68");
+    expect(timeline.status).toBe("finished");
+    expect(timeline.statusHistory).toEqual([
+      {
+        status: "arrived",
+        period: {
+          start: "2026-04-06T14:01:52.000+00:00",
+          end: "2026-04-06T14:10:00.000+00:00",
+        },
+      },
+      {
+        status: "in-progress",
+        period: {
+          start: "2026-04-06T14:10:00.000+00:00",
+          end: "2026-04-06T14:31:52.000+00:00",
+        },
+      },
+      {
+        status: "finished",
+        period: {
+          start: "2026-04-06T14:31:52.000+00:00",
+          end: "2026-04-06T14:31:52.000+00:00",
+        },
+      },
+    ]);
+  });
+
+  test("supports consultation method and diagnosis-by-condition shortcuts inspired by legacy controllers", () => {
+    const fixture = createEncounterFixture("outpatient");
+
+    const encounter = createEncounterBuilder({
+      preset: "outpatient",
+      ...toBuilderInput(fixture),
+      diagnosis: undefined,
+    })
+      .setConsultationMethod("IGD")
+      .addDiagnosisByCondition("cond-final-1", {
+        display: "Diagnosis final",
+      })
+      .build();
+
+    expect(createEncounterClassFromConsultationMethod("RANAP").code).toBe("IMP");
+    expect(createEncounterClassFromConsultationMethod("HOMECARE").code).toBe("HH");
+    expect(encounter.class.code).toBe("EMER");
+    expect(encounter.diagnosis?.[0]?.condition.reference).toBe("Condition/cond-final-1");
+    expect(encounter.diagnosis?.[0]?.condition.display).toBe("Diagnosis final");
+  });
+
+  test("allows encounter draft creation without diagnosis for initial create flow", () => {
+    const fixture = createEncounterFixture("emergency");
+    const { diagnosis: _diagnosis, ...encounterWithoutDiagnosis } = toBuilderInput(fixture);
+
+    const encounter = createEncounterBuilder({
+      preset: "emergency",
+      ...encounterWithoutDiagnosis,
+    }).build();
+
+    expect(encounter.resourceType).toBe("Encounter");
+    expect(encounter.diagnosis).toBeUndefined();
+    expect(encounter.class.code).toBe("EMER");
+  });
+
   test("builds an outpatient encounter using preset defaults", () => {
     const fixture = createEncounterFixture("outpatient");
     const encounter = createEncounterBuilder({

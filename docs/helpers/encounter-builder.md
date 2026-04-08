@@ -19,6 +19,17 @@ Preset yang tersedia:
 
 Kalau butuh kasus lain, kamu bisa melewatkan `preset` dan mengirim `encounterClass` secara manual.
 
+`diagnosis` bersifat opsional saat create draft awal. Ini berguna untuk flow di mana `Encounter` perlu dibuat dulu, lalu diagnosis diisi belakangan lewat update atau patch.
+
+Selain builder utama, helper ini sekarang punya shortcut yang cocok untuk flow antrean atau migrasi dari controller lama:
+
+- `createEncounterIdentifier(organizationId, registrationId)`
+- `createEncounterServiceProviderReference(organizationId, display?)`
+- `createEncounterParticipant({ practitionerId, display, ... })`
+- `createEncounterLocation({ locationId, display, ... })`
+- `createEncounterClassFromConsultationMethod("RAJAL" | "IGD" | "RANAP" | "HOMECARE" | "TELEKONSULTASI")`
+- `createEncounterStatusTimeline({ stages, periodEnd })`
+
 ## Contoh Dasar
 
 ```ts
@@ -244,6 +255,7 @@ Aturan helper ini:
 ## Method Utama
 
 - `setPreset(preset)`
+- `setConsultationMethod(method)`
 - `setClass(classCoding)`
 - `setStatus(status)`
 - `setSubject(reference)`
@@ -258,6 +270,7 @@ Aturan helper ini:
 - `addReasonCode(reasonCode)`
 - `addReasonReference(reference)`
 - `addDiagnosis(diagnosis)`
+- `addDiagnosisByCondition(conditionId, options?)`
 - `addLocation(location)`
 - `addStatusHistory(statusHistory)`
 - `addClassHistory(classHistory)`
@@ -272,5 +285,69 @@ Aturan helper ini:
 
 - Constructor otomatis mengisi `statusHistory` dan `classHistory` default dari `status`, `period`, dan preset atau `encounterClass` yang dipilih.
 - `setPreset(...)` hanya mengubah `class` saat ini. Kalau kamu juga ingin menyesuaikan histori class, tambahkan atau ganti `classHistory` secara eksplisit.
+- `setConsultationMethod(...)` adalah shortcut untuk mengubah `class` dari istilah operasional seperti `RAJAL`, `IGD`, atau `RANAP`. Sama seperti `setPreset(...)`, method ini tidak mengubah `classHistory`.
 - `createEmergencyEncounterHistory(...)` mengembalikan `status`, `period`, `encounterClass`, `statusHistory`, dan `classHistory` sehingga bisa langsung di-spread ke `createEncounterBuilder(...)`.
+- `createEncounterStatusTimeline(...)` cocok untuk alur status berurutan yang tidak butuh helper class history seperti `createEmergencyEncounterHistory(...)`.
 - `build()` selalu memvalidasi draft akhir dengan `EncounterCreateSchema`.
+- Kalau `diagnosis` belum tersedia saat create awal, kamu bisa melewatkannya dulu lalu menambahkan lewat `addDiagnosis(...)`, `merge(...)`, atau update resource setelah `Condition` berhasil dibuat.
+
+## Contoh Shortcut Antrean
+
+```ts
+import {
+  createEncounterBuilder,
+  createEncounterIdentifier,
+  createEncounterLocation,
+  createEncounterParticipant,
+  createEncounterServiceProviderReference,
+  createEncounterStatusTimeline,
+} from "@digitalmedika/satusehat";
+
+const timeline = createEncounterStatusTimeline({
+  stages: [
+    {
+      status: "arrived",
+      start: "2026-04-06T14:01:52+07:00",
+    },
+    {
+      status: "in-progress",
+      start: "2026-04-06T14:10:00+07:00",
+    },
+    {
+      status: "finished",
+      start: "2026-04-06T14:31:52+07:00",
+    },
+  ],
+  periodEnd: "2026-04-06T14:31:52+07:00",
+});
+
+const encounter = createEncounterBuilder({
+  preset: "outpatient",
+  identifier: createEncounterIdentifier("100025939", "ANTRI-88537"),
+  ...timeline,
+  subject: {
+    reference: "Patient/P02361976250",
+    display: "LINA,NY",
+  },
+  location: createEncounterLocation({
+    locationId: "2148a1a7-925d-4543-ac63-2e9bf53e5c68",
+    display: "FISIO TERAPI",
+    status: "active",
+  }),
+  serviceProvider: createEncounterServiceProviderReference(
+    "100025939",
+    "RS SATUSEHAT",
+  ),
+})
+  .addParticipant(
+    createEncounterParticipant({
+      practitionerId: "10006330933",
+      display: "dr. Asih Aprilya, Sp. KFR, M.Ked.Klin",
+      typeText: "Dokter penanggung jawab pelayanan",
+    }),
+  )
+  .addDiagnosisByCondition("cond-final-1", {
+    display: "Primary gonarthrosis bilateral",
+  })
+  .build();
+```

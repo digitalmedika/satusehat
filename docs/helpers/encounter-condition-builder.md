@@ -10,10 +10,13 @@ Helper `createEncounterConditionBuilder` ditujukan untuk alur pasca-`Encounter`,
 
 Helper ini cocok untuk alur sederhana `Encounter -> Condition` sebelum meluas ke resource klinis lain.
 
+Kalau kamu hanya butuh membentuk item `Encounter.diagnosis` dari `conditionId` atau `conditionReference`, gunakan helper ringan `createEncounterDiagnosis(...)` tanpa harus membuat `createEncounterConditionBuilder(...)`.
+
 ## Contoh Alur IGD Sederhana
 
 ```ts
 import {
+  createEncounterDiagnosis,
   createEncounterConditionBuilder,
   createEmergencyEncounterHistory,
   createEncounterBuilder,
@@ -131,7 +134,7 @@ const conditionBuilder = createEncounterConditionBuilder({
 
 const condition = await client.condition.create(conditionBuilder.buildCondition());
 
-const diagnosisEntry = conditionBuilder.buildEncounterDiagnosis({
+const diagnosisEntry = createEncounterDiagnosis({
   conditionId: condition.id,
 });
 ```
@@ -147,9 +150,10 @@ Kalau aplikasi kamu ingin menulis ulang diagnosis final ke resource `Encounter`,
 - `addNote(note)`
 - `buildCondition()`
 - `buildEncounterDiagnosis({ conditionId | conditionReference, use?, rank? })`
+- `createEncounterDiagnosis({ conditionId | conditionReference, use?, rank? })`
 
 ## Catatan
 
 - `buildCondition()` selalu menghasilkan payload `Condition` yang valid terhadap schema SDK.
 - Jika category tidak diberikan, helper akan mengisi `encounter-diagnosis` sebagai default.
-- `buildEncounterDiagnosis(...)` butuh `conditionId` atau `conditionReference` karena link diagnosis baru aman dibuat setelah resource `Condition` diketahui.
+- `buildEncounterDiagnosis(...)` dan `createEncounterDiagnosis(...)` butuh `conditionId` atau `conditionReference` karena link diagnosis baru aman dibuat setelah resource `Condition` diketahui.
