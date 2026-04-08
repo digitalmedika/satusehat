@@ -15,7 +15,15 @@ SDK ini dirancang untuk:
 Helper builder yang saat ini tersedia:
 
 - `createEncounterBuilder`
+- `createEncounterClassFromConsultationMethod`
+- `createEncounterDiagnosis`
 - `createEncounterConditionBuilder`
+- `createEncounterIdentifier`
+- `createEncounterLocation`
+- `createEncounterParticipant`
+- `createEncounterQueueBuilder`
+- `createEncounterServiceProviderReference`
+- `createEncounterStatusTimeline`
 - `createEncounterMedicationBuilder`
 - `createEncounterMedicationAdministrationBuilder`
 - `createEncounterMedicationRequestBuilder`
@@ -205,6 +213,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [DiagnosticReport](./docs/resources/diagnostic-report.md)
 - [ImagingStudy](./docs/resources/imaging-study.md)
 - [Encounter Builder](./docs/helpers/encounter-builder.md)
+- [Encounter Queue Builder](./docs/helpers/encounter-queue-builder.md)
 - [Encounter -> Condition Builder](./docs/helpers/encounter-condition-builder.md)
 - [Encounter -> Medication Builder](./docs/helpers/encounter-medication-builder.md)
 - [Encounter -> MedicationAdministration Builder](./docs/helpers/encounter-medication-administration-builder.md)

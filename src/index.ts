@@ -14,16 +14,27 @@ export {
 export { OrganizationBuilder, createOrganizationBuilder } from "./builders/organization-builder";
 export {
   EncounterBuilder,
+  createEncounterClassFromConsultationMethod,
   createEmergencyEncounterHistory,
   createEncounterHospitalization,
   createEncounterBuilder,
+  createEncounterIdentifier,
+  createEncounterLocation,
   createEncounterLocationServiceClassExtension,
+  createEncounterParticipant,
+  createEncounterServiceProviderReference,
+  createEncounterStatusTimeline,
   withEncounterLocationServiceClass,
 } from "./builders/encounter-builder";
 export {
   EncounterConditionBuilder,
+  createEncounterDiagnosis,
   createEncounterConditionBuilder,
 } from "./builders/encounter-condition-builder";
+export {
+  EncounterQueueBuilder,
+  createEncounterQueueBuilder,
+} from "./builders/encounter-queue-builder";
 export {
   EncounterMedicationBuilder,
   createEncounterMedicationBuilder,
@@ -175,18 +186,27 @@ export type {
   RiskAssessmentStatus,
 } from "./schemas/risk-assessment";
 export type {
+  EncounterConsultationMethod,
   EncounterBuilderInput,
   EncounterHospitalizationHelperInput,
   EncounterBuilderPreset,
+  EncounterLocationHelperInput,
+  EncounterParticipantHelperInput,
   EmergencyEncounterClassStageInput,
   EmergencyEncounterHistoryInput,
   EmergencyEncounterHistoryResult,
   EmergencyEncounterStatusStageInput,
+  EncounterStatusTimelineInput,
+  EncounterStatusTimelineResult,
+  EncounterStatusTimelineStageInput,
 } from "./builders/encounter-builder";
 export type {
   EncounterConditionBuilderInput,
   EncounterDiagnosisBuildLinks,
 } from "./builders/encounter-condition-builder";
+export type {
+  EncounterQueueBuilderInput,
+} from "./builders/encounter-queue-builder";
 export type {
   EncounterMedicationBuilderInput,
   EncounterMedicationReferenceBuildInput,

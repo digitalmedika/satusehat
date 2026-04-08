@@ -48,9 +48,10 @@ Field wajib yang saat ini dimodelkan:
 - `subject`
 - `period`
 - minimal 1 `reasonCode`
-- minimal 1 `diagnosis`
 - minimal 1 `location`
 - `serviceProvider`
+
+Catatan: `diagnosis` saat ini dibuat opsional di schema SDK supaya flow create awal tanpa diagnosis tetap bisa divalidasi. Ini berguna untuk kasus di mana `Condition` baru tersedia setelah `Encounter` berhasil dibuat.
 
 Contoh create:
 

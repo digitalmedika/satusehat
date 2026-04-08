@@ -15,6 +15,10 @@ describe("encounter fixtures", () => {
       expect(parsed.identifier.length).toBeGreaterThan(0);
       expect(parsed.statusHistory.length).toBeGreaterThan(0);
       expect(parsed.classHistory.length).toBeGreaterThan(0);
+      expect(parsed.diagnosis).toBeDefined();
+      if (!parsed.diagnosis) {
+        throw new Error("Expected encounter fixture to include diagnosis");
+      }
       expect(parsed.diagnosis.length).toBeGreaterThan(0);
       expect(parsed.location.length).toBeGreaterThan(0);
     }

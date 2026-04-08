@@ -1,11 +1,16 @@
 import {
+  EncounterClassSchema,
   EncounterAdmitSourceSchema,
   EncounterCreateSchema,
   EncounterDischargeDispositionSchema,
   EncounterHospitalizationSchema,
+  EncounterIdentifierSchema,
   EncounterLocationSchema,
   EncounterLocationServiceClassExtensionSchema,
+  EncounterParticipantSchema,
 } from "../schemas/encounter";
+import { ReferenceSchema } from "../schemas/common";
+import { createEncounterDiagnosis } from "./encounter-condition-builder";
 import type { Reference } from "../schemas/common";
 import type {
   EncounterAdmitSource,
@@ -60,7 +65,7 @@ type EncounterBuilderCommonInput = {
     | NonNullable<EncounterCreateInput["reasonCode"]>
     | undefined;
   reasonReference?: Reference[];
-  diagnosis: EncounterDiagnosis | EncounterDiagnosis[];
+  diagnosis?: EncounterDiagnosis | EncounterDiagnosis[] | undefined;
   account?: Reference[];
   hospitalization?: EncounterHospitalization;
   location: EncounterLocation | EncounterLocation[];
@@ -128,6 +133,49 @@ export interface EmergencyEncounterHistoryResult {
   classHistory: EncounterClassHistory[];
 }
 
+export type EncounterConsultationMethod =
+  | "RAJAL"
+  | "IGD"
+  | "RANAP"
+  | "HOMECARE"
+  | "TELEKONSULTASI";
+
+export interface EncounterParticipantHelperInput {
+  practitionerId: string;
+  display?: string;
+  typeCode?: string;
+  typeDisplay?: string;
+  typeText?: string;
+}
+
+export interface EncounterLocationHelperInput {
+  locationId: string;
+  display?: string;
+  status?: EncounterLocation["status"];
+  period?: EncounterLocation["period"];
+  physicalType?: EncounterLocation["physicalType"];
+  extension?: EncounterLocation["extension"];
+}
+
+export interface EncounterStatusTimelineStageInput {
+  status: EncounterStatus;
+  start: string;
+}
+
+export interface EncounterStatusTimelineInput {
+  stages: [
+    EncounterStatusTimelineStageInput,
+    ...EncounterStatusTimelineStageInput[],
+  ];
+  periodEnd: string;
+}
+
+export interface EncounterStatusTimelineResult {
+  status: EncounterStatus;
+  period: EncounterCreateInput["period"];
+  statusHistory: EncounterStatusHistory[];
+}
+
 function toArray<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value];
 }
@@ -192,7 +240,9 @@ function resolveEncounterClassStage(
 }
 
 function createStatusHistoryFromStages(
-  stages: EmergencyEncounterHistoryInput["statusStages"],
+  stages:
+    | EmergencyEncounterHistoryInput["statusStages"]
+    | EncounterStatusTimelineInput["stages"],
   periodEnd: string,
 ): EncounterStatusHistory[] {
   return stages.map((stage, index) => ({
@@ -262,6 +312,88 @@ function normalizeDischargeDisposition(
   return EncounterDischargeDispositionSchema.parse(dischargeDisposition);
 }
 
+export function createEncounterIdentifier(
+  organizationId: string,
+  registrationId: string,
+  use: EncounterIdentifier["use"] = "official",
+): EncounterIdentifier {
+  return EncounterIdentifierSchema.parse({
+    system: `http://sys-ids.kemkes.go.id/encounter/${organizationId}`,
+    use,
+    value: registrationId,
+  });
+}
+
+export function createEncounterServiceProviderReference(
+  organizationId: string,
+  display?: string,
+): Reference {
+  return ReferenceSchema.parse({
+    reference: `Organization/${organizationId}`,
+    ...(display ? { display } : {}),
+  });
+}
+
+export function createEncounterParticipant(
+  input: EncounterParticipantHelperInput,
+): EncounterParticipant {
+  return EncounterParticipantSchema.parse({
+    type: [
+      {
+        coding: [
+          {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+            code: input.typeCode ?? "ATND",
+            display: input.typeDisplay ?? "attender",
+          },
+        ],
+        ...(input.typeText ? { text: input.typeText } : {}),
+      },
+    ],
+    individual: {
+      reference: `Practitioner/${input.practitionerId}`,
+      ...(input.display ? { display: input.display } : {}),
+    },
+  });
+}
+
+export function createEncounterLocation(
+  input: EncounterLocationHelperInput,
+): EncounterLocation {
+  return EncounterLocationSchema.parse({
+    location: {
+      reference: `Location/${input.locationId}`,
+      ...(input.display ? { display: input.display } : {}),
+    },
+    ...(input.status ? { status: input.status } : {}),
+    ...(input.period ? { period: input.period } : {}),
+    ...(input.physicalType ? { physicalType: input.physicalType } : {}),
+    ...(input.extension ? { extension: input.extension } : {}),
+  });
+}
+
+export function createEncounterClassFromConsultationMethod(
+  method: EncounterConsultationMethod,
+): EncounterClass {
+  const encounterClassByMethod = {
+    RAJAL: ENCOUNTER_CLASS_PRESETS.outpatient,
+    IGD: ENCOUNTER_CLASS_PRESETS.emergency,
+    RANAP: ENCOUNTER_CLASS_PRESETS.inpatient,
+    HOMECARE: {
+      system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+      code: "HH",
+      display: "home health",
+    },
+    TELEKONSULTASI: {
+      system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+      code: "TELE",
+      display: "teleconsultation",
+    },
+  } satisfies Record<EncounterConsultationMethod, EncounterClass>;
+
+  return EncounterClassSchema.parse(encounterClassByMethod[method]);
+}
+
 export function createEncounterHospitalization(
   input: EncounterHospitalizationHelperInput,
 ): EncounterHospitalization {
@@ -318,6 +450,43 @@ export function createEmergencyEncounterHistory(
     encounterClass: resolveEncounterClassStage(lastClassStage),
     statusHistory,
     classHistory,
+  };
+}
+
+export function createEncounterStatusTimeline(
+  input: EncounterStatusTimelineInput,
+): EncounterStatusTimelineResult {
+  const endTimestamp = parseIsoDateTime(input.periodEnd, "Encounter status periodEnd");
+  let previousTimestamp: number | undefined;
+
+  input.stages.forEach((stage, index) => {
+    const currentTimestamp = parseIsoDateTime(
+      stage.start,
+      `Encounter status stage ${index + 1} start`,
+    );
+
+    if (previousTimestamp !== undefined && currentTimestamp <= previousTimestamp) {
+      throw new RangeError("Encounter status stages must be sorted in strictly ascending order");
+    }
+
+    if (currentTimestamp > endTimestamp) {
+      throw new RangeError(`Encounter status stage ${index + 1} must start on or before periodEnd`);
+    }
+
+    previousTimestamp = currentTimestamp;
+  });
+
+  const statusHistory = createStatusHistoryFromStages(input.stages, input.periodEnd);
+  const firstStage = input.stages[0];
+  const lastStage = input.stages[input.stages.length - 1]!;
+
+  return {
+    status: lastStage.status,
+    period: {
+      start: firstStage.start,
+      end: input.periodEnd,
+    },
+    statusHistory,
   };
 }
 
@@ -390,7 +559,7 @@ export class EncounterBuilder {
       ...(input.length ? { length: input.length } : {}),
       ...(input.reasonCode ? { reasonCode: toArray(input.reasonCode) } : {}),
       ...(input.reasonReference ? { reasonReference: input.reasonReference } : {}),
-      diagnosis: toArray(input.diagnosis),
+      ...(input.diagnosis ? { diagnosis: toArray(input.diagnosis) } : {}),
       ...(input.account ? { account: input.account } : {}),
       ...(input.hospitalization ? { hospitalization: input.hospitalization } : {}),
       location: toArray(input.location),
@@ -410,8 +579,28 @@ export class EncounterBuilder {
   }
 
   public addDiagnosis(diagnosis: EncounterDiagnosis): this {
-    this.draft.diagnosis = [...this.draft.diagnosis, diagnosis];
+    this.draft.diagnosis = [...(this.draft.diagnosis ?? []), diagnosis];
     return this;
+  }
+
+  public addDiagnosisByCondition(
+    conditionId: string,
+    options?: {
+      display?: string;
+      use?: EncounterDiagnosis["use"];
+      rank?: number;
+    },
+  ): this {
+    return this.addDiagnosis(
+      createEncounterDiagnosis({
+        conditionReference: {
+          reference: `Condition/${conditionId}`,
+          ...(options?.display ? { display: options.display } : {}),
+        },
+        ...(options?.use ? { use: options.use } : {}),
+        ...(options?.rank !== undefined ? { rank: options.rank } : {}),
+      }),
+    );
   }
 
   public addEpisodeOfCare(reference: Reference): this {
@@ -499,6 +688,11 @@ export class EncounterBuilder {
 
   public setPreset(preset: EncounterBuilderPreset): this {
     this.draft.class = cloneEncounterClass(ENCOUNTER_CLASS_PRESETS[preset]);
+    return this;
+  }
+
+  public setConsultationMethod(method: EncounterConsultationMethod): this {
+    this.draft.class = createEncounterClassFromConsultationMethod(method);
     return this;
   }
 
