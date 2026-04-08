@@ -216,7 +216,7 @@ describe("encounter -> medication administration builder", () => {
     expect(medicationAdministration.context?.reference).toBe("Encounter/enc-igd-1");
     expect(medicationAdministration.request?.reference).toBe("MedicationRequest/mr-igd-1");
     expect(medicationAdministration.reasonCode?.[0]?.coding?.[0]?.code).toBe(
-      encounterDraft.reasonCode[0]?.coding?.[0]?.code,
+      encounterDraft.reasonCode?.[0]?.coding?.[0]?.code,
     );
     expect(medicationAdministration.performer?.[0]?.actor.reference).toBe(
       encounterDraft.participant?.[1]?.individual?.reference,
