@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0
+
+### Minor Changes
+
+- c206660: Add first-class `medicationStatement` support to the SDK, including typed schemas, endpoint client methods, and test coverage for create, search, patch, and update flows.
+
 ## 0.8.1
 
 ### Patch Changes
