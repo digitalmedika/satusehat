@@ -251,7 +251,15 @@ async function readResponsePayload(response: Response): Promise<unknown> {
 
   if (contentType.includes("application/json")) {
     const text = await response.text();
-    return text ? JSON.parse(text) : undefined;
+    if (!text) {
+      return undefined;
+    }
+
+    try {
+      return JSON.parse(text);
+    } catch {
+      return text;
+    }
   }
 
   return response.text();

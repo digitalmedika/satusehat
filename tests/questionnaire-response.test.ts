@@ -1,6 +1,10 @@
 import { describe, expect, test } from "bun:test";
 
-import { createSatuSehatClient, SatuSehatValidationError } from "../src";
+import {
+  createSatuSehatClient,
+  SatuSehatApiError,
+  SatuSehatValidationError,
+} from "../src";
 import type { QuestionnaireResponseCreateInput } from "../src";
 
 const questionnaireResponsePayload: QuestionnaireResponseCreateInput = {
@@ -171,5 +175,25 @@ describe("questionnaireResponse endpoint", () => {
       },
     ]);
     expect(updated.status).toBe("amended");
+  });
+
+  test("returns plain text API errors when SATUSEHAT sends invalid JSON with JSON content-type", async () => {
+    const client = createSatuSehatClient({
+      accessToken: "test-token",
+      fetch: async () =>
+        new Response("Internal Server Error", {
+          status: 500,
+          headers: { "content-type": "application/json" },
+        }),
+    });
+
+    try {
+      await client.questionnaireResponse.create(questionnaireResponsePayload);
+      throw new Error("Expected questionnaireResponse.create to throw");
+    } catch (error) {
+      expect(error).toBeInstanceOf(SatuSehatApiError);
+      expect((error as SatuSehatApiError).status).toBe(500);
+      expect((error as SatuSehatApiError).response).toBe("Internal Server Error");
+    }
   });
 });
