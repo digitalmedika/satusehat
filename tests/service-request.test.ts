@@ -10,6 +10,19 @@ const serviceRequestPayload = {
       use: "official",
       value: "SR-0001",
     },
+    {
+      system: "http://sys-ids.kemkes.go.id/acsn/10000004",
+      use: "official",
+      value: "1130681",
+      type: {
+        coding: [
+          {
+            system: "http://terminology.hl7.org/CodeSystem/v2-0203",
+            code: "ACSN",
+          },
+        ],
+      },
+    },
   ],
   status: "active" as const,
   intent: "order" as const,
@@ -158,6 +171,26 @@ describe("serviceRequest endpoint", () => {
     const serviceRequest = await client.serviceRequest.create(serviceRequestPayload);
 
     expect((capturedBody as { resourceType: string }).resourceType).toBe("ServiceRequest");
+    expect((capturedBody as { identifier?: unknown[] }).identifier).toEqual([
+      {
+        system: "http://sys-ids.kemkes.go.id/servicerequest/10000004",
+        use: "official",
+        value: "SR-0001",
+      },
+      {
+        system: "http://sys-ids.kemkes.go.id/acsn/10000004",
+        use: "official",
+        value: "1130681",
+        type: {
+          coding: [
+            {
+              system: "http://terminology.hl7.org/CodeSystem/v2-0203",
+              code: "ACSN",
+            },
+          ],
+        },
+      },
+    ]);
     expect(serviceRequest.id).toBe("6694e8c8-052a-4ea6-8072-157b6d47ca08");
     expect(serviceRequest.code.coding[0]?.code).toBe("58410-2");
   });

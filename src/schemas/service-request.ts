@@ -10,7 +10,7 @@ import {
   ReferenceSchema,
 } from "./common";
 
-export const ServiceRequestIdentifierSchema = IdentifierSchema.extend({
+const ServiceRequestOrderIdentifierSchema = IdentifierSchema.extend({
   system: z
     .string()
     .regex(
@@ -19,6 +19,21 @@ export const ServiceRequestIdentifierSchema = IdentifierSchema.extend({
     ),
   value: z.string().min(1),
 });
+
+const ServiceRequestAccessionIdentifierSchema = IdentifierSchema.extend({
+  system: z
+    .string()
+    .regex(
+      /^http:\/\/sys-ids\.kemkes\.go\.id\/(?:acsn|accessionno)\/.+$/,
+      "ServiceRequest accession identifier.system must use http://sys-ids.kemkes.go.id/acsn/{organization-ihs-number}",
+    ),
+  value: z.string().min(1),
+});
+
+export const ServiceRequestIdentifierSchema = z.union([
+  ServiceRequestOrderIdentifierSchema,
+  ServiceRequestAccessionIdentifierSchema,
+]);
 
 export const ServiceRequestStatusSchema = z.enum([
   "draft",

@@ -25,6 +25,7 @@ export const CodeableConceptSchema = z.object({
 export const IdentifierSchema = z.object({
   system: z.string().optional(),
   use: z.string().optional(),
+  type: CodeableConceptSchema.optional(),
   value: z.string().optional(),
 });
 

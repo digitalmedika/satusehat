@@ -92,11 +92,38 @@ Field opsional yang saat ini dimodelkan:
 - `patientInstruction`
 - `relevantHistory`
 
+Format `identifier` yang didukung SDK saat create/update:
+
+- Order internal faskes:
+  `http://sys-ids.kemkes.go.id/servicerequest/{organization-ihs-number}`
+- Accession number imaging/radiologi:
+  `http://sys-ids.kemkes.go.id/acsn/{organization-ihs-number}`
+
 Contoh create:
 
 ```ts
 const serviceRequest = await client.serviceRequest.create({
   resourceType: "ServiceRequest",
+  identifier: [
+    {
+      system: "http://sys-ids.kemkes.go.id/servicerequest/10000004",
+      use: "official",
+      value: "SR-12345",
+    },
+    {
+      system: "http://sys-ids.kemkes.go.id/acsn/10000004",
+      use: "official",
+      value: "1130681",
+      type: {
+        coding: [
+          {
+            system: "http://terminology.hl7.org/CodeSystem/v2-0203",
+            code: "ACSN",
+          },
+        ],
+      },
+    },
+  ],
   status: "active",
   intent: "order",
   code: {
