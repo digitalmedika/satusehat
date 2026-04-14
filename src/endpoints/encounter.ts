@@ -13,6 +13,7 @@ import type {
   EncounterCreateInput,
   EncounterPatchInput,
   EncounterSearchParams,
+  EncounterUpdateInput,
 } from "../schemas/encounter";
 
 const EncounterIdParamsSchema = z.object({
@@ -67,14 +68,14 @@ export function createEncounterClient(transport: Transport) {
       });
     },
 
-    update(input: { id: string; body: EncounterCreateInput; signal?: AbortSignal }) {
+    update(input: { id: string; body: EncounterUpdateInput; signal?: AbortSignal }) {
       const params = EncounterUpdateParamsSchema.parse({ id: input.id });
 
       return transport.request({
         method: "PUT",
         path: `/Encounter/${params.id}`,
         body: input.body,
-        bodySchema: EncounterCreateSchema,
+        bodySchema: EncounterSchema,
         responseSchema: EncounterSchema,
         ...(input.signal ? { signal: input.signal } : {}),
       });

@@ -133,4 +133,44 @@ describe("encounter endpoint", () => {
     ]);
     expect(updated.status).toBe("finished");
   });
+
+  test("updates encounter with resource id in body", async () => {
+    let capturedMethod: string | undefined;
+    let capturedBody: unknown;
+
+    const client = createSatuSehatClient({
+      accessToken: "test-token",
+      fetch: async (_input, init) => {
+        capturedMethod = init?.method;
+        capturedBody = init?.body ? JSON.parse(String(init.body)) : undefined;
+
+        return new Response(
+          JSON.stringify({
+            ...(capturedBody && typeof capturedBody === "object" ? capturedBody : {}),
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          },
+        );
+      },
+    });
+
+    const updated = await client.encounter.update({
+      id: "4f735a03-128b-464d-bf91-e6eacdf1c38f",
+      body: {
+        ...encounterPayload,
+        id: "4f735a03-128b-464d-bf91-e6eacdf1c38f",
+        status: "in-progress",
+      },
+    });
+
+    expect(capturedMethod).toBe("PUT");
+    expect(capturedBody).toMatchObject({
+      id: "4f735a03-128b-464d-bf91-e6eacdf1c38f",
+      resourceType: "Encounter",
+      status: "in-progress",
+    });
+    expect(updated.id).toBe("4f735a03-128b-464d-bf91-e6eacdf1c38f");
+  });
 });

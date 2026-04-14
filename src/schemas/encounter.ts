@@ -235,5 +235,6 @@ export type EncounterPatchOperation = z.infer<typeof EncounterPatchOperationSche
 export type EncounterPatchInput = z.infer<typeof EncounterPatchSchema>;
 export type Encounter = z.infer<typeof EncounterSchema>;
 export type EncounterCreateInput = z.infer<typeof EncounterCreateSchema>;
+export type EncounterUpdateInput = z.infer<typeof EncounterSchema>;
 export type EncounterSearchParams = z.infer<typeof EncounterSearchParamsSchema>;
 export type EncounterSearchResponse = z.infer<typeof EncounterBundleSchema>;

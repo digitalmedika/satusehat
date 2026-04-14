@@ -470,6 +470,7 @@ export type {
   EncounterSearchResponse,
   EncounterStatus,
   EncounterStatusHistory,
+  EncounterUpdateInput,
 } from "./schemas/encounter";
 export type {
   Location,

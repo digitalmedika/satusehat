@@ -577,7 +577,7 @@ export interface EncounterClient {
   update(
     input: {
       id: string;
-      body: import("../schemas/encounter").EncounterCreateInput;
+      body: import("../schemas/encounter").EncounterUpdateInput;
       signal?: AbortSignal;
     },
   ): Promise<import("../schemas/encounter").Encounter>;
