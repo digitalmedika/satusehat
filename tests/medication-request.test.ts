@@ -6,7 +6,7 @@ const medicationRequestPayload = {
   resourceType: "MedicationRequest" as const,
   identifier: [
     {
-      system: "http://sys-ids.kemkes.go.id/prescription/10000004/rme",
+      system: "http://sys-ids.kemkes.go.id/prescription-item/10000004",
       use: "official",
       value: "RX-0001",
     },
@@ -198,6 +198,54 @@ describe("medicationRequest endpoint", () => {
     expect(medicationRequest.medicationReference.reference).toBe(
       "Medication/8f299a19-5887-4b8e-90a2-c2c15ecbe1d1",
     );
+  });
+
+  test("accepts prescription identifiers with subsystem and prescription-item identifiers", async () => {
+    const client = createSatuSehatClient({
+      accessToken: "test-token",
+      fetch: async (_input, init) =>
+        new Response(
+          JSON.stringify({
+            id: "cf92db3e-a044-4e15-83fb-b7ec3a30ba76",
+            ...(init?.body ? JSON.parse(String(init.body)) : {}),
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          },
+        ),
+    });
+
+    await expect(
+      client.medicationRequest.create({
+        ...medicationRequestPayload,
+        identifier: [
+          {
+            system: "http://sys-ids.kemkes.go.id/prescription/10000004/rme",
+            use: "official",
+            value: "RX-LEGACY-1",
+          },
+        ],
+      }),
+    ).resolves.toMatchObject({
+      identifier: [
+        {
+          system: "http://sys-ids.kemkes.go.id/prescription/10000004/rme",
+          value: "RX-LEGACY-1",
+        },
+      ],
+    });
+
+    await expect(
+      client.medicationRequest.create(medicationRequestPayload),
+    ).resolves.toMatchObject({
+      identifier: [
+        {
+          system: "http://sys-ids.kemkes.go.id/prescription-item/10000004",
+          value: "RX-0001",
+        },
+      ],
+    });
   });
 
   test("patches medication request with replace operations", async () => {

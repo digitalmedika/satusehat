@@ -13,9 +13,11 @@ import {
 export const MedicationRequestIdentifierSchema = IdentifierSchema.extend({
   system: z
     .string()
-    .regex(
-      /^http:\/\/sys-ids\.kemkes\.go\.id\/prescription\/.+$/,
-      "MedicationRequest identifier.system must use http://sys-ids.kemkes.go.id/prescription/{organization-ihs-number}/{subsystem}",
+    .refine(
+      (value) =>
+        /^http:\/\/sys-ids\.kemkes\.go\.id\/prescription\/[^/]+\/[^/]+$/.test(value) ||
+        /^http:\/\/sys-ids\.kemkes\.go\.id\/prescription-item\/[^/]+$/.test(value),
+      "MedicationRequest identifier.system must use http://sys-ids.kemkes.go.id/prescription/{organization-ihs-number}/{subsystem} or http://sys-ids.kemkes.go.id/prescription-item/{organization-ihs-number}",
     ),
   value: z.string().min(1),
 });

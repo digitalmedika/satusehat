@@ -78,7 +78,7 @@ const medicationRequest = await client.medicationRequest.create({
   resourceType: "MedicationRequest",
   identifier: [
     {
-      system: "http://sys-ids.kemkes.go.id/prescription/10000004/rme",
+      system: "http://sys-ids.kemkes.go.id/prescription-item/10000004",
       use: "official",
       value: "RX-0001",
     },
@@ -103,6 +103,13 @@ const medicationRequest = await client.medicationRequest.create({
   },
 });
 ```
+
+SDK saat ini menerima dua pola `identifier.system` untuk `MedicationRequest` karena implementasi SATUSEHAT di lapangan bisa berbeda:
+
+- `http://sys-ids.kemkes.go.id/prescription/{organization-ihs-number}/{subsystem}`
+- `http://sys-ids.kemkes.go.id/prescription-item/{organization-ihs-number}`
+
+Gunakan pola yang benar-benar diterima oleh environment SATUSEHAT Anda. Untuk integrasi resep per-item seperti di SIMRS/RME, pola `prescription-item/{organization-ihs-number}` sering lebih cocok.
 
 ## Update
 
