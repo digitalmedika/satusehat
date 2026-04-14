@@ -91,6 +91,7 @@ export type {
   ImagingStudyClient,
   LocationClient,
   MedicationAdministrationClient,
+  MedicationDispenseClient,
   MedicationClient,
   MedicationRequestClient,
   NutritionOrderClient,
@@ -160,6 +161,18 @@ export type {
   CompositionSectionMode,
   CompositionStatus,
 } from "./schemas/composition";
+export type {
+  MedicationDispense,
+  MedicationDispenseCreateInput,
+  MedicationDispenseIdentifier,
+  MedicationDispensePatchInput,
+  MedicationDispensePatchOperation,
+  MedicationDispensePerformer,
+  MedicationDispenseSearchParams,
+  MedicationDispenseSearchResponse,
+  MedicationDispenseStatus,
+  MedicationDispenseSubstitution,
+} from "./schemas/medication-dispense";
 export type {
   QuestionnaireResponse,
   QuestionnaireResponseAnswer,
