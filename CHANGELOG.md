@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.3
+
+### Patch Changes
+
+- 74cb9e3: Relax MedicationRequest identifier validation to accept both `prescription/{organization-ihs-number}/{subsystem}` and `prescription-item/{organization-ihs-number}` systems, matching real SATUSEHAT integration variants.
+
 ## 0.7.2
 
 ### Patch Changes
