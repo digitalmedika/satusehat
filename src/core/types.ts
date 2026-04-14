@@ -471,6 +471,34 @@ export interface MedicationRequestClient {
   ): Promise<import("../schemas/medication-request").MedicationRequest>;
 }
 
+export interface MedicationStatementClient {
+  create(
+    input: import("../schemas/medication-statement").MedicationStatementCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/medication-statement").MedicationStatement>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/medication-statement").MedicationStatement>;
+  search(
+    input: import("../schemas/medication-statement").MedicationStatementSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/medication-statement").MedicationStatementSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/medication-statement").MedicationStatementPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/medication-statement").MedicationStatement>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/medication-statement").MedicationStatementCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/medication-statement").MedicationStatement>;
+}
+
 export interface NutritionOrderClient {
   create(
     input: import("../schemas/nutrition-order").NutritionOrderCreateInput,
@@ -684,6 +712,7 @@ export interface SatuSehatClient {
   medicationDispense: MedicationDispenseClient;
   medication: MedicationClient;
   medicationRequest: MedicationRequestClient;
+  medicationStatement: MedicationStatementClient;
   nutritionOrder: NutritionOrderClient;
   observation: ObservationClient;
   organization: OrganizationClient;

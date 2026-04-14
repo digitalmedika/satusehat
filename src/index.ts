@@ -94,6 +94,7 @@ export type {
   MedicationDispenseClient,
   MedicationClient,
   MedicationRequestClient,
+  MedicationStatementClient,
   NutritionOrderClient,
   MaybePromise,
   ObservationClient,
@@ -387,6 +388,18 @@ export type {
   MedicationRequestTiming,
   MedicationRequestTimingRepeat,
 } from "./schemas/medication-request";
+export type {
+  MedicationStatement,
+  MedicationStatementCreateInput,
+  MedicationStatementDosage,
+  MedicationStatementIdentifier,
+  MedicationStatementNote,
+  MedicationStatementPatchInput,
+  MedicationStatementPatchOperation,
+  MedicationStatementSearchParams,
+  MedicationStatementSearchResponse,
+  MedicationStatementStatus,
+} from "./schemas/medication-statement";
 export type {
   NutritionOrder,
   NutritionOrderCreateInput,
