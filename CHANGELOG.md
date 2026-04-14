@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.1
+
+### Patch Changes
+
+- 86c50b0: Fix Encounter update typing to require a full Encounter resource body, including `id`, for PUT requests.
+
 ## 0.8.0
 
 ### Minor Changes
