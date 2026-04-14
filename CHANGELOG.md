@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0
+
+### Minor Changes
+
+- dce81a1: Add MedicationDispense client support with typed create, search, getById, patch, and update helpers.
+
 ## 0.7.3
 
 ### Patch Changes
