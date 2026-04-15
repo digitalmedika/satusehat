@@ -255,6 +255,7 @@ Builder yang biasanya jadi titik awal:
 Saat ini resource yang sudah tersedia di SDK:
 
 - `allergyIntolerance`
+- `carePlan`
 - `clinicalImpression`
 - `composition`
 - `condition`

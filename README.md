@@ -149,6 +149,7 @@ Variable utama:
 Saat ini resource yang sudah tersedia:
 
 - `allergyIntolerance`
+- `carePlan`
 - `clinicalImpression`
 - `composition`
 - `condition`
@@ -204,6 +205,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [Authentication](./docs/authentication.md)
 - [Errors](./docs/errors.md)
 - [AllergyIntolerance](./docs/resources/allergy-intolerance.md)
+- [CarePlan](./docs/resources/care-plan.md)
 - [ClinicalImpression](./docs/resources/clinical-impression.md)
 - [Composition](./docs/resources/composition.md)
 - [Condition](./docs/resources/condition.md)

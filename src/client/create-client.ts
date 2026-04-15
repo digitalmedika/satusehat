@@ -2,6 +2,7 @@ import { createClientCredentialsTokenProvider } from "./auth";
 import { createFileTokenStore, createMemoryTokenStore } from "./token-store";
 import { createTransport } from "./transport";
 import { createAllergyIntoleranceClient } from "../endpoints/allergy-intolerance";
+import { createCarePlanClient } from "../endpoints/care-plan";
 import { createClinicalImpressionClient } from "../endpoints/clinical-impression";
 import { createCompositionClient } from "../endpoints/composition";
 import { createConditionClient } from "../endpoints/condition";
@@ -89,6 +90,7 @@ export function createSatuSehatClient(config: SatuSehatClientConfig = {}): SatuS
 
   return {
     allergyIntolerance: createAllergyIntoleranceClient(transport),
+    carePlan: createCarePlanClient(transport),
     clinicalImpression: createClinicalImpressionClient(transport),
     composition: createCompositionClient(transport),
     condition: createConditionClient(transport),

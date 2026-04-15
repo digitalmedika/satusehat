@@ -107,6 +107,34 @@ export interface AllergyIntoleranceClient {
   ): Promise<import("../schemas/allergy-intolerance").AllergyIntolerance>;
 }
 
+export interface CarePlanClient {
+  create(
+    input: import("../schemas/care-plan").CarePlanCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/care-plan").CarePlan>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/care-plan").CarePlan>;
+  search(
+    input: import("../schemas/care-plan").CarePlanSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/care-plan").CarePlanSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/care-plan").CarePlanPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/care-plan").CarePlan>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/care-plan").CarePlanCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/care-plan").CarePlan>;
+}
+
 export interface ClinicalImpressionClient {
   create(
     input: import("../schemas/clinical-impression").ClinicalImpressionCreateInput,
@@ -700,6 +728,7 @@ export interface LocationClient {
 
 export interface SatuSehatClient {
   allergyIntolerance: AllergyIntoleranceClient;
+  carePlan: CarePlanClient;
   clinicalImpression: ClinicalImpressionClient;
   composition: CompositionClient;
   condition: ConditionClient;

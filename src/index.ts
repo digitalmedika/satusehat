@@ -82,6 +82,7 @@ export {
 export type {
   AccessTokenProvider,
   AllergyIntoleranceClient,
+  CarePlanClient,
   ClinicalImpressionClient,
   CompositionClient,
   ConditionClient,
@@ -130,6 +131,22 @@ export type {
   AllergyIntoleranceSearchParams,
   AllergyIntoleranceSearchResponse,
 } from "./schemas/allergy-intolerance";
+export type {
+  CarePlan,
+  CarePlanActivity,
+  CarePlanActivityDetail,
+  CarePlanActivityStatus,
+  CarePlanAnnotation,
+  CarePlanCreateInput,
+  CarePlanIdentifier,
+  CarePlanIntent,
+  CarePlanPatchInput,
+  CarePlanPatchOperation,
+  CarePlanQuantity,
+  CarePlanSearchParams,
+  CarePlanSearchResponse,
+  CarePlanStatus,
+} from "./schemas/care-plan";
 export type {
   ClinicalImpression,
   ClinicalImpressionCoding,
