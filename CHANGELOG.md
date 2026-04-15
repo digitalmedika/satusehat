@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.0
+
+### Minor Changes
+
+- 9cc1f87: Add first-class `carePlan` support to the SDK, including typed schemas, endpoint client methods, documentation, and test coverage for create, search, patch, and update flows.
+
 ## 0.9.0
 
 ### Minor Changes
