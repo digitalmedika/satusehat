@@ -3,15 +3,15 @@ import { describe, expect, test } from "bun:test";
 import { createSatuSehatClient, SatuSehatValidationError } from "../src";
 import type { CompositionCreateInput } from "../src";
 
+const compositionIdentifier = {
+  system: "http://sys-ids.kemkes.go.id/composition/10000004",
+  use: "official",
+  value: "COMP-0001",
+};
+
 const compositionPayload: CompositionCreateInput = {
   resourceType: "Composition",
-  identifier: [
-    {
-      system: "http://sys-ids.kemkes.go.id/composition/10000004",
-      use: "official",
-      value: "COMP-0001",
-    },
-  ],
+  identifier: [compositionIdentifier],
   status: "final",
   type: {
     coding: [
@@ -167,6 +167,10 @@ describe("composition endpoint", () => {
           JSON.stringify({
             id: "1ec67403-c6f1-4d46-8611-d20875525438",
             ...(requestBody && typeof requestBody === "object" ? requestBody : {}),
+            identifier:
+              Array.isArray((requestBody as { identifier?: unknown }).identifier)
+                ? (requestBody as { identifier: unknown[] }).identifier[0]
+                : (requestBody as { identifier?: unknown }).identifier,
           }),
           {
             status: 200,
@@ -181,6 +185,36 @@ describe("composition endpoint", () => {
     expect((capturedBody as { resourceType: string }).resourceType).toBe("Composition");
     expect(composition.id).toBe("1ec67403-c6f1-4d46-8611-d20875525438");
     expect(composition.section?.[0]?.title).toBe("Ringkasan Klinis");
+    expect(composition.identifier).toEqual(compositionIdentifier);
+  });
+
+  test("accepts composition identifier as a single object", async () => {
+    const payload: CompositionCreateInput = {
+      ...compositionPayload,
+      identifier: compositionIdentifier,
+    };
+
+    const client = createSatuSehatClient({
+      accessToken: "test-token",
+      fetch: async (_input, init) => {
+        const requestBody = init?.body ? JSON.parse(String(init.body)) : undefined;
+
+        return new Response(
+          JSON.stringify({
+            id: "1ec67403-c6f1-4d46-8611-d20875525438",
+            ...(requestBody && typeof requestBody === "object" ? requestBody : {}),
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          },
+        );
+      },
+    });
+
+    const composition = await client.composition.create(payload);
+
+    expect(composition.identifier).toEqual(compositionIdentifier);
   });
 
   test("patches composition with replace operations", async () => {

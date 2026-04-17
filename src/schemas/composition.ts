@@ -15,6 +15,11 @@ export const CompositionIdentifierSchema = IdentifierSchema.extend({
   value: z.string().min(1),
 });
 
+export const CompositionIdentifierFieldSchema = z.union([
+  CompositionIdentifierSchema,
+  z.array(CompositionIdentifierSchema),
+]);
+
 export const CompositionStatusSchema = z.enum([
   "preliminary",
   "final",
@@ -149,7 +154,7 @@ export const CompositionSearchParamsSchema = z
 
 export const CompositionBaseSchema = z.object({
   resourceType: z.literal("Composition"),
-  identifier: z.array(CompositionIdentifierSchema).optional(),
+  identifier: CompositionIdentifierFieldSchema.optional(),
   status: CompositionStatusSchema,
   type: CompositionRequiredCodeableConceptSchema,
   category: z.array(CodeableConceptSchema).optional(),
