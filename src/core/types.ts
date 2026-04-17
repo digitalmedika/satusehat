@@ -335,6 +335,34 @@ export interface ImagingStudyClient {
   ): Promise<import("../schemas/imaging-study").ImagingStudy>;
 }
 
+export interface ImmunizationClient {
+  create(
+    input: import("../schemas/immunization").ImmunizationCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/immunization").Immunization>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/immunization").Immunization>;
+  search(
+    input: import("../schemas/immunization").ImmunizationSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/immunization").ImmunizationSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/immunization").ImmunizationPatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/immunization").Immunization>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/immunization").ImmunizationCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/immunization").Immunization>;
+}
+
 export interface ObservationClient {
   create(
     input: import("../schemas/observation").ObservationCreateInput,
@@ -765,6 +793,7 @@ export interface SatuSehatClient {
   encounter: EncounterClient;
   episodeOfCare: EpisodeOfCareClient;
   imagingStudy: ImagingStudyClient;
+  immunization: ImmunizationClient;
   location: LocationClient;
   medicationAdministration: MedicationAdministrationClient;
   medicationDispense: MedicationDispenseClient;

@@ -91,6 +91,7 @@ export type {
   EncounterClient,
   EpisodeOfCareClient,
   ImagingStudyClient,
+  ImmunizationClient,
   LocationClient,
   MedicationAdministrationClient,
   MedicationDispenseClient,
@@ -324,6 +325,22 @@ export type {
   ImagingStudySeriesPerformer,
   ImagingStudyStatus,
 } from "./schemas/imaging-study";
+export type {
+  Immunization,
+  ImmunizationCreateInput,
+  ImmunizationEducation,
+  ImmunizationIdentifier,
+  ImmunizationNote,
+  ImmunizationPatchInput,
+  ImmunizationPatchOperation,
+  ImmunizationPerformer,
+  ImmunizationProtocolApplied,
+  ImmunizationQuantity,
+  ImmunizationReaction,
+  ImmunizationSearchParams,
+  ImmunizationSearchResponse,
+  ImmunizationStatus,
+} from "./schemas/immunization";
 export type {
   Observation,
   ObservationCoding,

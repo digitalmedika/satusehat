@@ -158,6 +158,7 @@ Saat ini resource yang sudah tersedia:
 - `encounter`
 - `episodeOfCare`
 - `imagingStudy`
+- `immunization`
 - `medicationAdministration`
 - `observation`
 - `nutritionOrder`
@@ -216,6 +217,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [DiagnosticReport](./docs/resources/diagnostic-report.md)
 - [EpisodeOfCare](./docs/resources/episode-of-care.md)
 - [ImagingStudy](./docs/resources/imaging-study.md)
+- [Immunization](./docs/resources/immunization.md)
 - [Encounter Builder](./docs/helpers/encounter-builder.md)
 - [Encounter Queue Builder](./docs/helpers/encounter-queue-builder.md)
 - [Encounter -> Condition Builder](./docs/helpers/encounter-condition-builder.md)

@@ -263,6 +263,7 @@ Saat ini resource yang sudah tersedia di SDK:
 - `dicomRouter`
 - `encounter`
 - `imagingStudy`
+- `immunization`
 - `location`
 - `medication`
 - `medicationAdministration`
