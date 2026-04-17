@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.3
+
+### Patch Changes
+
+- 99f9bfb: Add Immunization resource client, schemas, documentation, and request validation for SATUSEHAT immunization submissions.
+
 ## 0.10.2
 
 ### Patch Changes
