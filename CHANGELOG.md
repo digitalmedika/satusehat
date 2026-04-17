@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.2
+
+### Patch Changes
+
+- 65b8ad5: Add typed EpisodeOfCare schemas and client endpoints for create, search, detail, update, and patch requests.
+
 ## 0.10.1
 
 ### Patch Changes
