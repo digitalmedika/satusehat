@@ -156,6 +156,7 @@ Saat ini resource yang sudah tersedia:
 - `dicomRouter`
 - `diagnosticReport`
 - `encounter`
+- `episodeOfCare`
 - `imagingStudy`
 - `medicationAdministration`
 - `observation`
@@ -213,6 +214,7 @@ Untuk environment `sandbox`, smoke test akan memakai dummy patient resmi SATUSEH
 - [QuestionnaireResponse](./docs/resources/questionnaire-response.md)
 - [RiskAssessment](./docs/resources/risk-assessment.md)
 - [DiagnosticReport](./docs/resources/diagnostic-report.md)
+- [EpisodeOfCare](./docs/resources/episode-of-care.md)
 - [ImagingStudy](./docs/resources/imaging-study.md)
 - [Encounter Builder](./docs/helpers/encounter-builder.md)
 - [Encounter Queue Builder](./docs/helpers/encounter-queue-builder.md)

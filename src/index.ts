@@ -89,6 +89,7 @@ export type {
   DicomRouterClient,
   DiagnosticReportClient,
   EncounterClient,
+  EpisodeOfCareClient,
   ImagingStudyClient,
   LocationClient,
   MedicationAdministrationClient,
@@ -502,6 +503,18 @@ export type {
   EncounterStatusHistory,
   EncounterUpdateInput,
 } from "./schemas/encounter";
+export type {
+  EpisodeOfCare,
+  EpisodeOfCareCreateInput,
+  EpisodeOfCareDiagnosis,
+  EpisodeOfCareIdentifier,
+  EpisodeOfCarePatchInput,
+  EpisodeOfCarePatchOperation,
+  EpisodeOfCareSearchParams,
+  EpisodeOfCareSearchResponse,
+  EpisodeOfCareStatus,
+  EpisodeOfCareStatusHistory,
+} from "./schemas/episode-of-care";
 export type {
   Location,
   LocationCreateInput,

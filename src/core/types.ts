@@ -639,6 +639,34 @@ export interface EncounterClient {
   ): Promise<import("../schemas/encounter").Encounter>;
 }
 
+export interface EpisodeOfCareClient {
+  create(
+    input: import("../schemas/episode-of-care").EpisodeOfCareCreateInput,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/episode-of-care").EpisodeOfCare>;
+  getById(
+    input: { id: string; signal?: AbortSignal },
+  ): Promise<import("../schemas/episode-of-care").EpisodeOfCare>;
+  search(
+    input: import("../schemas/episode-of-care").EpisodeOfCareSearchParams,
+    signal?: AbortSignal,
+  ): Promise<import("../schemas/episode-of-care").EpisodeOfCareSearchResponse>;
+  patch(
+    input: {
+      id: string;
+      body: import("../schemas/episode-of-care").EpisodeOfCarePatchInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/episode-of-care").EpisodeOfCare>;
+  update(
+    input: {
+      id: string;
+      body: import("../schemas/episode-of-care").EpisodeOfCareCreateInput;
+      signal?: AbortSignal;
+    },
+  ): Promise<import("../schemas/episode-of-care").EpisodeOfCare>;
+}
+
 export interface PractitionerClient {
   getById(
     input: { id: string; signal?: AbortSignal },
@@ -735,6 +763,7 @@ export interface SatuSehatClient {
   dicomRouter: DicomRouterClient;
   diagnosticReport: DiagnosticReportClient;
   encounter: EncounterClient;
+  episodeOfCare: EpisodeOfCareClient;
   imagingStudy: ImagingStudyClient;
   location: LocationClient;
   medicationAdministration: MedicationAdministrationClient;
