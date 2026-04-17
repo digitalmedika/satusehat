@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.1
+
+### Patch Changes
+
+- a76e3b3: Allow Composition identifier to be parsed as either a single Identifier object or an Identifier array.
+
 ## 0.10.0
 
 ### Minor Changes
